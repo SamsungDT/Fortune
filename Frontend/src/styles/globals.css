@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #fefefe;
+  --foreground: #1c1c1e;
+  --card: #ffffff;
+  --card-foreground: #1c1c1e;
+  --popover: #ffffff;
+  --popover-foreground: #1c1c1e;
+  --primary: #1c1c1e;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #1c1c1e;
+  --muted: #f5f6f7;
+  --muted-foreground: #6b7280;
+  --accent: #f1f3f4;
+  --accent-foreground: #1c1c1e;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(28, 28, 30, 0.12);
+  --input: transparent;
+  --input-background: #fbfcfd;
+  --switch-background: #e5e7eb;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(212, 175, 55, 0.3);
+  --chart-1: #1c1c1e;
+  --chart-2: #4b5563;
+  --chart-3: #6b7280;
+  --chart-4: #9ca3af;
+  --chart-5: #d1d5db;
+  --radius: 0.75rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1c1c1e;
+  --sidebar-primary: #1c1c1e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8f9fa;
+  --sidebar-accent-foreground: #1c1c1e;
+  --sidebar-border: rgba(28, 28, 30, 0.08);
+  --sidebar-ring: rgba(212, 175, 55, 0.3);
+  
+  /* 한국 전통 컬러 팔레트 - 현대적 재해석 */
+  --hanbok-gold: #c9a961;
+  --hanbok-gold-light: #e8d5a6;
+  --hanbok-gold-dark: #a08740;
+  --dancheong-red: #cc4125;
+  --dancheong-blue: #2e5984;
+  --dancheong-green: #4a7c59;
+  --hanji-cream: #faf8f4;
+  --ink-black: #2c2c2e;
+  --ink-gray: #48484a;
+  --moon-white: #ffffff;
+  --shadow-purple: #6366f1;
+  --royal-navy: #1e3a8a;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #f5f5f7;
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
+  --popover: #1c1c1e;
+  --popover-foreground: #f5f5f7;
+  --primary: #f5f5f7;
+  --primary-foreground: #1c1c1e;
+  --secondary: #2c2c2e;
+  --secondary-foreground: #f5f5f7;
+  --muted: #1c1c1e;
+  --muted-foreground: #98989a;
+  --accent: #3a3a3c;
+  --accent-foreground: #f5f5f7;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(245, 245, 247, 0.12);
+  --input: rgba(245, 245, 247, 0.05);
+  --ring: rgba(201, 169, 97, 0.4);
+  --chart-1: #f5f5f7;
+  --chart-2: #d1d1d6;
+  --chart-3: #98989a;
+  --chart-4: #636366;
+  --chart-5: #48484a;
+  --sidebar: #1c1c1e;
+  --sidebar-foreground: #f5f5f7;
+  --sidebar-primary: #f5f5f7;
+  --sidebar-primary-foreground: #1c1c1e;
+  --sidebar-accent: #2c2c2e;
+  --sidebar-accent-foreground: #f5f5f7;
+  --sidebar-border: rgba(245, 245, 247, 0.08);
+  --sidebar-ring: rgba(201, 169, 97, 0.4);
+  
+  /* 다크 모드 한국 전통 컬러 */
+  --hanbok-gold: #e8d5a6;
+  --hanbok-gold-light: #f2e9c7;
+  --hanbok-gold-dark: #c9a961;
+  --hanji-cream: #2c2c2e;
+  --ink-black: #f5f5f7;
+  --ink-gray: #d1d1d6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* 한국 전통 컬러를 Tailwind에서 사용 가능하게 */
+  --color-hanbok-gold: var(--hanbok-gold);
+  --color-hanbok-gold-light: var(--hanbok-gold-light);
+  --color-hanbok-gold-dark: var(--hanbok-gold-dark);
+  --color-dancheong-red: var(--dancheong-red);
+  --color-dancheong-blue: var(--dancheong-blue);
+  --color-dancheong-green: var(--dancheong-green);
+  --color-hanji-cream: var(--hanji-cream);
+  --color-ink-black: var(--ink-black);
+  --color-ink-gray: var(--ink-gray);
+  --color-moon-white: var(--moon-white);
+  --color-shadow-purple: var(--shadow-purple);
+  --color-royal-navy: var(--royal-navy);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Serif KR', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 한국 전통 패턴 - 현대적 재해석 */
+  .oriental-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      /* 태극 문양 영감 */
+      radial-gradient(ellipse at 25% 25%, rgba(201, 169, 97, 0.03) 40%, transparent 70%),
+      radial-gradient(ellipse at 75% 75%, rgba(201, 169, 97, 0.03) 40%, transparent 70%),
+      /* 구름 문양 */
+      radial-gradient(circle at 50% 10%, rgba(201, 169, 97, 0.02) 20%, transparent 50%),
+      radial-gradient(circle at 20% 60%, rgba(201, 169, 97, 0.02) 15%, transparent 40%),
+      radial-gradient(circle at 80% 40%, rgba(201, 169, 97, 0.02) 25%, transparent 60%);
+    background-size: 80px 80px, 80px 80px, 120px 120px, 100px 100px, 140px 140px;
+    background-position: 0 0, 40px 40px, 0 0, 60px 20px, 20px 60px;
+    pointer-events: none;
+  }
+  
+  /* 서예 붓터치 효과 */
+  .ink-brush {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ink-brush::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1.5px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(201, 169, 97, 0.4) 10%, 
+      rgba(201, 169, 97, 0.8) 30%, 
+      rgba(201, 169, 97, 1) 50%, 
+      rgba(201, 169, 97, 0.8) 70%, 
+      rgba(201, 169, 97, 0.4) 90%, 
+      transparent 100%
+    );
+    filter: blur(0.5px);
+  }
+  
+  /* 한지 텍스처 효과 */
+  .hanji-texture {
+    position: relative;
+    background: linear-gradient(135deg, 
+      rgba(250, 248, 244, 1) 0%,
+      rgba(248, 246, 242, 1) 25%,
+      rgba(250, 248, 244, 1) 50%,
+      rgba(252, 250, 246, 1) 75%,
+      rgba(250, 248, 244, 1) 100%
+    );
+  }
+  
+  .hanji-texture::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(45deg, 
+        rgba(201, 169, 97, 0.01) 0px, 
+        rgba(201, 169, 97, 0.01) 1px, 
+        transparent 1px, 
+        transparent 8px
+      ),
+      repeating-linear-gradient(-45deg, 
+        rgba(201, 169, 97, 0.005) 0px, 
+        rgba(201, 169, 97, 0.005) 1px, 
+        transparent 1px, 
+        transparent 12px
+      );
+    pointer-events: none;
+  }
+  
+  /* 단청 그라데이션 효과 */
+  .dancheong-gradient {
+    background: linear-gradient(135deg,
+      rgba(204, 65, 37, 0.1) 0%,
+      rgba(46, 89, 132, 0.1) 50%,
+      rgba(74, 124, 89, 0.1) 100%
+    );
+  }
+  
+  /* 금박 효과 */
+  .gold-accent {
+    background: linear-gradient(135deg,
+      rgba(201, 169, 97, 0.2) 0%,
+      rgba(232, 213, 166, 0.3) 50%,
+      rgba(160, 135, 64, 0.2) 100%
+    );
+    box-shadow: 
+      inset 0 1px 0 rgba(201, 169, 97, 0.3),
+      0 1px 3px rgba(201, 169, 97, 0.1);
+  }
+  
+  /* 달빛 효과 */
+  .moon-glow {
+    box-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 먹물 그림자 */
+  .ink-shadow {
+    box-shadow: 
+      0 4px 12px rgba(44, 44, 46, 0.1),
+      0 2px 4px rgba(44, 44, 46, 0.06);
+  }
+  
+  /* 모바일 안전 영역 */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  /* 우아한 스크롤바 */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(201, 169, 97, 0.3);
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 169, 97, 0.5);
+  }
+  
+  /* 텍스트 말줄임표 유틸리티 */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/**
+ * 개선된 타이포그래피 - 한국 전통 서체 감성
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-family: 'Nanum Myeongjo', 'Noto Serif KR', serif;
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
+    }
+
+    h2 {
+      font-family: 'Nanum Myeongjo', 'Noto Serif KR', serif;
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-lg);
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: -0.015em;
+    }
+
+    h4 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-base);
+      font-weight: 400;
+      line-height: 1.65;
+      letter-spacing: -0.005em;
+    }
+
+    label {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    button {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    input, textarea {
+      font-family: 'Noto Serif KR', serif;
+      font-size: var(--text-base);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
