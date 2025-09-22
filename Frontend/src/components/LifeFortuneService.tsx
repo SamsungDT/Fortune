@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Alert, AlertDescription } from "./ui/alert";
 import { FortuneResult } from "../App";
 import { User, Calendar, Clock, Sparkles, AlertCircle, Star } from 'lucide-react';
-import { AdBanner } from './AdBanner';
+//import { AdBanner } from './AdBanner';
 
 interface LifeFortuneServiceProps {
   onResult: (result: FortuneResult) => void;
@@ -153,7 +153,7 @@ export function LifeFortuneService({ onResult, onBack }: LifeFortuneServiceProps
             </AlertDescription>
           </Alert>
 
-          <AdBanner type="card" className="mt-4" />
+{/*           <AdBanner type="card" className="mt-4" /> */}
 
           <Button 
             onClick={() => setStep('input')} 
