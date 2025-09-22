@@ -205,7 +205,7 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
                         <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40 rounded-full px-3 py-1 text-xs">
                           {getTypeName(result.type)}
                         </Badge>
-                        <Badge 
+{/*                         <Badge 
                           className={`rounded-full px-3 py-1 text-xs border ${
                             result.paid 
                               ? "bg-dancheong-red/20 text-dancheong-red border-dancheong-red/40" 
@@ -213,7 +213,7 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
                           }`}
                         >
                           {result.paid ? '💰 유료' : '🎁 무료'}
-                        </Badge>
+                        </Badge> */}
                       </div>
                     </div>
                     
