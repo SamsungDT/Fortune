@@ -7,4 +7,4 @@
   docker build -t spring . #docker를 통한 이미지 생성
   docker run -d -p 8080:8080 --name spring-server spring #생성된 이미지 기반으로 도커 컨테이너 실행
   ```
-##ㅎㅎ
+
