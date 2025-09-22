@@ -31,12 +31,12 @@ export function BottomNavigation({ currentScreen, onNavigate, user }: BottomNavi
       activeIcon: '📜',
       badge: user?.results?.length || 0
     },
-    {
-      id: 'support',
-      label: '후원하기',
-      icon: '💝',
-      activeIcon: '💝',
-    },
+    // {
+    //   id: 'support',
+    //   label: '후원하기',
+    //   icon: '💝',
+    //   activeIcon: '💝',
+    // },
     {
       id: 'profile',
       label: '프로필',
