@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Alert, AlertDescription } from "./ui/alert";
 import { FortuneResult } from "../App";
 import { Calendar, Heart, Sparkles, AlertCircle, Star, Clock } from 'lucide-react';
-import { AdBanner } from './AdBanner';
+//import { AdBanner } from './AdBanner';
 
 interface DailyFortuneServiceProps {
   onResult: (result: FortuneResult) => void;
@@ -171,7 +171,7 @@ ${currentConcern ? `특히 "${currentConcern}"에 대해서는 ` : ''}오늘은 
             </AlertDescription>
           </Alert>
 
-          <AdBanner type="card" className="mt-4" />
+{/*           <AdBanner type="card" className="mt-4" /> */}
 
           <Button 
             onClick={() => setStep('input')} 
