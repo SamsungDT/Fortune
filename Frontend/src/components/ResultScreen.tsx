@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { FortuneResult } from "../App";
-import { AdBanner } from './AdBanner';
+//import { AdBanner } from './AdBanner';
 import { Share2, Copy, MessageCircle } from 'lucide-react';
 
 interface ResultScreenProps {
@@ -76,7 +76,7 @@ export function ResultScreen({ result, onBack, onShare }: ResultScreenProps) {
       <div className="w-full space-y-6">
         
         {/* 상단 광고 */}
-        <AdBanner type="banner" size="medium" />
+{/*         <AdBanner type="banner" size="medium" /> */}
 
         {/* 상태 뱃지 */}
         <div className="flex gap-3">
@@ -121,7 +121,7 @@ export function ResultScreen({ result, onBack, onShare }: ResultScreenProps) {
         </div>
 
         {/* 중간 광고 */}
-        <AdBanner type="card" />
+{/*         <AdBanner type="card" /> */}
 
         {/* 추천 서비스 */}
         <Card className="border border-border p-5 rounded-2xl">
@@ -169,7 +169,7 @@ export function ResultScreen({ result, onBack, onShare }: ResultScreenProps) {
         </Card>
 
         {/* 하단 광고 */}
-        <AdBanner type="banner" size="large" />
+{/*         <AdBanner type="banner" size="large" /> */}
       </div>
     </div>
   );
