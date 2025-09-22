@@ -5,7 +5,7 @@ import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { User, FortuneResult } from "../App";
-import { AdBanner } from './AdBanner';
+//import { AdBanner } from './AdBanner';
 import { Search, Filter, TrendingUp, Gift, ChevronRight } from 'lucide-react';
 
 interface MyResultsScreenProps {
@@ -71,7 +71,7 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
       <div className="max-w-4xl mx-auto space-y-6">
         
         {/* 상단 광고 */}
-        <AdBanner type="banner" size="medium" />
+{/*         <AdBanner type="banner" size="medium" /> */}
 
         {/* 통계 카드 */}
         <div className="grid grid-cols-2 gap-4">
@@ -119,7 +119,7 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
         </div>
 
         {/* 중간 광고 */}
-        <AdBanner type="card" />
+{/*         <AdBanner type="card" /> */}
 
         {/* 필터 및 검색 */}
         <Card className="border border-border p-5 rounded-3xl ink-shadow">
@@ -222,11 +222,11 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
                 </Card>
                 
                 {/* 결과 사이에 광고 삽입 (5개마다) */}
-                {(index + 1) % 5 === 0 && index < filteredResults.length - 1 && (
+{/*                 {(index + 1) % 5 === 0 && index < filteredResults.length - 1 && (
                   <div className="my-4">
                     <AdBanner type="native" size="small" />
                   </div>
-                )}
+                )} */}
               </div>
             ))}
           </div>
@@ -242,7 +242,7 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
         )}
 
         {/* 하단 광고 */}
-        <AdBanner type="banner" size="large" />
+{/*         <AdBanner type="banner" size="large" /> */}
       </div>
     </div>
   );
