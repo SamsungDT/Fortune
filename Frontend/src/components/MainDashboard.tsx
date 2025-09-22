@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { User } from "../App";
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { AdBanner } from './AdBanner';
+//import { AdBanner } from './AdBanner';
 import { Bell, ChevronRight, Gift, Megaphone, TrendingUp } from 'lucide-react';
 
 interface AppStats {
@@ -95,14 +95,14 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
   return (
     <div className="p-6 space-y-6">
       {/* 상단 광고 배너 */}
-      {showTopAd && (
+{/*       {showTopAd && (
         <AdBanner 
           type="banner" 
           size="medium" 
           onClose={() => setShowTopAd(false)}
           className="mb-4"
         />
-      )}
+      )} */}
 
       {/* 환영 인사 섹션 */}
       <div className="hanji-texture rounded-2xl p-6 border border-hanbok-gold/20 ink-shadow">
@@ -187,9 +187,9 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
           <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">
             🔮 운세 서비스
           </h3>
-          {!user.isPremium && (
+{/*           {!user.isPremium && (
             <AdBanner type="native" size="small" className="flex-1 max-w-40 ml-4" />
-          )}
+          )} */}
         </div>
         <div className="grid grid-cols-2 gap-4">
           {services.map((service) => {
@@ -351,13 +351,13 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
       </div>
 
       {/* 하단 광고 카드 */}
-      {showBottomAd && (
+{/*       {showBottomAd && (
         <AdBanner 
           type="card" 
           onClose={() => setShowBottomAd(false)}
           className="mt-6"
         />
-      )}
+      )} */}
     </div>
   );
 }
