@@ -1,0 +1,42 @@
+# IDE Files (IntelliJ, VS Code, etc.)
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+---
+
+# Backend (Spring & Node.js)
+## Spring
+/Backend/build/
+/Backend/.gradle/
+/Backend/target/
+/Backend/bin/
+/Backend/out/
+/Backend/fortune-user/src/main/resources/application-secret.yml
+
+## Node.js
+/Backend/node_modules/
+/Backend/npm-debug.log*
+/Backend/yarn-error.log*
+/Backend/pnpm-debug.log*
+/Backend/dist/
+/Backend/tmp/
+
+---
+
+# Frontend (React with TypeScript)
+/Frontend/node_modules/
+/Frontend/build/
+/Frontend/dist/
+/Frontend/coverage/
+/Frontend/.next/
+/Frontend/.cache/
+/Frontend/npm-debug.log*
+/Frontend/yarn-error.log*
+/Frontend/pnpm-debug.log*
+/Frontend/tsconfig.tsbuildinfo
