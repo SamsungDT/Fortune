@@ -73,9 +73,9 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
         <Card className="hanji-texture border border-hanbok-gold/20 p-6 rounded-2xl ink-shadow">
           <div className="text-center space-y-4">
             <div className="relative">
-              <div className="w-24 h-24 bg-hanbok-gold/20 border-2 border-hanbok-gold/40 mx-auto flex items-center justify-center text-4xl rounded-full">
+              {/* <div className="w-24 h-24 bg-hanbok-gold/20 border-2 border-hanbok-gold/40 mx-auto flex items-center justify-center text-4xl rounded-full">
                 {getProviderIcon(user.loginProvider)}
-              </div>
+              </div> */}
               {user.isPremium && (
                 <div className="absolute -top-1 -right-1 w-8 h-8 bg-hanbok-gold rounded-full flex items-center justify-center">
                   <span className="text-ink-black text-lg">👑</span>
@@ -87,9 +87,9 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
               <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush font-semibold">{user.name}</h2>
               <p className="text-muted-foreground text-sm">{user.email}</p>
               <div className="flex items-center justify-center gap-2 mt-3">
-                <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40">
+                {/* <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40">
                   {getProviderName(user.loginProvider)} 로그인
-                </Badge>
+                </Badge> */}
                 {user.isPremium && (
                   <Badge className="bg-hanbok-gold text-ink-black">
                     후원자
@@ -111,7 +111,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
               </Badge>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">오늘 이용한 서비스</span>
+              {/* <span className="text-muted-foreground">오늘 이용한 서비스</span> */}
               <span className="text-hanbok-gold-dark font-semibold">{todayFreeUsed}회</span>
             </div>
             {user.isPremium && (
@@ -148,7 +148,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
             </div>
 
             {/* 알림 설정 */}
-            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+            {/* <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <Bell className="w-5 h-5 text-hanbok-gold-dark" />
                 <div>
@@ -161,10 +161,10 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                 onCheckedChange={(checked) => handleSettingChange('notifications', checked)}
                 className="data-[state=checked]:bg-hanbok-gold"
               />
-            </div>
+            </div> */}
 
             {/* 사운드 설정 */}
-            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+            {/* <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 {settings.sound ? <Volume2 className="w-5 h-5 text-hanbok-gold-dark" /> : <VolumeX className="w-5 h-5 text-hanbok-gold-dark" />}
                 <div>
@@ -177,10 +177,10 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                 onCheckedChange={(checked) => handleSettingChange('sound', checked)}
                 className="data-[state=checked]:bg-hanbok-gold"
               />
-            </div>
+            </div> */}
 
             {/* 진동 설정 */}
-            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+            {/* <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <Smartphone className="w-5 h-5 text-hanbok-gold-dark" />
                 <div>
@@ -193,7 +193,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                 onCheckedChange={(checked) => handleSettingChange('vibration', checked)}
                 className="data-[state=checked]:bg-hanbok-gold"
               />
-            </div>
+            </div> */}
           </div>
         </Card>
 
@@ -234,42 +234,42 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
         {/* 기타 메뉴 */}
         <Card className="border border-border rounded-2xl overflow-hidden">
           <div className="divide-y divide-border">
-            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+            {/* <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <Star className="w-5 h-5 text-hanbok-gold-dark" />
                 <span className="text-ink-black dark:text-ink-gray">앱 평가하기</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
+            </button> */}
             
-            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+            {/* <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <Share2 className="w-5 h-5 text-hanbok-gold-dark" />
                 <span className="text-ink-black dark:text-ink-gray">앱 공유하기</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
+            </button> */}
             
-            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+            {/* <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <HelpCircle className="w-5 h-5 text-hanbok-gold-dark" />
                 <span className="text-ink-black dark:text-ink-gray">고객지원</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
+            </button> */}
             
-            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+            {/* <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
               <div className="flex items-center space-x-3">
                 <Shield className="w-5 h-5 text-hanbok-gold-dark" />
                 <span className="text-ink-black dark:text-ink-gray">개인정보처리방침</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
+            </button> */}
           </div>
         </Card>
 
         {/* 앱 정보 */}
-        <Card className="border border-border p-5 rounded-2xl">
+        {/* <Card className="border border-border p-5 rounded-2xl">
           <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">ℹ️ 앱 정보</h3>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
@@ -285,19 +285,19 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
               <span className="text-ink-black dark:text-ink-gray font-medium">2024.12.15</span>
             </div>
           </div>
-        </Card>
+        </Card> */}
 
         {/* 데이터 관리 */}
         <Card className="border border-border p-5 rounded-2xl">
           <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">🗂️ 데이터 관리</h3>
           <div className="space-y-3">
-            <Button 
+            {/* <Button 
               variant="outline" 
               className="w-full justify-start border-hanbok-gold/30 hover:bg-hanbok-gold/10"
             >
               <Download className="w-4 h-4 mr-2" />
               내 데이터 내보내기
-            </Button>
+            </Button> */}
             
             <Button 
               variant="outline" 

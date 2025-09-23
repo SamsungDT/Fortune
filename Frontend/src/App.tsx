@@ -14,7 +14,7 @@ import { PaymentScreen } from "./components/PaymentScreen";
 import { MyResultsScreen } from "./components/MyResultsScreen";
 import { TopAppBar } from "./components/TopAppBar";
 import { BottomNavigation } from "./components/BottomNavigation";
-import { ProfileScreen } from "./components/ProfileScreen";
+import { ProfileScreen } from './components/ProfileScreen';
 import { SupportScreen } from "./components/SupportScreen";
 import { ThemeProvider } from "./components/ThemeProvider";
 
