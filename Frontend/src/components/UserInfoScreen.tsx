@@ -1,4 +1,4 @@
-UserInfoScreen.tsx   import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -241,3 +241,4 @@ export function UserInfoScreen({ user, onComplete }: UserInfoScreenProps) {
       </Card>
     </div>
   );
+}
