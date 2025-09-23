@@ -144,17 +144,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         ) : (
           // 이메일 로그인 폼
           <>
-            {/* 뒤로가기 버튼 */}
-            <div className="mb-6">
-              <Button
-                onClick={() => setShowEmailForm(false)}
-                variant="ghost"
-                className="flex items-center space-x-2 text-muted-foreground hover:text-ink-black dark:hover:text-ink-gray"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>다른 방법으로 로그인</span>
-              </Button>
-            </div>
+            
 
             <form onSubmit={handleEmailLogin} className="space-y-5">
               <div className="space-y-2">
@@ -190,6 +180,17 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                   <span>로그인</span>
                 </span>
               </Button>
+              {/* 뒤로가기 버튼 */}
+            <div className="mb-6">
+              <Button
+                onClick={() => setShowEmailForm(false)}
+                variant="ghost"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-ink-black dark:hover:text-ink-gray"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>뒤로가기</span>
+              </Button>
+            </div>
             </form>
           </>
         )}
