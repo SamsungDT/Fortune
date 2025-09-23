@@ -1,244 +1,325 @@
 import React, { useState } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
+import { Switch } from "./ui/switch";
+import { Alert, AlertDescription } from "./ui/alert";
+import { User } from "../App";
+import { useTheme } from "./ThemeProvider";
+import { 
+  Settings, 
+  Bell, 
+  Shield, 
+  HelpCircle, 
+  Star, 
+  Share2, 
+  Download,
+  Trash2,
+  ChevronRight,
+  Moon,
+  Sun,
+  Smartphone,
+  Volume2,
+  VolumeX
+} from 'lucide-react';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  loginProvider: string;
-  birthDate?: string;
-  birthTime?: string;
-}
-
-interface UserInfoScreenProps {
+interface ProfileScreenProps {
   user: User;
-  onComplete: (userInfo: { birthDate: string; birthTime: string }) => void;
+  onLogout: () => void;
 }
 
-export function UserInfoScreen({ user, onComplete }: UserInfoScreenProps) {
-  const [birthDate, setBirthDate] = useState('');
-  const [birthTime, setBirthTime] = useState('');
-  const [isUnknownTime, setIsUnknownTime] = useState(false);
+export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
+  const { isDark, toggleTheme } = useTheme();
+  const [settings, setSettings] = useState({
+    notifications: true,
+    sound: true,
+    vibration: true,
+    autoBackup: false,
+    shareUsage: true
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!birthDate) {
-      alert('생년월일을 입력해주세요.');
-      return;
+  const handleSettingChange = (key: string, value: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+  const getProviderName = (provider: string) => {
+    switch (provider) {
+      case 'kakao': return '카카오';
+      case 'naver': return '네이버';
+      case 'google': return '구글';
+      case 'email': return '이메일';
+      default: return provider;
     }
-    
-    const finalBirthTime = isUnknownTime ? '12:00' : birthTime;
-    
-    if (!isUnknownTime && !birthTime) {
-      alert('태어난 시간을 입력해주세요.');
-      return;
-    }
-    
-    onComplete({
-      birthDate,
-      birthTime: finalBirthTime
-    });
   };
 
+  const getProviderIcon = (provider: string) => {
+    switch (provider) {
+      case 'kakao': return '💬';
+      case 'naver': return '🟢';
+      case 'google': return '🔍';
+      case 'email': return '✉️';
+      default: return '👤';
+    }
+  };
 
+  const totalUsage = Object.values(user.usageCount).reduce((sum, count) => sum + count, 0);
+  const todayFreeUsed = Object.values(user.dailyFreeUsage).filter(used => used).length - 1; // -1 for date field
+  const availableFreeToday = 4 - todayFreeUsed;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 hanji-texture">
-      {/* 배경 문양 */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="h-full w-full bg-gradient-to-br from-hanbok-gold/5 via-transparent to-hanbok-gold/5"></div>
-      </div>
-      
-      <Card className="relative w-full max-w-sm mx-auto p-8 bg-white/95 dark:bg-card/95 backdrop-blur-lg border border-hanbok-gold/20 ink-shadow rounded-3xl">
-        {/* 메인 헤더 */}
-        <div className="text-center mb-8">
-          <div className="relative mb-6">
-            {/* 환영 메시지 */}
-            <div className="relative inline-block">
-              <div className="text-4xl mb-3 relative">
-                <span className="absolute inset-0 text-hanbok-gold/20 transform scale-110">🌟</span>
-                <span className="relative text-ink-black dark:text-ink-gray">🌟</span>
+    <div className="min-h-screen pb-20 bg-white dark:bg-black">
+      <div className="p-6 space-y-6">
+        {/* 프로필 정보 */}
+        <Card className="hanji-texture border border-hanbok-gold/20 p-6 rounded-2xl ink-shadow">
+          <div className="text-center space-y-4">
+            <div className="relative">
+              <div className="w-24 h-24 bg-hanbok-gold/20 border-2 border-hanbok-gold/40 mx-auto flex items-center justify-center text-4xl rounded-full">
+                {getProviderIcon(user.loginProvider)}
+              </div>
+              {user.isPremium && (
+                <div className="absolute -top-1 -right-1 w-8 h-8 bg-hanbok-gold rounded-full flex items-center justify-center">
+                  <span className="text-ink-black text-lg">👑</span>
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush font-semibold">{user.name}</h2>
+              <p className="text-muted-foreground text-sm">{user.email}</p>
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40">
+                  {getProviderName(user.loginProvider)} 로그인
+                </Badge>
+                {user.isPremium && (
+                  <Badge className="bg-hanbok-gold text-ink-black">
+                    후원자
+                  </Badge>
+                )}
               </div>
             </div>
-            
-            <h1 className="text-xl mb-2 text-ink-black dark:text-ink-gray ink-brush">
-              환영합니다, {user.name}님!
-            </h1>
-            
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <span className="text-sm text-muted-foreground">
-                {getProviderName(user.loginProvider)} 로그인 완료
-              </span>
-            </div>
-            
-            <h2 className="text-lg mb-3 text-ink-black dark:text-ink-gray">
-              추가 정보 입력
-            </h2>
-            
-            {/* 전통 장식선 */}
-            <div className="flex items-center justify-center mb-3">
-              <div className="h-px bg-hanbok-gold/40 w-8"></div>
-              <div className="mx-2 w-2 h-2 bg-hanbok-gold rounded-full"></div>
-              <div className="h-px bg-hanbok-gold/40 w-8"></div>
-            </div>
           </div>
-          
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            정확한 운세 분석을 위해<br />
-            생년월일과 태어난 시간을 알려주세요
-          </p>
-        </div>
+        </Card>
 
-        {/* 생년월일 및 생시 입력 폼 */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* 생년월일 입력 */}
-          <div className="space-y-2">
-            <Label htmlFor="birthDate" className="text-ink-black dark:text-ink-gray">
-              생년월일 <span className="text-dancheong-red">*</span>
-            </Label>
-            <Input 
-              id="birthDate" 
-              name="birthDate" 
-              type="date" 
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              max={new Date().toISOString().split('T')[0]}
-              className="h-12 bg-input-background border border-border focus:border-hanbok-gold/60 focus:ring-hanbok-gold/30 rounded-xl transition-all duration-300 text-center"
-              required
-            />
-            <p className="text-xs text-muted-foreground">
-              양력 기준으로 입력해주세요
-            </p>
+        {/* 오늘의 이용 현황 */}
+        <Card className="border border-border p-5 rounded-2xl">
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">✨ 오늘의 이용 현황</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">무료 이용 가능</span>
+              <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40">
+                {availableFreeToday}회 남음
+              </Badge>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">오늘 이용한 서비스</span>
+              <span className="text-hanbok-gold-dark font-semibold">{todayFreeUsed}회</span>
+            </div>
+            {user.isPremium && (
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">후원 상태</span>
+                <span className="text-hanbok-gold-dark font-semibold text-sm">{user.premiumExpiry}</span>
+              </div>
+            )}
           </div>
+        </Card>
+
+        {/* 설정 섹션 */}
+        <Card className="border border-border p-5 rounded-2xl">
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush flex items-center">
+            <Settings className="w-5 h-5 mr-2" />
+            설정
+          </h3>
           
-          {/* 태어난 시간 입력 */}
           <div className="space-y-4">
-            <Label className="text-ink-black dark:text-ink-gray">
-              태어난 시간 <span className="text-dancheong-red">*</span>
-            </Label>
-            
-            {/* 시간 모름 체크박스 */}
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id="unknownTime"
-                checked={isUnknownTime}
-                onChange={(e) => {
-                  setIsUnknownTime(e.target.checked);
-                  if (e.target.checked) {
-                    setBirthTime('');
-                  }
-                }}
-                className="w-4 h-4 text-hanbok-gold bg-input-background border-border rounded focus:ring-hanbok-gold/30 focus:ring-2"
+            {/* 테마 설정 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                {isDark ? <Moon className="w-5 h-5 text-hanbok-gold-dark" /> : <Sun className="w-5 h-5 text-hanbok-gold-dark" />}
+                <div>
+                  <p className="text-sm font-medium text-ink-black dark:text-ink-gray">다크 모드</p>
+                  <p className="text-xs text-muted-foreground">어두운 테마로 변경</p>
+                </div>
+              </div>
+              <Switch 
+                checked={isDark} 
+                onCheckedChange={toggleTheme}
+                className="data-[state=checked]:bg-hanbok-gold"
               />
-              <Label htmlFor="unknownTime" className="text-sm text-muted-foreground cursor-pointer">
-                태어난 시간을 정확히 모르겠어요 (정오 12시로 계산됩니다)
-              </Label>
             </div>
-            
-            {/* 시간 입력 필드 */}
-            {!isUnknownTime && (
-              <div className="grid grid-cols-2 gap-3">
+
+            {/* 알림 설정 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <Bell className="w-5 h-5 text-hanbok-gold-dark" />
                 <div>
-                  <Label htmlFor="birthHour" className="text-xs text-muted-foreground">시</Label>
-                  <Select
-                    value={birthTime.split(':')[0] || ''}
-                    onValueChange={(hour) => {
-                      const minute = birthTime.split(':')[1] || '00';
-                      setBirthTime(`${hour.padStart(2, '0')}:${minute}`);
-                    }}
-                  >
-                    <SelectTrigger className="h-11 bg-input-background border border-border focus:border-hanbok-gold/60 rounded-xl">
-                      <SelectValue placeholder="시" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => (
-                        <SelectItem key={i} value={i.toString()}>
-                          {i.toString().padStart(2, '0')}시
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="birthMinute" className="text-xs text-muted-foreground">분</Label>
-                  <Select
-                    value={birthTime.split(':')[1] || ''}
-                    onValueChange={(minute) => {
-                      const hour = birthTime.split(':')[0] || '00';
-                      setBirthTime(`${hour}:${minute.padStart(2, '0')}`);
-                    }}
-                  >
-                    <SelectTrigger className="h-11 bg-input-background border border-border focus:border-hanbok-gold/60 rounded-xl">
-                      <SelectValue placeholder="분" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 60 }, (_, i) => (
-                        <SelectItem key={i} value={i.toString()}>
-                          {i.toString().padStart(2, '0')}분
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <p className="text-sm font-medium text-ink-black dark:text-ink-gray">푸시 알림</p>
+                  <p className="text-xs text-muted-foreground">운세 알림 받기</p>
                 </div>
               </div>
-            )}
-            
-            {isUnknownTime && (
-              <div className="bg-hanbok-gold/10 border border-hanbok-gold/30 rounded-xl p-4">
-                <div className="flex items-center space-x-2">
-                  <span className="text-hanbok-gold-dark">ℹ️</span>
-                  <div className="text-sm text-hanbok-gold-dark">
-                    <p className="font-medium">정오 12시로 계산됩니다</p>
-                    <p className="text-xs mt-1">가능하면 정확한 시간을 확인해보세요. 더 정확한 운세 분석이 가능합니다.</p>
-                  </div>
+              <Switch 
+                checked={settings.notifications} 
+                onCheckedChange={(checked) => handleSettingChange('notifications', checked)}
+                className="data-[state=checked]:bg-hanbok-gold"
+              />
+            </div>
+
+            {/* 사운드 설정 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                {settings.sound ? <Volume2 className="w-5 h-5 text-hanbok-gold-dark" /> : <VolumeX className="w-5 h-5 text-hanbok-gold-dark" />}
+                <div>
+                  <p className="text-sm font-medium text-ink-black dark:text-ink-gray">사운드</p>
+                  <p className="text-xs text-muted-foreground">효과음 및 알림음</p>
                 </div>
               </div>
-            )}
+              <Switch 
+                checked={settings.sound} 
+                onCheckedChange={(checked) => handleSettingChange('sound', checked)}
+                className="data-[state=checked]:bg-hanbok-gold"
+              />
+            </div>
+
+            {/* 진동 설정 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <Smartphone className="w-5 h-5 text-hanbok-gold-dark" />
+                <div>
+                  <p className="text-sm font-medium text-ink-black dark:text-ink-gray">진동</p>
+                  <p className="text-xs text-muted-foreground">알림 시 진동</p>
+                </div>
+              </div>
+              <Switch 
+                checked={settings.vibration} 
+                onCheckedChange={(checked) => handleSettingChange('vibration', checked)}
+                className="data-[state=checked]:bg-hanbok-gold"
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* 전체 이용 통계 */}
+        <Card className="border border-border p-5 rounded-2xl">
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">📊 전체 이용 통계</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
+              <div className="text-2xl mb-2">👤</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.physiognomy}</div>
+              <div className="text-xs text-muted-foreground">관상</div>
+            </div>
+            <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
+              <div className="text-2xl mb-2">🌟</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.lifefortune}</div>
+              <div className="text-xs text-muted-foreground">평생운세</div>
+            </div>
+            <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
+              <div className="text-2xl mb-2">📅</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.dailyfortune}</div>
+              <div className="text-xs text-muted-foreground">오늘운세</div>
+            </div>
+            <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
+              <div className="text-2xl mb-2">💭</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.dream}</div>
+              <div className="text-xs text-muted-foreground">해몽</div>
+            </div>
           </div>
           
-          {/* 완료 버튼 */}
-          <Button 
-            type="submit" 
-            className="w-full h-12 bg-ink-black dark:bg-ink-gray text-white dark:text-ink-black hover:bg-ink-gray dark:hover:bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-medium mt-8"
-          >
-            <span className="flex items-center justify-center space-x-2">
-              <span>🚀</span>
-              <span>Fortune K.I 시작하기</span>
-            </span>
-          </Button>
-        </form>
+          <Separator className="my-4" />
+          
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">총 이용 횟수</span>
+            <span className="text-2xl text-hanbok-gold-dark font-bold">{totalUsage}회</span>
+          </div>
+        </Card>
 
-        {/* 안내 메시지 */}
-        <div className="mt-6 text-center">
-          <div className="bg-dancheong-green/10 border border-dancheong-green/30 rounded-xl p-4">
-            <div className="flex items-start space-x-3">
-              <span className="text-dancheong-green text-sm">🔒</span>
-              <div className="text-xs text-dancheong-green leading-relaxed">
-                <p className="font-medium">개인정보 보안</p>
-                <p className="mt-1">
-                  입력하신 정보는 운세 분석 목적으로만 사용되며, 
-                  안전하게 암호화되어 보관됩니다.
-                </p>
+        {/* 기타 메뉴 */}
+        <Card className="border border-border rounded-2xl overflow-hidden">
+          <div className="divide-y divide-border">
+            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <Star className="w-5 h-5 text-hanbok-gold-dark" />
+                <span className="text-ink-black dark:text-ink-gray">앱 평가하기</span>
               </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <Share2 className="w-5 h-5 text-hanbok-gold-dark" />
+                <span className="text-ink-black dark:text-ink-gray">앱 공유하기</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <HelpCircle className="w-5 h-5 text-hanbok-gold-dark" />
+                <span className="text-ink-black dark:text-ink-gray">고객지원</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-4 hover:bg-hanbok-gold/5 transition-colors">
+              <div className="flex items-center space-x-3">
+                <Shield className="w-5 h-5 text-hanbok-gold-dark" />
+                <span className="text-ink-black dark:text-ink-gray">개인정보처리방침</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+          </div>
+        </Card>
+
+        {/* 앱 정보 */}
+        <Card className="border border-border p-5 rounded-2xl">
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">ℹ️ 앱 정보</h3>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">앱 버전</span>
+              <span className="text-ink-black dark:text-ink-gray font-medium">2.1.0</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">저장된 결과</span>
+              <span className="text-ink-black dark:text-ink-gray font-medium">{user.results.length}개</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">가입일</span>
+              <span className="text-ink-black dark:text-ink-gray font-medium">2024.12.15</span>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/* 하단 장식 */}
-        <div className="mt-4 text-center">
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-hanbok-gold/10 border border-hanbok-gold/30 rounded-full">
-            <span className="text-hanbok-gold-dark">✨</span>
-            <span className="text-hanbok-gold-dark text-xs font-medium">정확한 정보로 더 나은 운세를</span>
+        {/* 데이터 관리 */}
+        <Card className="border border-border p-5 rounded-2xl">
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">🗂️ 데이터 관리</h3>
+          <div className="space-y-3">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start border-hanbok-gold/30 hover:bg-hanbok-gold/10"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              내 데이터 내보내기
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="w-full justify-start border-dancheong-red/30 text-dancheong-red hover:bg-dancheong-red/10"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              모든 데이터 삭제
+            </Button>
           </div>
+        </Card>
+
+        {/* 로그아웃 */}
+        <div className="pt-4">
+          <Button 
+            onClick={onLogout}
+            variant="outline"
+            className="w-full border-2 border-dancheong-red/40 text-dancheong-red hover:bg-dancheong-red hover:text-white py-4 rounded-2xl font-medium"
+          >
+            🚪 로그아웃
+          </Button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
