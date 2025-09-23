@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -30,26 +32,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        if (jwt != null && tokenProvider.validateToken(jwt)) {
-            String jti = tokenProvider.getJwtIdFromToken(jwt);
+        if (jwt != null) {
+            if (tokenProvider.validateToken(jwt)) {
+                String jti = tokenProvider.getJwtIdFromToken(jwt);
 
-            if (redisService.isTokenBlacklisted(jti)) {
-                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
-                return; // 블랙리스트 토큰이므로 필터 체인 중단
-            }
+                if (redisService.isTokenBlacklisted(jti)) {
+                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                    return; // 블랙리스트 토큰이므로 필터 체인 중단
+                }
 
-            String username = tokenProvider.getUsernameFromToken(jwt);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String username = tokenProvider.getUsernameFromToken(jwt);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } else {
+                // 토큰이 유효하지 않으므로, 즉시 401 응답을 보내고 필터 체인 중단
+                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired JWT token.");
+                return;
             }
         }
 
-        // 토큰 유무와 상관없이 다음 필터로 진행
+        // 토큰이 없거나 유효성 검증을 통과한 경우, 다음 필터로 진행
         filterChain.doFilter(request, response);
     }
 
