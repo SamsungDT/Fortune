@@ -50,7 +50,8 @@ export function BottomNavigation({ currentScreen, onNavigate, user }: BottomNavi
   const currentTab = serviceScreens.includes(currentScreen) ? 'dashboard' : currentScreen;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto safe-bottom">
+    //<div className="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto safe-bottom">
+      <div className="w-full max-w-md mx-auto">
       {/* 한국 전통 장식선 - 붓터치 효과 */}
       <div className="relative h-1">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-hanbok-gold/60 to-transparent"></div>
