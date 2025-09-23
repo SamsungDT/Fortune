@@ -245,14 +245,14 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
                   </div>
                   
                   <div className="flex justify-between items-center mt-3 pt-2 border-t border-border/30">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                    {/* <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                       isFreeTodayAvailable 
                         ? 'bg-hanbok-gold/20 text-hanbok-gold-dark' 
                         : 'bg-muted text-muted-foreground'
                     }`}>
                       <span className="mr-1 text-xs">{isFreeTodayAvailable ? '✨' : '🪙'}</span>
                       <span className="text-xs">{isFreeTodayAvailable ? '무료' : '유료'}</span>
-                    </span>
+                    </span> */}
                     
                     <Button 
                       size="sm" 
