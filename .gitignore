@@ -17,7 +17,7 @@
 /Backend/target/
 /Backend/bin/
 /Backend/out/
-Backend/src/main/resources/applicatio-secret.yml
+/Backend/src/main/resources/application-secret.yml
 
 ## Node.js
 /Backend/node_modules/
