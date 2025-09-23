@@ -74,7 +74,8 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
 {/*         <AdBanner type="banner" size="medium" /> */}
 
         {/* 통계 카드 */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-2 gap-4"> */}
+          <div className="gap-4">
           <Card className="hanji-texture border border-hanbok-gold/30 p-5 text-center rounded-3xl ink-shadow hover:shadow-lg transition-all duration-300">
             <div className="w-12 h-12 bg-hanbok-gold/20 rounded-full flex items-center justify-center mx-auto mb-3">
               <TrendingUp className="w-6 h-6 text-hanbok-gold-dark" />
@@ -83,13 +84,13 @@ export function MyResultsScreen({ user, onBack, onResultSelect }: MyResultsScree
             <div className="text-sm text-muted-foreground">총 이용</div>
           </Card>
           
-          <Card className="hanji-texture border border-hanbok-gold/30 p-5 text-center rounded-3xl ink-shadow hover:shadow-lg transition-all duration-300">
+          {/* <Card className="hanji-texture border border-hanbok-gold/30 p-5 text-center rounded-3xl ink-shadow hover:shadow-lg transition-all duration-300">
             <div className="w-12 h-12 bg-dancheong-green/20 rounded-full flex items-center justify-center mx-auto mb-3">
               <Gift className="w-6 h-6 text-dancheong-green" />
             </div>
             <div className="text-2xl font-bold text-dancheong-green mb-1">{stats.free}</div>
             <div className="text-sm text-muted-foreground">무료 이용</div>
-          </Card>
+          </Card> */}
         </div>
         
         <div className="grid grid-cols-4 gap-3">
