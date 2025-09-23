@@ -45,31 +45,7 @@ export function UserInfoScreen({ user, onComplete }: UserInfoScreenProps) {
     });
   };
 
-  const getProviderIcon = (provider: string) => {
-    switch (provider) {
-      case 'kakao':
-        return '📱';
-      case 'naver':
-        return '🟢';
-      case 'google':
-        return '🔍';
-      default:
-        return '✨';
-    }
-  };
 
-  const getProviderName = (provider: string) => {
-    switch (provider) {
-      case 'kakao':
-        return '카카오';
-      case 'naver':
-        return '네이버';
-      case 'google':
-        return '구글';
-      default:
-        return '소셜';
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 hanji-texture">
@@ -95,7 +71,6 @@ export function UserInfoScreen({ user, onComplete }: UserInfoScreenProps) {
             </h1>
             
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <span className="text-lg">{getProviderIcon(user.loginProvider)}</span>
               <span className="text-sm text-muted-foreground">
                 {getProviderName(user.loginProvider)} 로그인 완료
               </span>
