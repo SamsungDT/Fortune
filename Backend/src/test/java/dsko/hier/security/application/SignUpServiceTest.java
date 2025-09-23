@@ -6,8 +6,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.security.domain.BirthInfo;
+import dsko.hier.security.domain.BirthTime;
 import dsko.hier.security.domain.EmailPasswordAccount;
 import dsko.hier.security.domain.EmailPasswordAccountRepository;
+import dsko.hier.security.domain.Sex;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import dsko.hier.security.domain.UserRole;
@@ -40,12 +43,22 @@ class SignUpServiceTest {
     @DisplayName("회원가입 성공 시, UUID 반환 및 저장 메서드가 호출된다")
     void signUp_success() {
         // Given
-        EmailSignUpDto request = new EmailSignUpDto("test@example.com", "nickname", "password");
+        EmailSignUpDto request = new EmailSignUpDto("test@example.com", "nickname", "password", Sex.MALE, 2001, 8, 6,
+                BirthTime.Sa);
+
+        BirthInfo birthInfo = BirthInfo.builder()
+                .birthYear(request.birthYear())
+                .birthMonth(request.birthMonth())
+                .birthDay(request.birthDay())
+                .birthTime(request.birthTime())
+                .build();
 
         // Mock 객체 및 예상 결과 설정
         User mockUser = User.builder()
                 .email(request.email())
-                .nickname(request.nickname())
+                .nickname(request.name())
+                .sex(request.sex())
+                .birthInfo(birthInfo)
                 .role(UserRole.USER)
                 .build();
 

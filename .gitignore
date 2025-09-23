@@ -17,7 +17,7 @@
 /Backend/target/
 /Backend/bin/
 /Backend/out/
-/Backend/fortune-user/src/main/resources/application-secret.yml
+Backend/src/main/resources/applicatio-secret.yml
 
 ## Node.js
 /Backend/node_modules/
