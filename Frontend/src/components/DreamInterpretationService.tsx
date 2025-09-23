@@ -194,7 +194,7 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
             </AlertDescription>
           </Alert>
 
-          <AdBanner type="card" className="mt-4" />
+          {/* <AdBanner type="card" className="mt-4" /> */}
 
           <Button 
             onClick={() => setStep('input')} 
@@ -279,7 +279,7 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
               </div>
 
               {/* 꿈을 꾼 시기 */}
-              <div className="space-y-3">
+              {/* <div className="space-y-3">
                 <Label className="text-ink-black dark:text-ink-gray flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
                   꿈을 꾼 시기
@@ -296,7 +296,7 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
                     <SelectItem value="lucid">💭 자각몽 (꿈인 줄 알았음)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
           </Card>
 

@@ -8,6 +8,7 @@ import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { ChevronLeft } from "lucide-react";
+import { User, Calendar, Clock, Sparkles, AlertCircle, Star } from 'lucide-react';
 
 interface AppStats {
   totalUsers: number;
@@ -30,6 +31,7 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
   const [isUnknownTime, setIsUnknownTime] = useState(false);
+    const [gender, setGender] = useState('');
 
   const handleSocialSignup = (provider: string) => {
     // 실제 앱에서는 각 소셜 로그인 SDK를 사용
@@ -50,7 +52,7 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
     const confirmPassword = formData.get('confirmPassword') as string;
     
     // 기본 유효성 검사
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !birthDate) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -126,11 +128,11 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
           </p>
         </div>
 
-        {!showEmailForm ? (
+        {showEmailForm ? (
           // 소셜 회원가입 및 이메일 회원가입 선택
           <>
             <div className="space-y-3 mb-6">
-              <Button 
+              {/* <Button 
                 onClick={() => handleSocialSignup('kakao')}
                 className="w-full h-11 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl border border-yellow-500/30 shadow-md hover:shadow-lg transition-all duration-300 font-medium text-sm"
               >
@@ -138,9 +140,9 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
                   <span>📱</span>
                   <span>카카오로 시작하기</span>
                 </span>
-              </Button>
+              </Button> */}
               
-              <Button 
+              {/* <Button 
                 onClick={() => handleSocialSignup('naver')}
                 className="w-full h-11 bg-green-500 hover:bg-green-600 text-white rounded-xl border border-green-600/30 shadow-md hover:shadow-lg transition-all duration-300 font-medium text-sm"
               >
@@ -158,16 +160,16 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
                   <span>🔍</span>
                   <span>구글로 시작하기</span>
                 </span>
-              </Button>
+              </Button> */}
             </div>
 
             {/* 구분선 */}
-            <div className="relative my-6">
+            {/* <div className="relative my-6">
               <Separator className="bg-border" />
               <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-card px-4">
                 <span className="text-muted-foreground text-sm">또는</span>
               </div>
-            </div>
+            </div> */}
 
             {/* 이메일 회원가입 버튼 */}
             <Button 
@@ -176,7 +178,8 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
             >
               <span className="flex items-center justify-center space-x-2">
                 <span>✉️</span>
-                <span>이메일로 회원가입</span>
+                <span>회원가입</span>
+                <span>✉️</span>
               </span>
             </Button>
           </>
@@ -184,16 +187,16 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
           // 이메일 회원가입 폼
           <>
             {/* 뒤로가기 버튼 */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <Button
-                onClick={() => setShowEmailForm(false)}
+                onClick={() => setShowEmailForm(true)}
                 variant="ghost"
                 className="flex items-center space-x-2 text-muted-foreground hover:text-ink-black dark:hover:text-ink-gray"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>다른 방법으로 회원가입</span>
               </Button>
-            </div>
+            </div> */}
 
             <form onSubmit={handleEmailSignup} className="space-y-4">
               <div className="space-y-2">
@@ -358,6 +361,41 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
                   </div>
                 )}
               </div>
+                 {/* 성별 */}
+              <div className="space-y-3">
+                <Label className="text-ink-black dark:text-ink-gray flex items-center">
+                  <User className="w-4 h-4 mr-2" />
+                  성별
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    type="button"
+                    variant={gender === 'male' ? 'default' : 'outline'}
+                    onClick={() => setGender('male')}
+                    className={`h-12 rounded-2xl font-medium transition-all duration-300 ${
+                      gender === 'male' 
+                        ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold' 
+                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                    }`}
+                  >
+                    🙋‍♂️ 남성
+                  </Button>
+                  <Button 
+                    type="button"
+                    variant={gender === 'female' ? 'default' : 'outline'}
+                    onClick={() => setGender('female')}
+                    className={`h-12 rounded-2xl font-medium transition-all duration-300 ${
+                      gender === 'female' 
+                        ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold' 
+                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                    }`}
+                  >
+                    🙋‍♀️ 여성
+                  </Button>
+                </div>
+              </div>
+
+              
               
               {/* 구분선 */}
               <div className="relative my-5">
@@ -397,12 +435,12 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
         )}
 
         {/* 무료 체험 안내 */}
-        <div className="mt-6 text-center">
+        {/* <div className="mt-6 text-center">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-hanbok-gold/10 border border-hanbok-gold/30 rounded-full">
             <span className="text-hanbok-gold-dark">🎁</span>
             <span className="text-hanbok-gold-dark text-xs font-medium">가입하면 매일 무료 체험</span>
           </div>
-        </div>
+        </div> */}
 
         {/* 앱 이용 통계 */}
         <div className="mt-4 space-y-3">

@@ -203,7 +203,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
                 className="group overflow-hidden bg-white dark:bg-card border border-border hover:border-hanbok-gold/60 transition-all duration-500 cursor-pointer rounded-2xl ink-shadow hover:shadow-xl hover:scale-[1.02] aspect-square"
                 onClick={() => onServiceSelect(service.id)}
               >
-                <div className="relative h-2/3">
+                <div className="relative h-1/3">
                   <ImageWithFallback 
                     src={service.image}
                     alt={service.title}
@@ -244,15 +244,15 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
                     </p>
                   </div>
                   
-                  <div className="flex justify-between items-center mt-3 pt-2 border-t border-border/30">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  <div className="flex justify-end items-center mt-3 pt-2 border-t border-border/30">
+                    {/* <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                       isFreeTodayAvailable 
                         ? 'bg-hanbok-gold/20 text-hanbok-gold-dark' 
                         : 'bg-muted text-muted-foreground'
                     }`}>
                       <span className="mr-1 text-xs">{isFreeTodayAvailable ? '✨' : '🪙'}</span>
                       <span className="text-xs">{isFreeTodayAvailable ? '무료' : '유료'}</span>
-                    </span>
+                    </span> */}
                     
                     <Button 
                       size="sm" 
@@ -302,7 +302,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
       </div>
 
       {/* 공지사항 섹션 */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">
             📢 공지사항
@@ -348,7 +348,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
             </Card>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* 하단 광고 카드 */}
 {/*       {showBottomAd && (
