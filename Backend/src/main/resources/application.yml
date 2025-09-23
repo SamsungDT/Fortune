@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: HIER
+  profiles:
+    include: secret
