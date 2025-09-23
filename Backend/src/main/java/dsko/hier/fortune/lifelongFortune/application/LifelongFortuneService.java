@@ -1,13 +1,20 @@
 package dsko.hier.fortune.lifelongFortune.application;
 
 import dsko.hier.fortune.lifelongFortune.domain.LifeLongFortune;
+import dsko.hier.fortune.lifelongFortune.domain.LifeLongFortuneRepository;
 import dsko.hier.fortune.lifelongFortune.dto.resposne.AILifelongFortuneResponse;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Career;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.GoodLuck;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Health;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.LoveAndMarriage;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Personality;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.TurningPoints;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Wealth;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
-import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +32,9 @@ public class LifelongFortuneService {
 
     private final ChatModel chatmodel;
     private final UserRepository userRepository;
+    private final LifeLongFortuneRepository lifeLongFortuneRepository;
 
-    public AILifelongFortuneResponse getLieLongFortuneFromAI(String userEmail) {
+    public LifelongFortuneResponse getLieLongFortuneFromAI(String userEmail) {
         // 1. 사용자 정보 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new UserException(CustomExcpMsgs.USER_NOT_FOUND.getMessage())
@@ -53,12 +61,70 @@ public class LifelongFortuneService {
                 .entity(AILifelongFortuneResponse.class);
 
         assert entity != null;
-        LifeLongFortune analyzeResult = new LifeLongFortune(user, entity);
+        LifeLongFortune savedResult = lifeLongFortuneRepository.save(new LifeLongFortune(user, entity));
 
-        //우선 결과 출력
-        LifelongFortunePrinter.printAllFortuneData(analyzeResult);
+        //5. Dto로 변환 후 반환
+        return covertToDto(savedResult);
+    }
 
-        return null;
+    private LifelongFortuneResponse covertToDto(LifeLongFortune fortune) {
+
+        Personality personalityResponseDto = Personality.builder()
+                .strength(fortune.getPersonality().getStrength())
+                .talent(fortune.getPersonality().getTalent())
+                .responsibility(fortune.getPersonality().getResponsibility())
+                .empathy(fortune.getPersonality().getEmpathy())
+                .build();
+        Wealth wealthResponseDto = Wealth.builder()
+                .twenties(fortune.getWealth().getTwenties())
+                .thirties(fortune.getWealth().getThirties())
+                .forties(fortune.getWealth().getForties())
+                .fiftiesAndBeyond(fortune.getWealth().getFiftiesAndBeyond())
+                .build();
+
+        LoveAndMarriage loveAndMarriageResponseDto = LoveAndMarriage.builder()
+                .firstLove(fortune.getLoveAndMarriage().getFirstLove())
+                .marriageAge(fortune.getLoveAndMarriage().getMarriageAge())
+                .spouseMeeting(fortune.getLoveAndMarriage().getSpouseMeeting())
+                .marriedLife(fortune.getLoveAndMarriage().getMarriedLife())
+                .build();
+
+        Career careerResponseDto = Career.builder()
+                .successfulFields(fortune.getCareer().getSuccessfulFields())
+                .careerChangeAge(fortune.getCareer().getCareerChangeAge())
+                .leadershipStyle(fortune.getCareer().getLeadershipStyle())
+                .build();
+
+        Health buildResponseDto = Health.builder()
+                .generalHealth(fortune.getHealth().getGeneralHealth())
+                .weakPoint(fortune.getHealth().getWeakPoint())
+                .checkupReminder(fortune.getHealth().getCheckupReminder())
+                .recommendedExercise(fortune.getHealth().getRecommendedExercise())
+                .build();
+
+        TurningPoints turningPointResponseDto = TurningPoints.builder()
+                .first(fortune.getTurningPoints().getFirst())
+                .second(fortune.getTurningPoints().getSecond())
+                .third(fortune.getTurningPoints().getThird())
+                .build();
+
+        GoodLuck goodLuckResponseDto = GoodLuck.builder()
+                .luckyColors(fortune.getGoodLuck().getLuckyColors())
+                .luckyNumbers(fortune.getGoodLuck().getLuckyNumbers())
+                .luckyDirection(fortune.getGoodLuck().getLuckyDirection())
+                .goodDays(fortune.getGoodLuck().getGoodDays())
+                .avoidances(fortune.getGoodLuck().getAvoidances())
+                .build();
+
+        return LifelongFortuneResponse.builder()
+                .personality(personalityResponseDto)
+                .wealth(wealthResponseDto)
+                .loveAndMarriage(loveAndMarriageResponseDto)
+                .career(careerResponseDto)
+                .health(buildResponseDto)
+                .turningPoints(turningPointResponseDto)
+                .goodLuck(goodLuckResponseDto)
+                .build();
     }
 
     // 프롬프트 템플릿을 문자열로 반환하는 메서드
@@ -99,56 +165,5 @@ public class LifelongFortuneService {
                 
                 **언어:** 한국어
                 """;
-    }
-
-    public class LifelongFortunePrinter {
-
-        public static void printAllFortuneData(LifeLongFortune fortune) {
-            log.info("--- 평생 운세 정보 출력 시작 ---");
-            try {
-                printObjectDetails(fortune, 0);
-            } catch (IllegalAccessException e) {
-                log.error("Reflection을 통해 필드에 접근하는 중 오류가 발생했습니다.", e);
-            }
-            log.info("--- 평생 운세 정보 출력 종료 ---");
-        }
-
-        private static void printObjectDetails(Object object, int indentLevel) throws IllegalAccessException {
-            if (object == null) {
-                return;
-            }
-
-            String indent = " ".repeat(indentLevel * 4);
-            Class<?> clazz = object.getClass();
-
-            for (Field field : clazz.getDeclaredFields()) {
-                field.setAccessible(true); // private 필드에 접근 허용
-                Object value = field.get(object);
-
-                if (value instanceof User) {
-                    // User 엔티티의 순환 참조 방지를 위해 특정 필드만 출력
-                    User user = (User) value;
-                    log.info("{}User: email={}, name={}", indent, user.getEmail(), user.getName());
-                } else if (isPrimitiveOrWrapper(value)) {
-                    // 기본 타입 또는 String
-                    log.info("{}{}: {}", indent, field.getName(), value);
-                } else if (value instanceof Collection) {
-                    // 컬렉션 타입 처리
-                    log.info("{}{}:", indent, field.getName());
-                    for (Object item : (Collection<?>) value) {
-                        log.info("{}  - {}", indent, item);
-                    }
-                } else if (value != null) {
-                    // 중첩된 객체 (Embedded) 처리
-                    log.info("{}{}:", indent, field.getName());
-                    printObjectDetails(value, indentLevel + 1);
-                }
-            }
-        }
-
-        private static boolean isPrimitiveOrWrapper(Object value) {
-            return value == null || value.getClass().isPrimitive() || value instanceof Number || value instanceof String
-                    || value instanceof Boolean;
-        }
     }
 }

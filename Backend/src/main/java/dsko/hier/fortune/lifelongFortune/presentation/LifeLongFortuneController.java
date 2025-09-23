@@ -1,7 +1,7 @@
 package dsko.hier.fortune.lifelongFortune.presentation;
 
 import dsko.hier.fortune.lifelongFortune.application.LifelongFortuneService;
-import dsko.hier.fortune.lifelongFortune.dto.resposne.AILifelongFortuneResponse;
+import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse;
 import dsko.hier.global.response.APIResponse;
 import dsko.hier.security.application.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ public class LifeLongFortuneController {
     private final LifelongFortuneService service;
 
     @GetMapping
-    public APIResponse<AILifelongFortuneResponse> getLifelongFortune(
+    public APIResponse<LifelongFortuneResponse> getLifelongFortune(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        service.getLieLongFortuneFromAI(userDetails.getUsername());
-        return APIResponse.success();
+        LifelongFortuneResponse lieLongFortuneFromAI = service.getLieLongFortuneFromAI(userDetails.getUsername());
+        return APIResponse.success(lieLongFortuneFromAI);
     }
 
 
