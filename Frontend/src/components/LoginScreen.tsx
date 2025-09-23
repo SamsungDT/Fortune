@@ -23,7 +23,7 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProps) {
-  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(true);
   const handleSocialLogin = (provider: string) => {
     // 실제 앱에서는 각 소셜 로그인 SDK를 사용
     const mockUserData = {
@@ -181,7 +181,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                 </span>
               </Button>
               {/* 뒤로가기 버튼 */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <Button
                 onClick={() => setShowEmailForm(false)}
                 variant="ghost"
@@ -190,7 +190,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                 <ChevronLeft className="w-4 h-4" />
                 <span>뒤로가기</span>
               </Button>
-            </div>
+            </div> */}
             </form>
           </>
         )}
@@ -242,7 +242,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         </div>
 
         {/* 회원가입 링크 */}
-        {!showEmailForm && (
+        {showEmailForm && (
           <div className="mt-4 text-center">
             <p className="text-xs text-muted-foreground">
               계정이 없으신가요?{' '}
