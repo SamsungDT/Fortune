@@ -89,7 +89,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         {!showEmailForm ? (
           // 소셜 로그인 및 이메일 로그인 선택
           <>
-            <div className="space-y-4 mb-8">
+            {/* <div className="space-y-4 mb-8">
               <Button 
                 onClick={() => handleSocialLogin('kakao')}
                 className="w-full h-12 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl border border-yellow-500/30 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
@@ -119,15 +119,15 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                   <span>구글 로그인</span>
                 </span>
               </Button>
-            </div>
+            </div> */}
 
             {/* 구분선 */}
-            <div className="relative my-8">
+            {/* <div className="relative my-8">
               <Separator className="bg-border" />
               <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-card px-4">
                 <span className="text-muted-foreground text-sm">또는</span>
               </div>
-            </div>
+            </div> */}
 
             {/* 이메일 로그인 버튼 */}
             <Button 
@@ -136,7 +136,8 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
             >
               <span className="flex items-center justify-center space-x-2">
                 <span>✉️</span>
-                <span>이메일로 로그인</span>
+                <span>로그인</span>
+                <span>✉️</span>
               </span>
             </Button>
           </>
@@ -194,12 +195,12 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         )}
 
         {/* 무료 체험 안내 */}
-        <div className="mt-8 text-center">
+        {/* <div className="mt-8 text-center">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-hanbok-gold/10 border border-hanbok-gold/30 rounded-full">
             <span className="text-hanbok-gold-dark">✨</span>
             <span className="text-hanbok-gold-dark text-sm font-medium">매일 한 번 무료 체험</span>
           </div>
-        </div>
+        </div> */}
 
         {/* 앱 이용 통계 */}
         <div className="mt-6 space-y-3">
