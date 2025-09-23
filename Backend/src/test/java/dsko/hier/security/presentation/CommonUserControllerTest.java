@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dsko.hier.security.application.LoginService;
 import dsko.hier.security.application.RedisService;
+import dsko.hier.security.domain.BirthTime;
+import dsko.hier.security.domain.Sex;
 import dsko.hier.security.dto.request.EmailAndPassword;
 import dsko.hier.security.dto.request.EmailSignUpDto;
 import dsko.hier.security.dto.response.TokenResponse;
@@ -50,7 +52,8 @@ class CommonUserControllerTest {
     void setup() throws Exception {
         //사용자 생성 (회원가입)
         String testNickname = "tester";
-        EmailSignUpDto emailSignUpDto = new EmailSignUpDto(TEST_EMAIL, TEST_PASSWORD, testNickname);
+        EmailSignUpDto emailSignUpDto = new EmailSignUpDto(TEST_EMAIL, TEST_PASSWORD, testNickname, Sex.FEMALE, 2001, 8,
+                6, BirthTime.Sa);
         mockMvc.perform(post("/api/security/email/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(emailSignUpDto)))

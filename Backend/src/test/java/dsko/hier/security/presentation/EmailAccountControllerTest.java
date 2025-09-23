@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dsko.hier.security.domain.BirthTime;
+import dsko.hier.security.domain.Sex;
 import dsko.hier.security.dto.request.EmailAndPassword;
 import dsko.hier.security.dto.request.EmailCheckDto;
 import dsko.hier.security.dto.request.EmailSignUpDto;
@@ -44,7 +46,8 @@ class EmailAccountControllerTest {
     @DisplayName("[회원가입:성공] 이메일로 회원가입 요청 시 성공적으로 처리한다")
     void signUpViaEmailAndPassword_success() throws Exception {
         // Given
-        EmailSignUpDto requestDto = new EmailSignUpDto("test@example.com", "testuser", "password123");
+        EmailSignUpDto requestDto = new EmailSignUpDto("test@example.com", "testuser", "password123", Sex.MALE, 2001, 8,
+                6, BirthTime.Sa);
 
         // When & Then
         mockMvc.perform(post(BASE_URL + "/signup")
@@ -74,7 +77,8 @@ class EmailAccountControllerTest {
         // Given
         String email = "notUnique@test.com";
 
-        EmailSignUpDto requestDto = new EmailSignUpDto(email, "testuser", "password123");
+        EmailSignUpDto requestDto = new EmailSignUpDto(email, "password123", "testuser", Sex.MALE, 2001, 8,
+                6, BirthTime.Sa);
         mockMvc.perform(post(BASE_URL + "/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)));
@@ -96,11 +100,12 @@ class EmailAccountControllerTest {
         String email = "test@test.com";
         String password = "password123";
 
-        EmailSignUpDto signUpDto = new EmailSignUpDto(email, password, "testuser");
+        EmailSignUpDto requestDto = new EmailSignUpDto(email, password, "tester", Sex.MALE, 2001, 8,
+                6, BirthTime.Sa);
 
         mockMvc.perform(post(BASE_URL + "/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signUpDto)))
+                        .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         // When & Then

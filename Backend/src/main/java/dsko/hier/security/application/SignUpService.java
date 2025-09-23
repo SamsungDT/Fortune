@@ -1,5 +1,6 @@
 package dsko.hier.security.application;
 
+import dsko.hier.security.domain.BirthInfo;
 import dsko.hier.security.domain.EmailPasswordAccount;
 import dsko.hier.security.domain.EmailPasswordAccountRepository;
 import dsko.hier.security.domain.User;
@@ -24,14 +25,26 @@ public class SignUpService {
     private final EmailPasswordAccountRepository emailPasswordAccountRepository;
 
     public UUID signUp(EmailSignUpDto req) {
+        //0. BirthInfo 생성
+        BirthInfo birthInfo = BirthInfo.builder()
+                .birthDay(req.birthDay())
+                .birthMonth(req.birthMonth())
+                .birthYear(req.birthYear())
+                .birthTime(req.birthTime())
+                .build();
+
         //1. User(간단한 정보) 생성
         User savedSimpleUser = userRepository.save(
                 User.builder()
                         .email(req.email())
-                        .nickname(req.nickname())
+                        .nickname(req.name())
+                        .sex(req.sex())
+                        .birthInfo(birthInfo)
                         .role(UserRole.USER)
                         .build()
         );
+
+        log.info("User's birth info is null?? {}", savedSimpleUser.getBirthInfo() == null);
 
         //2. EmailPasswordAccount 생성
         return emailPasswordAccountRepository.save(
