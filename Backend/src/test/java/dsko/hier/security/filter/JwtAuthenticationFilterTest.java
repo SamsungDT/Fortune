@@ -50,15 +50,17 @@ class JwtAuthenticationFilterTest {
     @Mock
     private HttpServletResponse response;
 
+    @Mock // ⬅️ PrintWriter 객체를 모킹
+    private PrintWriter writer;
+
     @Mock
     private FilterChain filterChain;
 
-    @Mock
-    private PrintWriter writer;
-
     @BeforeEach
-    void setup() {
+    void setup() throws IOException {
         SecurityContextHolder.getContext().setAuthentication(null);
+
+        // Mock Response의 getWriter()가 모킹된 PrintWriter를 반환하도록 설정
     }
 
     @Test
@@ -106,17 +108,18 @@ class JwtAuthenticationFilterTest {
         // Then
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(response).setContentType("application/json;charset=UTF-8");
-        verify(writer, times(1)).print(anyString()); // ⬅️ writer.print() 호출을 검증
+        verify(writer, times(1)).print(anyString());
         verify(filterChain, never()).doFilter(request, response);
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
     @Test
-    @DisplayName("유효하지 않은 토큰일 경우 다음 필터로 넘긴다")
-    void testInvalidTokenBypass() throws ServletException, IOException {
+    @DisplayName("유효하지 않은 토큰일 경우 접근을 거부한다")
+    void testInvalidTokenRejection() throws ServletException, IOException {
         // Given
         String invalidJwt = "Bearer invalid.jwt.token";
 
+        when(response.getWriter()).thenReturn(writer);
         when(request.getHeader("Authorization")).thenReturn(invalidJwt);
         when(tokenProvider.validateToken(anyString())).thenReturn(false);
 
@@ -124,7 +127,10 @@ class JwtAuthenticationFilterTest {
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         // Then
-        verify(filterChain, times(1)).doFilter(request, response);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setContentType("application/json;charset=UTF-8");
+        verify(writer, times(1)).print(anyString());
+        verify(filterChain, never()).doFilter(request, response);
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 }
