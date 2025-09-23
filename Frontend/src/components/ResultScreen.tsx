@@ -79,14 +79,14 @@ export function ResultScreen({ result, onBack, onShare }: ResultScreenProps) {
 {/*         <AdBanner type="banner" size="medium" /> */}
 
         {/* 상태 뱃지 */}
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <Badge className={`${result.paid ? 'bg-dancheong-red/20 text-dancheong-red border-dancheong-red/40' : 'bg-dancheong-green/20 text-dancheong-green border-dancheong-green/40'} border rounded-full px-3 py-1`}>
             {result.paid ? '💰 결제 완료' : '🎁 무료 이용'}
           </Badge>
           <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40 rounded-full px-3 py-1">
             {getTypeIcon(result.type)} {getTypeName(result.type)}
           </Badge>
-        </div>
+        </div> */}
 
         {/* 결과 카드 */}
         <Card className="hanji-texture border border-hanbok-gold/30 p-6 rounded-3xl ink-shadow">
