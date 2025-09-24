@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
         description = "이미지 관련 API"
 )
 @RestController
-@RequestMapping("/api/face/picture")
+@RequestMapping("/api/fortune/face/picture")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -28,13 +28,13 @@ public class ImageController {
     @PostMapping
     public APIResponse<Map<String, String>> getPresignedUrl(
             @Validated @RequestBody ImageRequest request) {
-        return APIResponse.success(imageService.getPresignedUrl("image", request));
+        return APIResponse.success(imageService.getPresignedUrlForSimple(request));
     }
 
     @PostMapping("/multi")
     public APIResponse<Map<String, String>> getPresignedUrl(
             @Validated @RequestBody MultiImageRequest request) {
-        return APIResponse.success(imageService.getPresignedUrl("images", request));
+        return APIResponse.success(imageService.getPresignedUrlForMultiple(request));
     }
 
     @PostMapping("/delete")

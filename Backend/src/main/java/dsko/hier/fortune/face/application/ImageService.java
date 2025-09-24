@@ -27,25 +27,26 @@ public class ImageService {
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private static final long URL_EXPIRATION_TIME_MILLIS = 1000 * 60 * 2; // 2분
+    private static final long URL_EXPIRATION_TIME_MILLIS = 1000 * 60 * 5; // 5분
 
-    public Map<String, String> getPresignedUrl(String prefix, ImageRequest request) {
+    public Map<String, String> getPresignedUrlForSimple(ImageRequest request) {
+
         String originalFileName = request.fileName();
         String fileExtension = getFileExtension(originalFileName);
         String contentType = getContentType(fileExtension);
         log.info("contentType = {}", contentType);
 
-        String fileName = prefix.isEmpty() ? createUniqueFileName(fileExtension) : createPath(prefix, fileExtension);
-
         // Content-Type을 포함하여 PUT 요청 URL 생성
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedPutUrlRequest(bucketName,
-                fileName, contentType);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedPutUrlRequest(
+                bucketName,
+                createPath(fileExtension)
+        );
 
         URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
         return Map.of("url", url.toString());
     }
 
-    public Map<String, String> getPresignedUrl(String prefix, MultiImageRequest request) {
+    public Map<String, String> getPresignedUrlForMultiple(MultiImageRequest request) {
         List<String> originalFileNames = request.fileNames();
 
         if (originalFileNames.isEmpty()) {
@@ -58,11 +59,10 @@ public class ImageService {
         for (String originalFileName : originalFileNames) {
             String fileExtension = getFileExtension(originalFileName);
             String contentType = getContentType(fileExtension);
-            String path = createPath(prefix, fileExtension);
+            String path = createPath(fileExtension);
 
             // Content-Type을 포함하여 PUT 요청 URL 생성
-            GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedPutUrlRequest(bucketName,
-                    path, contentType);
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedPutUrlRequest(bucketName, path);
             URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
             res.put("url" + index, url.toString());
             index++;
@@ -84,17 +84,12 @@ public class ImageService {
      *
      * @param bucketName  버킷 이름
      * @param fileName    객체 키 (파일 경로)
-     * @param contentType 파일의 Content-Type
      * @return GeneratePresignedUrlRequest 객체
      */
-    private GeneratePresignedUrlRequest getGeneratePresignedPutUrlRequest(String bucketName, String fileName,
-                                                                          String contentType) {
+    private GeneratePresignedUrlRequest getGeneratePresignedPutUrlRequest(String bucketName, String fileName) {
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, fileName)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(getPresignedUrlExpiration());
-
-        // Content-Type을 명시적으로 설정
-        request.setContentType(contentType);
 
         return request;
     }
@@ -121,23 +116,11 @@ public class ImageService {
     /**
      * 고유한 파일명과 경로를 생성합니다.
      *
-     * @param prefix        파일이 저장될 경로 접두사
      * @param fileExtension 파일 확장자
      * @return "접두사/고유파일명.확장자" 형식의 경로
      */
-    private String createPath(String prefix, String fileExtension) {
-        String uniqueFileName = UUID.randomUUID().toString() + "." + fileExtension;
-        return String.format("%s/%s", prefix, uniqueFileName);
-    }
-
-    /**
-     * 고유한 파일명을 생성합니다.
-     *
-     * @param fileExtension 파일 확장자
-     * @return "고유파일명.확장자" 형식의 파일명
-     */
-    private String createUniqueFileName(String fileExtension) {
-        return UUID.randomUUID().toString() + "." + fileExtension;
+    private String createPath(String fileExtension) {
+        return UUID.randomUUID() + "." + fileExtension;
     }
 
     /**
@@ -179,7 +162,11 @@ public class ImageService {
 
     // 유효한 이미지 확장자인지 확인
     private boolean isValidImageExtension(String extension) {
-        return extension != null && (extension.equals("png") || extension.equals("jpeg") || extension.equals("jpg")
-                || extension.equals("gif") || extension.equals("webp"));
+        return extension != null
+                && (
+                        extension.equals("png") ||
+                                extension.equals("jpeg") ||
+                                extension.equals("jpg")
+        );
     }
 }
