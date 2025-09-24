@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class TurningPoints {
-    private String first;
-    private String second;
-    private String third;
+    private String ein;
+    private String zwei;
+    private String drei;
 }

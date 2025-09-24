@@ -1,6 +1,5 @@
 package dsko.hier.fortune.lifelongFortune.dto.resposne;
 
-import dsko.hier.fortune.lifelongFortune.domain.LifeLongFortune;
 import java.util.UUID;
 import lombok.Builder;
 
@@ -18,22 +17,6 @@ public record LifelongFortuneResponse(
         TurningPoints turningPoints,
         GoodLuck goodLuck
 ) {
-    public static LifelongFortuneResponse fromEntity(LifeLongFortune fortune) {
-        if (fortune == null) {
-            return null;
-        }
-        return LifelongFortuneResponse.builder()
-                .id(fortune.getId())
-                .personality(fortune.getPersonality())
-                .wealth(fortune.getWealth())
-                .loveAndMarriage(fortune.getLoveAndMarriage())
-                .career(fortune.getCareer())
-                .health(fortune.getHealth())
-                .turningPoints(fortune.getTurningPoints())
-                .goodLuck(fortune.getGoodLuck())
-                .build();
-    }
-
     @Builder
     public record Personality(
             String strength,

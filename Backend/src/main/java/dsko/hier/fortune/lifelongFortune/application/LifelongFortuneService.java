@@ -103,9 +103,9 @@ public class LifelongFortuneService {
                 .build();
 
         TurningPoints turningPointResponseDto = TurningPoints.builder()
-                .first(fortune.getTurningPoints().getFirst())
-                .second(fortune.getTurningPoints().getSecond())
-                .third(fortune.getTurningPoints().getThird())
+                .first(fortune.getTurningPoints().getEin())
+                .second(fortune.getTurningPoints().getZwei())
+                .third(fortune.getTurningPoints().getDrei())
                 .build();
 
         GoodLuck goodLuckResponseDto = GoodLuck.builder()
