@@ -15,3 +15,7 @@
 
   docker compose up -d
   ```
+
+### 주의
+- `FortuneKI\Backend\src\main\resources\application-secret.yml` 을 생성하여야 합니다.
+- 해당 내용은 Notion 페이지를 참고하세요
