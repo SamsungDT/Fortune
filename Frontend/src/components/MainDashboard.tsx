@@ -203,7 +203,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
                 className="group overflow-hidden bg-white dark:bg-card border border-border hover:border-hanbok-gold/60 transition-all duration-500 cursor-pointer rounded-2xl ink-shadow hover:shadow-xl hover:scale-[1.02] aspect-square"
                 onClick={() => onServiceSelect(service.id)}
               >
-                <div className="relative h-2/3">
+                <div className="relative h-1/3">
                   <ImageWithFallback 
                     src={service.image}
                     alt={service.title}
