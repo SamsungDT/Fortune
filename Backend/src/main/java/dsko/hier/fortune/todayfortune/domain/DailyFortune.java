@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class DailyFortune {
+    //TODO : BASE_TIME_ENTITY 상속으로 변경하기.
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
