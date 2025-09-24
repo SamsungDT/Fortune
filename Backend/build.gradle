@@ -85,10 +85,10 @@ dependencies {
 
     //Amazon Web Service
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
-    implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
+    implementation "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
 
     //Swagger
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0"
+    implementation "implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'"
 }
 tasks.named('test') {
     useJUnitPlatform()
