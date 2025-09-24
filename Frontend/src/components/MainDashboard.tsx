@@ -302,7 +302,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
       </div>
 
       {/* 공지사항 섹션 */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">
             📢 공지사항
@@ -348,7 +348,7 @@ export function MainDashboard({ user, appStats, onServiceSelect, onViewMyResults
             </Card>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* 하단 광고 카드 */}
 {/*       {showBottomAd && (

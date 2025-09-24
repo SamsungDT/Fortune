@@ -477,7 +477,7 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
         </div>
 
         {/* 로그인 링크 */}
-        {!showEmailForm && (
+        {showEmailForm && (
           <div className="mt-4 text-center">
             <p className="text-xs text-muted-foreground">
               이미 계정이 있으신가요?{' '}
