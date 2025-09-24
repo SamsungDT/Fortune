@@ -158,7 +158,7 @@ export function PhysiognomyService({ onResult, onBack }: PhysiognomyServiceProps
             </AlertDescription>
           </Alert>
 
-          <AdBanner type="card" className="mt-4" />
+          {/* <AdBanner type="card" className="mt-4" /> */}
 
           <Button 
             onClick={() => setStep('input')} 
@@ -224,7 +224,7 @@ export function PhysiognomyService({ onResult, onBack }: PhysiognomyServiceProps
               </div>
 
               {/* 생년월일 */}
-              <div className="space-y-3">
+              {/* <div className="space-y-3">
                 <Label className="text-ink-black dark:text-ink-gray flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
                   생년월일
@@ -235,10 +235,10 @@ export function PhysiognomyService({ onResult, onBack }: PhysiognomyServiceProps
                   onChange={(e) => setBirthDate(e.target.value)}
                   className="h-12 rounded-2xl border-border focus:border-hanbok-gold/50 focus:ring-hanbok-gold/20"
                 />
-              </div>
+              </div> */}
 
               {/* 성별 */}
-              <div className="space-y-3">
+              {/* <div className="space-y-3">
                 <Label className="text-ink-black dark:text-ink-gray flex items-center">
                   <User className="w-4 h-4 mr-2" />
                   성별
@@ -269,7 +269,7 @@ export function PhysiognomyService({ onResult, onBack }: PhysiognomyServiceProps
                     🙋‍♀️ 여성
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </Card>
 
