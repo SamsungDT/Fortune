@@ -4,13 +4,16 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.UUID;
 import static lombok.AccessLevel.PROTECTED;
 
+import dsko.hier.fortune.todayfortune.domain.DailyFortune;
 import dsko.hier.global.domain.BaseTimeEntity;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,5 +53,16 @@ public class User extends BaseTimeEntity {
         this.sex = sex;
         this.role = role;
         this.birthInfo = birthInfo;
+    }
+
+    @OneToMany(mappedBy = "user")
+    private Collection<DailyFortune> dailyFortune;
+
+    public Collection<DailyFortune> getDailyFortune() {
+        return dailyFortune;
+    }
+
+    public void setDailyFortune(Collection<DailyFortune> dailyFortune) {
+        this.dailyFortune = dailyFortune;
     }
 }
