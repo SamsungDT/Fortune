@@ -11,11 +11,13 @@ import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Lo
 import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Personality;
 import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.TurningPoints;
 import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.Wealth;
+import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -33,12 +35,26 @@ public class LifelongFortuneService {
     private final ChatModel chatmodel;
     private final UserRepository userRepository;
     private final LifeLongFortuneRepository lifeLongFortuneRepository;
+    private final UserPlanService userPlanService;
 
     public LifelongFortuneResponse getLieLongFortuneFromAI(String userEmail) {
         // 1. 사용자 정보 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new UserException(CustomExcpMsgs.USER_NOT_FOUND.getMessage())
         );
+
+        log.info("사용자 {}의 이전 운세 기록 확인 시도", userEmail);
+        Optional<LifeLongFortune> searchResult = lifeLongFortuneRepository.findByUserEmail(userEmail);
+        if (searchResult.isPresent()) {
+            log.info("사용자 {}의 이전 운세 기록이 존재하여, 기존 기록 반환", userEmail);
+            return covertToDto(searchResult.get());
+        }
+
+        log.info("사용자 {}의 이전 운세 기록이 존재하지 않아, 새로운 운세 기록 생성 시작", userEmail);
+        // 사용자 플랜 확인 및 무료 운세 카운트 감소
+        if (!userPlanService.checkUserHaveRightIfHaveThenReduceCount(user.getEmail())) {
+            throw new UserException(CustomExcpMsgs.FREE_FORTUNE_COUNT_EXCEEDED.getMessage());
+        }
 
         // 2. 프롬프트에 들어갈 파라미터 설정
         Map<String, Object> params = Map.of(

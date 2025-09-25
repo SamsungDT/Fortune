@@ -1,5 +1,6 @@
 package dsko.hier.fortune.todayfortune.application;
 
+import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.fortune.todayfortune.domain.DailyFortune;
 import dsko.hier.fortune.todayfortune.domain.DailyFortuneRepository;
 import dsko.hier.fortune.todayfortune.dto.response.AIDailyFortuneResponse;
@@ -28,6 +29,7 @@ public class DailyFortuneService {
     private final ChatModel chatmodel;
     private final UserRepository userRepository;
     private final DailyFortuneRepository dailyFortuneRepository;
+    private final UserPlanService userPlanService;
 
     /**
      * 오늘의 운세 조회 서비스 1. 캐시에서 오늘의 운세가 있는지 확인 2. 캐시가 없으면 DB에서 오늘의 운세가 있는지 확인 (이미 생성된 운세) 3. DB에도 없으면 AI를 호출하여 새로운 오늘의 운세
@@ -43,6 +45,11 @@ public class DailyFortuneService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new UserException(CustomExcpMsgs.USER_NOT_FOUND.getMessage())
         );
+
+        // 사용자 플랜 확인 및 무료 운세 카운트 감소
+        if (!userPlanService.checkUserHaveRightIfHaveThenReduceCount(user.getEmail())) {
+            throw new UserException(CustomExcpMsgs.FREE_FORTUNE_COUNT_EXCEEDED.getMessage());
+        }
 
         // 2. DB에서 이미 생성된 오늘의 운세가 있는지 확인
         LocalDate today = LocalDate.now();

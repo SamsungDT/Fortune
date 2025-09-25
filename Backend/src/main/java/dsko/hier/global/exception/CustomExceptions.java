@@ -15,4 +15,10 @@ public class CustomExceptions {
             super(message);
         }
     }
+
+    public static class UserPlanException extends RuntimeException {
+        public UserPlanException(String message) {
+            super(message);
+        }
+    }
 }

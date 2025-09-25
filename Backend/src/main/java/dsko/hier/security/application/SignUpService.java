@@ -1,5 +1,6 @@
 package dsko.hier.security.application;
 
+import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.security.domain.BirthInfo;
 import dsko.hier.security.domain.EmailPasswordAccount;
 import dsko.hier.security.domain.EmailPasswordAccountRepository;
@@ -23,6 +24,7 @@ public class SignUpService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final EmailPasswordAccountRepository emailPasswordAccountRepository;
+    private final UserPlanService userPlanService;
 
     public UUID signUp(EmailSignUpDto req) {
         //0. BirthInfo 생성
@@ -47,12 +49,17 @@ public class SignUpService {
         log.info("User's birth info is null?? {}", savedSimpleUser.getBirthInfo() == null);
 
         //2. EmailPasswordAccount 생성
-        return emailPasswordAccountRepository.save(
+        UUID emailPasswordAccountId = emailPasswordAccountRepository.save(
                 EmailPasswordAccount.builder()
                         .user(savedSimpleUser)
                         .passwordHash(encodePassword(req.password()))
                         .build()
         ).getEmail_password_account_id();
+
+        //3. UserPlan 생성 (FREE)
+        userPlanService.createUserPlan(savedSimpleUser);
+        
+        return emailPasswordAccountId;
     }
 
     private String encodePassword(String password) {
