@@ -5,8 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.LoginService;
-import dsko.hier.security.application.RedisService;
 import dsko.hier.security.domain.BirthTime;
 import dsko.hier.security.domain.Sex;
 import dsko.hier.security.dto.request.EmailAndPassword;
@@ -40,7 +40,7 @@ class CommonUserControllerTest {
     private LoginService loginService;
 
     @Autowired
-    private RedisService redisService;
+    private RedisTokenService redisTokenService;
 
     // 테스트용 사용자 정보
     private static final String TEST_EMAIL = "test@example.com";
@@ -76,7 +76,7 @@ class CommonUserControllerTest {
         // 여기서는 로그아웃 엔드포인트를 통해 리프레시 토큰을 삭제하는 것으로 간주합니다.
         try {
             loginService.logout("Bearer " + this.refreshToken);
-            redisService.clearAll(); // Redis 데이터 정리
+            redisTokenService.clearAll(); // Redis 데이터 정리
         } catch (Exception e) {
             // 예외 발생 시 무시
         }

@@ -9,6 +9,7 @@ import dsko.hier.fortune.dreamInterpretation.dto.response.DreamResponse;
 import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
+import dsko.hier.global.redis.RedisHashService;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class DreamInterpreationService {
     private final UserRepository userRepository;
     private final DreamAnalysisRepository dreamAnalysisRepository;
     private final UserPlanService userPlanService;
+    private final RedisHashService redisHashService;
 
     public DreamResponse getDreamResponseFromAI(String useremail, DreamRequestDto req) {
         log.info("꿈 해몽 서비스 시작");
@@ -65,6 +67,9 @@ public class DreamInterpreationService {
                 .call()
                 .entity(AIDreamResponse.class);
 
+        //레디스에 값 올리기.
+        redisHashService.incrementFortuneCount(RedisHashService.DREAM_TYPE);
+        
         log.info("꿈 해몽 분석 ai 요청 완료");
         return convertToDto(
                 dreamAnalysisRepository.save(

@@ -1,6 +1,7 @@
 package dsko.hier.security.application;
 
 import dsko.hier.fortune.membership.application.UserPlanService;
+import dsko.hier.global.redis.RedisUserCountService;
 import dsko.hier.security.domain.BirthInfo;
 import dsko.hier.security.domain.EmailPasswordAccount;
 import dsko.hier.security.domain.EmailPasswordAccountRepository;
@@ -25,6 +26,7 @@ public class SignUpService {
     private final UserRepository userRepository;
     private final EmailPasswordAccountRepository emailPasswordAccountRepository;
     private final UserPlanService userPlanService;
+    private final RedisUserCountService redisUserCountService;
 
     public UUID signUp(EmailSignUpDto req) {
         //0. BirthInfo 생성
@@ -46,8 +48,6 @@ public class SignUpService {
                         .build()
         );
 
-        log.info("User's birth info is null?? {}", savedSimpleUser.getBirthInfo() == null);
-
         //2. EmailPasswordAccount 생성
         UUID emailPasswordAccountId = emailPasswordAccountRepository.save(
                 EmailPasswordAccount.builder()
@@ -58,7 +58,12 @@ public class SignUpService {
 
         //3. UserPlan 생성 (FREE)
         userPlanService.createUserPlan(savedSimpleUser);
-        
+
+        //4. 레디스에 사용자 수 1 증가
+        log.info("레디스에 사용자 수 1 증가 시도");
+        redisUserCountService.increment();
+        log.info("레디스에 사용자 수 1 증가 시도 완료");
+
         return emailPasswordAccountId;
     }
 

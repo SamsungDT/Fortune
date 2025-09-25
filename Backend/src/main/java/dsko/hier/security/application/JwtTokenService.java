@@ -1,5 +1,6 @@
 package dsko.hier.security.application;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.dto.response.TokenResponse;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class JwtTokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
+    private final RedisTokenService redisTokenService;
 
     public TokenResponse issueJwtAuth(String userEmail, String role) {
         String accessToken = jwtTokenProvider.createAccessToken(userEmail, role);
@@ -22,7 +23,7 @@ public class JwtTokenService {
         //LocalDateTime -> long
         long refreshTokenExpMillisecond = java.time.Duration.between(LocalDateTime.now(), refreshTokenExp).toMillis();
         //Redis에 저장
-        redisService.saveRefreshToken(userEmail, refreshToken, refreshTokenExpMillisecond);
+        redisTokenService.saveRefreshToken(userEmail, refreshToken, refreshTokenExpMillisecond);
 
         return TokenResponse.of(accessToken, refreshToken);
     }
@@ -41,7 +42,7 @@ public class JwtTokenService {
             throw new IllegalArgumentException("Expired refresh token");
         }
         // 2. Redis에 저장된 리프레시 토큰과 일치하는지 확인
-        String refreshTokenFromRedis = redisService.getRefreshToken(username);
+        String refreshTokenFromRedis = redisTokenService.getRefreshToken(username);
         if (refreshTokenFromRedis == null || !refreshTokenFromRedis.equals(refreshToken)) {
             throw new IllegalArgumentException("Invalid refresh token");
         }

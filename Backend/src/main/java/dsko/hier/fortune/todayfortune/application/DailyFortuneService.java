@@ -7,6 +7,7 @@ import dsko.hier.fortune.todayfortune.dto.response.AIDailyFortuneResponse;
 import dsko.hier.fortune.todayfortune.dto.response.DailyFortuneResponse;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
+import dsko.hier.global.redis.RedisHashService;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class DailyFortuneService {
     private final UserRepository userRepository;
     private final DailyFortuneRepository dailyFortuneRepository;
     private final UserPlanService userPlanService;
+    private final RedisHashService redisHashService;
 
     /**
      * 오늘의 운세 조회 서비스 1. 캐시에서 오늘의 운세가 있는지 확인 2. 캐시가 없으면 DB에서 오늘의 운세가 있는지 확인 (이미 생성된 운세) 3. DB에도 없으면 AI를 호출하여 새로운 오늘의 운세
@@ -132,6 +134,9 @@ public class DailyFortuneService {
         DailyFortuneResponse.Advice adviceResponseDto = DailyFortuneResponse.Advice.builder()
                 .adviceText(fortune.getFortuneAdvice().getAdviceText())
                 .build();
+
+        //레디스에 값 올리기.
+        redisHashService.incrementFortuneCount(RedisHashService.DAILY_FORTUNE_TYPE);
 
         return DailyFortuneResponse.builder()
                 .id(fortune.getId())

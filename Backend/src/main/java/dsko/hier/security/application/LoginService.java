@@ -1,5 +1,6 @@
 package dsko.hier.security.application;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.dto.request.EmailAndPassword;
 import dsko.hier.security.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class LoginService {
 
     private final JwtTokenProvider tokenProvider;
     private final JwtTokenService jwtTokenService;
-    private final RedisService redisService;
+    private final RedisTokenService redisTokenService;
     private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -41,13 +42,14 @@ public class LoginService {
         // 3. 인증 정보 기반으로 JWT 토큰 생성
         log.info("PRINCIPAL : {}", authenticate.getPrincipal());
         UserDetails principal = (UserDetails) authenticate.getPrincipal();
+
         return jwtTokenService.issueJwtAuth(principal.getUsername(),
                 principal.getAuthorities().iterator().next().getAuthority());
     }
 
     public void logout(String token) {
         String username = tokenProvider.getUsernameFromToken(token.substring(7));
-        redisService.deleteRefreshToken(username);
+        redisTokenService.deleteRefreshToken(username);
         log.info("User {} logged out, refresh token deleted from Redis", username);
     }
 
