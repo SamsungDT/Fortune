@@ -5,6 +5,9 @@ import dsko.hier.fortune.face.domain.FaceRepository;
 import dsko.hier.fortune.face.domain.ImageType;
 import dsko.hier.fortune.face.dto.FaceAnalyzeRequest;
 import dsko.hier.fortune.face.dto.FaceAnalyzeResponse;
+import dsko.hier.fortune.membership.application.UserPlanService;
+import dsko.hier.global.exception.CustomExceptions.UserException;
+import dsko.hier.global.exception.CustomExcpMsgs;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.net.URI;
@@ -30,12 +33,18 @@ public class FaceService {
     private final ChatModel chatmodel;
     private final UserRepository userRepository;
     private final FaceRepository faceRepository;
+    private final UserPlanService userPlanService;
 
     public FaceAnalyzeResponse analyzeFaceWithAI(String userEmail, FaceAnalyzeRequest request) {
         // 1. 사용자 정보 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userEmail)
         );
+
+        // 사용자 플랜 확인 및 무료 운세 카운트 감소
+        if (!userPlanService.checkUserHaveRightIfHaveThenReduceCount(user.getEmail())) {
+            throw new UserException(CustomExcpMsgs.FREE_FORTUNE_COUNT_EXCEEDED.getMessage());
+        }
 
         // 2. 얼굴 분석 로직 구현 (예: AI 모델 호출 등)
         Map<String, Object> params = Map.of(

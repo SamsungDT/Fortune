@@ -6,6 +6,9 @@ import dsko.hier.fortune.dreamInterpretation.dto.DeramKeyword;
 import dsko.hier.fortune.dreamInterpretation.dto.request.DreamRequestDto;
 import dsko.hier.fortune.dreamInterpretation.dto.response.AIDreamResponse;
 import dsko.hier.fortune.dreamInterpretation.dto.response.DreamResponse;
+import dsko.hier.fortune.membership.application.UserPlanService;
+import dsko.hier.global.exception.CustomExceptions.UserException;
+import dsko.hier.global.exception.CustomExcpMsgs;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.util.Map;
@@ -24,6 +27,7 @@ public class DreamInterpreationService {
     private final ChatModel chatmodel;
     private final UserRepository userRepository;
     private final DreamAnalysisRepository dreamAnalysisRepository;
+    private final UserPlanService userPlanService;
 
     public DreamResponse getDreamResponseFromAI(String useremail, DreamRequestDto req) {
         log.info("꿈 해몽 서비스 시작");
@@ -32,6 +36,11 @@ public class DreamInterpreationService {
         User user = userRepository.findByEmail(useremail).orElseThrow(
                 () -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + useremail)
         );
+
+        // 사용자 플랜 확인 및 무료 운세 카운트 감소
+        if (!userPlanService.checkUserHaveRightIfHaveThenReduceCount(user.getEmail())) {
+            throw new UserException(CustomExcpMsgs.FREE_FORTUNE_COUNT_EXCEEDED.getMessage());
+        }
 
         //2. 꿈 해몽 분석
         log.info("꿈 해몽 분석 ai 요청 시작");

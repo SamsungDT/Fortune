@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.security.domain.BirthInfo;
 import dsko.hier.security.domain.BirthTime;
 import dsko.hier.security.domain.EmailPasswordAccount;
@@ -35,6 +36,9 @@ class SignUpServiceTest {
 
     @Mock
     BCryptPasswordEncoder passwordEncoder;
+
+    @Mock
+    UserPlanService userPlanService;
 
     @InjectMocks
     SignUpService signUpService;
