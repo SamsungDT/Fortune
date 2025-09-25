@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  dsko:
     image: spring-server:latest
     container_name: spring-server-container
     ports:
@@ -11,8 +11,8 @@ services:
     environment:
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
-    networks: # 이 부분을 추가했습니다.
-      - my-network
+    networks:
+      - dsko-network
 
   redis:
     image: redis:latest
@@ -21,6 +21,8 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - dsko-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -32,9 +34,9 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
-      - my-network
+      - dsko-network
     depends_on:
-      - app
+      - dsko
 
   grafana:
     image: grafana/grafana:latest
@@ -48,10 +50,12 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
+    networks:
+      - dsko-network
 
 volumes:
   redis_data:
   grafana_data: { }
 
 networks:
-  my-network:
+  dsko-network:
