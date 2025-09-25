@@ -29,15 +29,51 @@ interface ProfileScreenProps {
   onLogout: () => void;
 }
 
+/* ====== Logout API wiring ====== */
+const API_BASE = 'http://localhost:8080';
+type APIResponse<T> = { code: number; message: string; data: T | null };
+
+function getAccessToken() {
+  return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+}
+function clearTokens() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  sessionStorage.removeItem('accessToken');
+  sessionStorage.removeItem('refreshToken');
+}
+
 export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
   const { isDark, toggleTheme } = useTheme();
   const [settings, setSettings] = useState({
     autoBackup: false,
     shareUsage: true
   });
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleSettingChange = (key: string, value: boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      const at = getAccessToken();
+      if (at) {
+        await fetch(`${API_BASE}/api/security/common/logout`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${at}`, // 액세스 토큰로 로그아웃
+          },
+        }).catch(() => {}); // 네트워크 에러여도 토큰 정리는 진행
+      }
+    } finally {
+      clearTokens(); // 200/401 상관없이 정리
+      setLoggingOut(false);
+      onLogout?.();  // 라우팅/상태 초기화는 부모에서
+    }
   };
 
   const totalUsage = Object.values(user.usageCount).reduce((sum, count) => sum + count, 0);
@@ -178,11 +214,12 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
         {/* 로그아웃 */}
         <div className="pt-4">
           <Button 
-            onClick={onLogout}
+            onClick={handleLogout}
+            disabled={loggingOut}
             variant="outline"
-            className="w-full border-2 border-dancheong-red/40 text-dancheong-red hover:bg-dancheong-red hover:text-white py-4 rounded-2xl font-medium"
+            className="w-full border-2 border-dancheong-red/40 text-dancheong-red hover:bg-dancheong-red hover:text-white py-4 rounded-2xl font-medium disabled:opacity-60"
           >
-            🚪 로그아웃
+            {loggingOut ? '로그아웃 중...' : '🚪 로그아웃'}
           </Button>
         </div>
       </div>
