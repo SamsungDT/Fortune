@@ -28,6 +28,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailService userDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/actuator");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
