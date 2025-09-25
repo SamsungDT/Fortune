@@ -8,10 +8,11 @@ services:
       - "8080:8080"
     depends_on:
       - redis
-    # Redis 연결 정보를 도커 컴포즈 환경 변수로 주입
     environment:
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+    networks: # 이 부분을 추가했습니다.
+      - my-network
 
   redis:
     image: redis:latest
@@ -21,5 +22,36 @@ services:
     volumes:
       - redis_data:/data
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-container
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - my-network
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-container
+    ports:
+      - "3001:3000" # Changed to 3001 to avoid conflict with local Grafana
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 volumes:
   redis_data:
+  grafana_data: { }
+
+networks:
+  my-network:

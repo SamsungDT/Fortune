@@ -3,3 +3,32 @@ spring:
     name: HIER
   profiles:
     include: secret
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    prometheus:
+      access: unrestricted
+    metrics:
+      access: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+    process:
+      enabled: true
