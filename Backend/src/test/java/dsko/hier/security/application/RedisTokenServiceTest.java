@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.global.redis.RedisTokenService;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 @ExtendWith(MockitoExtension.class)
-class RedisServiceTest {
+class RedisTokenServiceTest {
 
     @InjectMocks
-    private RedisService redisService;
+    private RedisTokenService redisTokenService;
 
     @Mock
     private RedisTemplate<String, String> redisTemplate;
@@ -39,7 +40,7 @@ class RedisServiceTest {
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 
         // When
-        redisService.saveRefreshToken(username, token, expiration);
+        redisTokenService.saveRefreshToken(username, token, expiration);
 
         // Then
         // opsForValue().set()가 올바른 인자들로 호출되었는지 검증
@@ -57,7 +58,7 @@ class RedisServiceTest {
         when(valueOperations.get("refresh:user123")).thenReturn(token);
 
         // When
-        String result = redisService.getRefreshToken(username);
+        String result = redisTokenService.getRefreshToken(username);
 
         // Then
         assertThat(result).isEqualTo(token);
@@ -72,7 +73,7 @@ class RedisServiceTest {
         String username = "user123";
 
         // When
-        redisService.deleteRefreshToken(username);
+        redisTokenService.deleteRefreshToken(username);
 
         // Then
         // redisTemplate.delete()가 올바른 인자로 호출되었는지 검증
@@ -89,7 +90,7 @@ class RedisServiceTest {
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 
         // When
-        redisService.addTokenToBlacklist(tokenJti, expiration);
+        redisTokenService.addTokenToBlacklist(tokenJti, expiration);
 
         // Then
         // opsForValue().set()가 올바른 인자들로 호출되었는지 검증
@@ -104,7 +105,7 @@ class RedisServiceTest {
         when(redisTemplate.hasKey("blacklist:jti-123")).thenReturn(true);
 
         // When
-        boolean isBlacklisted = redisService.isTokenBlacklisted(tokenJti);
+        boolean isBlacklisted = redisTokenService.isTokenBlacklisted(tokenJti);
 
         // Then
         assertThat(isBlacklisted).isTrue();

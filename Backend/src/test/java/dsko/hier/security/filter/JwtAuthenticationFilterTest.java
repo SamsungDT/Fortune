@@ -7,9 +7,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.CustomUserDetailService;
 import dsko.hier.security.application.JwtTokenProvider;
-import dsko.hier.security.application.RedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ class JwtAuthenticationFilterTest {
     private JwtTokenProvider tokenProvider;
 
     @Mock
-    private RedisService redisService;
+    private RedisTokenService redisTokenService;
 
     @Mock
     private CustomUserDetailService userDetailsService;
@@ -75,7 +75,7 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(validJwt);
         when(tokenProvider.validateToken(anyString())).thenReturn(true);
         when(tokenProvider.getJwtIdFromToken(anyString())).thenReturn(jti);
-        when(redisService.isTokenBlacklisted(jti)).thenReturn(false);
+        when(redisTokenService.isTokenBlacklisted(jti)).thenReturn(false);
         when(tokenProvider.getUsernameFromToken(anyString())).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
 
@@ -100,7 +100,7 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(blacklistedJwt);
         when(tokenProvider.validateToken(anyString())).thenReturn(true);
         when(tokenProvider.getJwtIdFromToken(anyString())).thenReturn(jti);
-        when(redisService.isTokenBlacklisted(jti)).thenReturn(true);
+        when(redisTokenService.isTokenBlacklisted(jti)).thenReturn(true);
 
         // When
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);

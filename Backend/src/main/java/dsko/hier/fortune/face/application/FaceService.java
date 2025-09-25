@@ -8,6 +8,7 @@ import dsko.hier.fortune.face.dto.FaceAnalyzeResponse;
 import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
+import dsko.hier.global.redis.RedisHashService;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.net.URI;
@@ -34,6 +35,7 @@ public class FaceService {
     private final UserRepository userRepository;
     private final FaceRepository faceRepository;
     private final UserPlanService userPlanService;
+    private final RedisHashService redisHashService;
 
     public FaceAnalyzeResponse analyzeFaceWithAI(String userEmail, FaceAnalyzeRequest request) {
         // 1. 사용자 정보 조회
@@ -76,6 +78,10 @@ public class FaceService {
 
         log.info("AI 응답: {}", aiResponse);
         log.info("저장 로직 시작");
+
+        //레디스에 값 올리기.
+        redisHashService.incrementFortuneCount(RedisHashService.FACE_TYPE);
+
         // 3. 분석 결과 저장
         Face savedResult = faceRepository.save(toEntity(user, aiResponse));
         log.info("저장 완료: {}", savedResult);

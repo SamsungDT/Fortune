@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.dto.request.EmailAndPassword;
 import dsko.hier.security.dto.response.TokenResponse;
 import java.util.Collections;
@@ -32,7 +33,7 @@ class LoginServiceTest {
     private AuthenticationManager authenticationManager;
 
     @MockitoBean
-    private RedisService redisService;
+    private RedisTokenService redisTokenService;
 
     @MockitoBean
     private JwtTokenProvider tokenProvider;
@@ -86,7 +87,7 @@ class LoginServiceTest {
         loginService.logout(rawToken);
 
         // Then
-        verify(redisService, times(1)).deleteRefreshToken(username);
+        verify(redisTokenService, times(1)).deleteRefreshToken(username);
     }
 
     @Test

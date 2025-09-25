@@ -1,8 +1,8 @@
 package dsko.hier.security.config;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.CustomUserDetailService;
 import dsko.hier.security.application.JwtTokenProvider;
-import dsko.hier.security.application.RedisService;
 import dsko.hier.security.filter.JwtAuthenticationFilter;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final WhiteListProperties whiteListProperties;
     private final UserDetailsService customUserDetailService;
     private final JwtTokenProvider tokenProvider;
-    private final RedisService redisService;
+    private final RedisTokenService redisTokenService;
     private final CustomUserDetailService userDetailsService;
 
     @Bean
@@ -54,7 +54,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, redisService, userDetailsService);
+        return new JwtAuthenticationFilter(tokenProvider, redisTokenService, userDetailsService);
     }
 
     // DaoAuthenticationProvider 빈을 정의합니다.

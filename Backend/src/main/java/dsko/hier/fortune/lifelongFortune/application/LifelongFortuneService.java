@@ -14,6 +14,7 @@ import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse.We
 import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
+import dsko.hier.global.redis.RedisHashService;
 import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRepository;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class LifelongFortuneService {
     private final UserRepository userRepository;
     private final LifeLongFortuneRepository lifeLongFortuneRepository;
     private final UserPlanService userPlanService;
+    private final RedisHashService redisHashService;
 
     public LifelongFortuneResponse getLieLongFortuneFromAI(String userEmail) {
         // 1. 사용자 정보 조회
@@ -75,6 +77,9 @@ public class LifelongFortuneService {
                 .user(promptTemplate.create(params).getContents())
                 .call()
                 .entity(AILifelongFortuneResponse.class);
+
+        //레디스에 값 올리기.
+        redisHashService.incrementFortuneCount(RedisHashService.LIFE_LONG_FORTUNE_TYPE);
 
         assert entity != null;
         LifeLongFortune savedResult = lifeLongFortuneRepository.save(new LifeLongFortune(user, entity));

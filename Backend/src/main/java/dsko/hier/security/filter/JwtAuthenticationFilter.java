@@ -1,8 +1,8 @@
 package dsko.hier.security.filter;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.CustomUserDetailService;
 import dsko.hier.security.application.JwtTokenProvider;
-import dsko.hier.security.application.RedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
-    private final RedisService redisService;
+    private final RedisTokenService redisTokenService;
     private final CustomUserDetailService userDetailsService;
 
     @Override
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (tokenProvider.validateToken(jwt)) {
                 String jti = tokenProvider.getJwtIdFromToken(jwt);
 
-                if (redisService.isTokenBlacklisted(jti)) {
+                if (redisTokenService.isTokenBlacklisted(jti)) {
                     sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
                     return; // 블랙리스트 토큰이므로 필터 체인 중단
                 }

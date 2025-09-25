@@ -6,6 +6,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import dsko.hier.fortune.todayfortune.domain.DailyFortune;
 import dsko.hier.global.domain.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -29,6 +30,7 @@ public class User extends BaseTimeEntity {
     private UUID id;
 
     @NotNull
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotNull

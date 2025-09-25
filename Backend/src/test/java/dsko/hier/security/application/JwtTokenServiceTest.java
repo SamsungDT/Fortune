@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.dto.response.TokenResponse;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
@@ -27,7 +28,7 @@ class JwtTokenServiceTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Mock
-    private RedisService redisService;
+    private RedisTokenService redisTokenService;
 
     @Test
     @DisplayName("토큰 발급이 성공적으로 수행되고, 리프레시 토큰이 레디스에 저장되어야 한다")
@@ -51,7 +52,7 @@ class JwtTokenServiceTest {
         Assertions.assertThat(response.refreshToken()).isEqualTo(refreshToken);
 
         // RedisService의 saveRefreshToken 메서드가 올바른 인자들로 호출되었는지 검증
-        verify(redisService).saveRefreshToken(any(String.class), any(String.class), anyLong());
+        verify(redisTokenService).saveRefreshToken(any(String.class), any(String.class), anyLong());
     }
 
     @Test
@@ -68,7 +69,7 @@ class JwtTokenServiceTest {
         when(jwtTokenProvider.getRoleFromToken(oldRefreshToken)).thenReturn(role);
         when(jwtTokenProvider.validateToken(oldRefreshToken)).thenReturn(true);
         when(jwtTokenProvider.getExpirationDateFromToken(oldRefreshToken)).thenReturn(futureExpiration);
-        when(redisService.getRefreshToken(username)).thenReturn(oldRefreshToken);
+        when(redisTokenService.getRefreshToken(username)).thenReturn(oldRefreshToken);
         when(jwtTokenProvider.createAccessToken(username, role)).thenReturn(newTokens.accessToken());
         when(jwtTokenProvider.createRefreshToken(username, role)).thenReturn(newTokens.refreshToken());
         when(jwtTokenProvider.getExpirationDateFromToken(newTokens.refreshToken())).thenReturn(futureExpiration);
@@ -79,7 +80,7 @@ class JwtTokenServiceTest {
         // Then
         Assertions.assertThat(response.accessToken()).isEqualTo(newTokens.accessToken());
         Assertions.assertThat(response.refreshToken()).isEqualTo(newTokens.refreshToken());
-        verify(redisService, times(1)).getRefreshToken(username);
+        verify(redisTokenService, times(1)).getRefreshToken(username);
     }
 
     @Test
@@ -127,7 +128,7 @@ class JwtTokenServiceTest {
         when(jwtTokenProvider.getRoleFromToken(clientRefreshToken)).thenReturn("USER");
         when(jwtTokenProvider.validateToken(clientRefreshToken)).thenReturn(true);
         when(jwtTokenProvider.getExpirationDateFromToken(clientRefreshToken)).thenReturn(futureExpiration);
-        when(redisService.getRefreshToken(username)).thenReturn(redisRefreshToken);
+        when(redisTokenService.getRefreshToken(username)).thenReturn(redisRefreshToken);
 
         // When & Then
         assertThatThrownBy(() -> jwtTokenService.reissueJwtToken(clientRefreshToken))
