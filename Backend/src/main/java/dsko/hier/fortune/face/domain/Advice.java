@@ -11,5 +11,14 @@ import lombok.NoArgsConstructor;
 public class Advice {
 
     @Column(nullable = false)
-    private String adviceList; // 쉼표로 구분된 조언 목록
+    private String keyword;
+
+    @Column(nullable = false)
+    private String caution; // JSON 형식의 문자열로 저장
+
+    @Column(nullable = false)
+    private String mainAdvice;
+
+    @Column(nullable = false)
+    private String tomorrowHint;
 }
