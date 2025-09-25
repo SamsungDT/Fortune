@@ -5,7 +5,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
-import { ChevronLeft } from "lucide-react";
+// import { ChevronLeft } from "lucide-react";
 
 interface AppStats {
   totalUsers: number;
@@ -22,8 +22,26 @@ interface LoginScreenProps {
   onGoToSignup: () => void;
 }
 
+// ================= 서버/타입 설정 =================
+const API_BASE = 'http://localhost:8080';
+const LOGIN_URL = `${API_BASE}/api/security/email/login`;
+
+type APIResponse<T> = {
+  code: number;       // 예: 200
+  message: string;    // 예: OK
+  data: T | null;     // 성공 시 데이터
+};
+
+type TokenResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
 export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProps) {
   const [showEmailForm, setShowEmailForm] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const handleSocialLogin = (provider: string) => {
     // 실제 앱에서는 각 소셜 로그인 SDK를 사용
     const mockUserData = {
@@ -34,19 +52,63 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
     onLogin(mockUserData);
   };
 
-  const handleEmailLogin = (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError(null);
+
     const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    
-    // 간단한 목업 로그인
-    if (email && password) {
+    const email = (formData.get('email') as string)?.trim();
+    const password = (formData.get('password') as string) ?? '';
+
+    if (!email || !password) {
+      setApiError('이메일과 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const res = await fetch(LOGIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      let body: APIResponse<TokenResponse> | null = null;
+      try {
+        body = await res.json();
+      } catch {
+        // JSON 파싱 실패(드문 경우) 대비
+      }
+
+      // APIResponse 포맷 기준으로 성공 판정
+      const ok = body?.code === 200 && !!body.data;
+      if (!ok) {
+        const msg = body?.message || `로그인 실패 (HTTP ${res.status})`;
+        setApiError(msg);
+        return;
+      }
+
+      const { accessToken, refreshToken } = body!.data!;
+      if (!accessToken || !refreshToken) {
+        setApiError('토큰이 응답에 없습니다. 서버 응답을 확인해주세요.');
+        return;
+      }
+
+      // 토큰 저장
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      // 상위 콜백 (기존 시그니처 유지)
       onLogin({
         name: email.split('@')[0],
-        email: email,
-        provider: 'email'
+        email,
+        provider: 'email',
       });
+    } catch (err: any) {
+      setApiError(err?.message || '네트워크 오류가 발생했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -61,7 +123,6 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         {/* 메인 헤더 */}
         <div className="text-center mb-10">
           <div className="relative mb-6">
-            {/* 한국 전통 심볼과 현대적 해석 */}
             <div className="relative inline-block">
               <div className="text-7xl mb-3 relative">
                 <span className="absolute inset-0 text-hanbok-gold/20 transform scale-110">☯</span>
@@ -73,12 +134,15 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
               Fortune K.I
             </h1>
             
-            {/* 전통 장식선 */}
             <div className="flex items-center justify-center mb-3">
               <div className="h-px bg-hanbok-gold/40 w-8"></div>
               <div className="mx-2 w-2 h-2 bg-hanbok-gold rounded-full"></div>
               <div className="h-px bg-hanbok-gold/40 w-8"></div>
             </div>
+
+            {apiError && (
+              <p className="text-xs text-red-600 mt-2">{apiError}</p>
+            )}
           </div>
           
           <p className="text-muted-foreground leading-relaxed">
@@ -87,65 +151,23 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
         </div>
 
         {!showEmailForm ? (
-          // 소셜 로그인 및 이메일 로그인 선택
+          // 소셜 로그인 선택 화면(현재 비활성)
           <>
-            {/* <div className="space-y-4 mb-8">
-              <Button 
-                onClick={() => handleSocialLogin('kakao')}
-                className="w-full h-12 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl border border-yellow-500/30 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
-              >
-                <span className="flex items-center justify-center space-x-2">
-                  <span>📱</span>
-                  <span>카카오 로그인</span>
-                </span>
-              </Button>
-              
-              <Button 
-                onClick={() => handleSocialLogin('naver')}
-                className="w-full h-12 bg-green-500 hover:bg-green-600 text-white rounded-xl border border-green-600/30 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
-              >
-                <span className="flex items-center justify-center space-x-2">
-                  <span>🟢</span>
-                  <span>네이버 로그인</span>
-                </span>
-              </Button>
-              
-              <Button 
-                onClick={() => handleSocialLogin('google')}
-                className="w-full h-12 bg-white hover:bg-gray-50 text-gray-800 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
-              >
-                <span className="flex items-center justify-center space-x-2">
-                  <span>🔍</span>
-                  <span>구글 로그인</span>
-                </span>
-              </Button>
-            </div> */}
-
-            {/* 구분선 */}
-            {/* <div className="relative my-8">
-              <Separator className="bg-border" />
-              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-card px-4">
-                <span className="text-muted-foreground text-sm">또는</span>
-              </div>
-            </div> */}
-
-            {/* 이메일 로그인 버튼 */}
+            {/* <div className="space-y-4 mb-8"> ... </div> */}
+            {/* <div className="relative my-8"> ... </div> */}
             <Button 
               onClick={() => setShowEmailForm(true)}
               className="w-full h-12 bg-ink-black dark:bg-ink-gray text-white dark:text-ink-black hover:bg-ink-gray dark:hover:bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-medium"
             >
               <span className="flex items-center justify-center space-x-2">
                 <span>✉️</span>
-                <span>로그인</span>
-                <span>✉️</span>
+                <span>이메일로 로그인</span>
               </span>
             </Button>
           </>
         ) : (
           // 이메일 로그인 폼
           <>
-            
-
             <form onSubmit={handleEmailLogin} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-ink-black dark:text-ink-gray">이메일</Label>
@@ -156,6 +178,7 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                   placeholder="이메일 주소를 입력하세요"
                   className="h-12 bg-input-background border border-border focus:border-hanbok-gold/60 focus:ring-hanbok-gold/30 rounded-xl transition-all duration-300"
                   required
+                  disabled={submitting}
                 />
               </div>
               
@@ -168,40 +191,23 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
                   placeholder="비밀번호를 입력하세요"
                   className="h-12 bg-input-background border border-border focus:border-hanbok-gold/60 focus:ring-hanbok-gold/30 rounded-xl transition-all duration-300"
                   required
+                  disabled={submitting}
                 />
               </div>
               
               <Button 
                 type="submit" 
+                disabled={submitting}
                 className="w-full h-12 bg-ink-black dark:bg-ink-gray text-white dark:text-ink-black hover:bg-ink-gray dark:hover:bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-medium mt-6"
               >
                 <span className="flex items-center justify-center space-x-2">
-                  <span>🚀</span>
-                  <span>로그인</span>
+                  <span>{submitting ? '⏳' : '🚀'}</span>
+                  <span>{submitting ? '로그인 중...' : '로그인'}</span>
                 </span>
               </Button>
-              {/* 뒤로가기 버튼 */}
-            {/* <div className="mb-6">
-              <Button
-                onClick={() => setShowEmailForm(false)}
-                variant="ghost"
-                className="flex items-center space-x-2 text-muted-foreground hover:text-ink-black dark:hover:text-ink-gray"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>뒤로가기</span>
-              </Button>
-            </div> */}
             </form>
           </>
         )}
-
-        {/* 무료 체험 안내 */}
-        {/* <div className="mt-8 text-center">
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-hanbok-gold/10 border border-hanbok-gold/30 rounded-full">
-            <span className="text-hanbok-gold-dark">✨</span>
-            <span className="text-hanbok-gold-dark text-sm font-medium">매일 한 번 무료 체험</span>
-          </div>
-        </div> */}
 
         {/* 앱 이용 통계 */}
         <div className="mt-6 space-y-3">

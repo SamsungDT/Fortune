@@ -97,13 +97,13 @@ export function ResultScreen({ result, onBack, onShare }: ResultScreenProps) {
 
         {/* 액션 버튼들 */}
         <div className="grid grid-cols-1 gap-4">
-          <Button 
+          {/* <Button 
             onClick={onShare}
             className="h-14 bg-yellow-400 hover:bg-yellow-500 text-black rounded-3xl border border-yellow-500/30 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
           >
             <MessageCircle className="w-5 h-5 mr-2" />
             카카오톡으로 공유하기
-          </Button>
+          </Button> */}
           
           <Button 
             onClick={() => {
