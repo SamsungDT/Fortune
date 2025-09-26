@@ -84,24 +84,9 @@ public class FaceService {
         redisHashService.incrementFortuneCount(RedisHashService.FACE_TYPE);
 
         // 3. 분석 결과 저장
-        Face savedResult = faceRepository.save(toEntity(user, aiResponse));
+        Face savedResult = faceRepository.save(Face.toEntity(user, aiResponse));
         log.info("저장 완료: {}", savedResult);
         // 4. 분석 결과 반환
-        return toResponseDto(savedResult);
-    }
-
-    private FaceAnalyzeResponse toResponseDto(Face face) {
-
-        return new FaceAnalyzeResponse(
-                face.getOverallImpression(),
-                face.getEye(),
-                face.getNose(),
-                face.getMouth(),
-                face.getAdvice()
-        );
-    }
-
-    private Face toEntity(User user, AIFaceAnalyzeResult aiResponse) {
-        return new Face(user, aiResponse);
+        return FaceAnalyzeResponse.fromEntity(savedResult);
     }
 }

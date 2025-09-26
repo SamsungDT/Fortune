@@ -53,4 +53,8 @@ public class Face extends BaseTimeEntity {
         this.mouth = aiResponse.mouth();
         this.advice = aiResponse.advice();
     }
+
+    public static Face toEntity(User user, AIFaceAnalyzeResult aiResponse) {
+        return new Face(user, aiResponse);
+    }
 }
