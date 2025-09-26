@@ -80,7 +80,7 @@ public class DailyFortuneService {
                     .entity(AIDailyFortuneResponse.class);
 
             assert aiResponse != null;
-            DailyFortune dailyFortune = new DailyFortune(user, aiResponse);
+            DailyFortune dailyFortune = AIDailyFortuneResponse.toEntity(user, aiResponse);
             dailyFortuneRepository.save(dailyFortune);
             //레디스에 값 올리기.
             redisHashService.incrementFortuneCount(RedisHashService.DAILY_FORTUNE_TYPE);

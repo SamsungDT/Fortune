@@ -1,4 +1,4 @@
-package dsko.hier.fortune.dreamInterpretation.domain;
+package dsko.hier.fortune.dream.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

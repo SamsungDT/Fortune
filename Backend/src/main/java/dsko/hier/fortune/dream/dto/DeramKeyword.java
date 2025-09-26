@@ -1,4 +1,4 @@
-package dsko.hier.fortune.dreamInterpretation.dto;
+package dsko.hier.fortune.dream.dto;
 
 import lombok.Getter;
 

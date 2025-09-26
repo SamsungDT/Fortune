@@ -1,12 +1,11 @@
-package dsko.hier.fortune.dreamInterpretation.application;
+package dsko.hier.fortune.dream.application;
 
 import dsko.hier.fortune.application.PromptSupplier;
-import dsko.hier.fortune.dreamInterpretation.domain.DreamAnalysis;
-import dsko.hier.fortune.dreamInterpretation.domain.DreamAnalysisRepository;
-import dsko.hier.fortune.dreamInterpretation.dto.DeramKeyword;
-import dsko.hier.fortune.dreamInterpretation.dto.request.DreamRequestDto;
-import dsko.hier.fortune.dreamInterpretation.dto.response.AIDreamResponse;
-import dsko.hier.fortune.dreamInterpretation.dto.response.DreamResponse;
+import dsko.hier.fortune.dream.domain.DreamAnalysisRepository;
+import dsko.hier.fortune.dream.dto.DeramKeyword;
+import dsko.hier.fortune.dream.dto.request.DreamRequestDto;
+import dsko.hier.fortune.dream.dto.response.AIDreamResponse;
+import dsko.hier.fortune.dream.dto.response.DreamResponse;
 import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.global.exception.CustomExceptions.UserException;
 import dsko.hier.global.exception.CustomExcpMsgs;
@@ -72,29 +71,10 @@ public class DreamInterpreationService {
         redisHashService.incrementFortuneCount(RedisHashService.DREAM_TYPE);
 
         log.info("꿈 해몽 분석 ai 요청 완료");
-        return convertToDto(
+        return DreamResponse.fromEntity(
                 dreamAnalysisRepository.save(
-                        convertToEntity(user, aiDreamResponse)
+                        AIDreamResponse.toEntity(user, aiDreamResponse)
                 )
         );
-    }
-
-    private DreamResponse convertToDto(DreamAnalysis dreamAnalysis) {
-        return DreamResponse.builder()
-                .summary(dreamAnalysis.getSummary())
-                .symbolInterpretation(dreamAnalysis.getSymbolInterpretation())
-                .psychologicalAnalysis(dreamAnalysis.getPsychologicalAnalysis())
-                .fortuneProspects(dreamAnalysis.getFortuneProspects())
-                .precautions(dreamAnalysis.getPrecautions())
-                .adviceAndLuck(dreamAnalysis.getAdviceAndLuck())
-                .specialMessage(dreamAnalysis.getSpecialMessage())
-                .build();
-    }
-
-    private DreamAnalysis convertToEntity(User user, AIDreamResponse aiDreamResponse) {
-        return DreamAnalysis.builder()
-                .user(user)
-                .aiResponse(aiDreamResponse)
-                .build();
     }
 }

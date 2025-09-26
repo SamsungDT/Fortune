@@ -1,8 +1,8 @@
-package dsko.hier.fortune.dreamInterpretation.domain;
+package dsko.hier.fortune.dream.domain;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import dsko.hier.fortune.dreamInterpretation.dto.response.AIDreamResponse;
+import dsko.hier.fortune.dream.dto.response.AIDreamResponse;
 import dsko.hier.global.domain.BaseTimeEntity;
 import dsko.hier.security.domain.User;
 import jakarta.persistence.Column;

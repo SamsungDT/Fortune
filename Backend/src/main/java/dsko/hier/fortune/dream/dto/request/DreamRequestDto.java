@@ -1,6 +1,6 @@
-package dsko.hier.fortune.dreamInterpretation.dto.request;
+package dsko.hier.fortune.dream.dto.request;
 
-import dsko.hier.fortune.dreamInterpretation.dto.DeramKeyword;
+import dsko.hier.fortune.dream.dto.DeramKeyword;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

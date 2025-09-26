@@ -1,8 +1,8 @@
-package dsko.hier.fortune.dreamInterpretation.presentation;
+package dsko.hier.fortune.dream.presentation;
 
-import dsko.hier.fortune.dreamInterpretation.application.DreamInterpreationService;
-import dsko.hier.fortune.dreamInterpretation.dto.request.DreamRequestDto;
-import dsko.hier.fortune.dreamInterpretation.dto.response.DreamResponse;
+import dsko.hier.fortune.dream.application.DreamInterpreationService;
+import dsko.hier.fortune.dream.dto.request.DreamRequestDto;
+import dsko.hier.fortune.dream.dto.response.DreamResponse;
 import dsko.hier.global.response.APIResponse;
 import dsko.hier.security.application.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

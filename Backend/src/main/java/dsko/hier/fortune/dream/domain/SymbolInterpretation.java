@@ -1,4 +1,4 @@
-package dsko.hier.fortune.dreamInterpretation.domain;
+package dsko.hier.fortune.dream.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class SpecialMessage {
-    @Column(name = "message_text", columnDefinition = "TEXT")
-    private String messageText;
+public class SymbolInterpretation {
+    @Column(name = "symbol_text", columnDefinition = "TEXT")
+    private String symbolText;
 }
