@@ -1,7 +1,7 @@
-package dsko.hier.fortune.lifelongFortune.presentation;
+package dsko.hier.fortune.total.presentation;
 
-import dsko.hier.fortune.lifelongFortune.application.LifelongFortuneService;
-import dsko.hier.fortune.lifelongFortune.dto.resposne.LifelongFortuneResponse;
+import dsko.hier.fortune.total.application.TotalFortuneService;
+import dsko.hier.fortune.total.dto.resposne.TotalFortuneResponse;
 import dsko.hier.global.response.APIResponse;
 import dsko.hier.security.application.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/fortune/lifelong")
 @RequiredArgsConstructor
-public class LifeLongFortuneController {
+public class TotalFortuneController {
 
-    private final LifelongFortuneService service;
+    private final TotalFortuneService service;
 
     @GetMapping
-    public APIResponse<LifelongFortuneResponse> getLifelongFortune(
+    public APIResponse<TotalFortuneResponse> getLifelongFortune(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        LifelongFortuneResponse lieLongFortuneFromAI = service.getLieLongFortuneFromAI(userDetails.getUsername());
+        TotalFortuneResponse lieLongFortuneFromAI = service.getLieLongFortuneFromAI(userDetails.getUsername());
         return APIResponse.success(lieLongFortuneFromAI);
     }
 

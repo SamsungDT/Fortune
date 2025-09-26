@@ -1,4 +1,4 @@
-package dsko.hier.fortune.lifelongFortune.domain;
+package dsko.hier.fortune.total.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.Getter;

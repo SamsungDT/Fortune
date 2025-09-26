@@ -1,9 +1,9 @@
-package dsko.hier.fortune.lifelongFortune.domain;
+package dsko.hier.fortune.total.domain;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
-import dsko.hier.fortune.lifelongFortune.dto.resposne.AILifelongFortuneResponse;
+import dsko.hier.fortune.total.dto.resposne.AITotalFortuneResponse;
 import dsko.hier.global.domain.BaseTimeEntity;
 import dsko.hier.security.domain.User;
 import jakarta.persistence.Embedded;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-public class LifeLongFortune extends BaseTimeEntity {
+public class TotalFortune extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -51,7 +51,7 @@ public class LifeLongFortune extends BaseTimeEntity {
     @Embedded
     private GoodLuck goodLuck;
 
-    public LifeLongFortune(User user, AILifelongFortuneResponse response) {
+    public TotalFortune(User user, AITotalFortuneResponse response) {
         this.user = user;
         this.personality = response.personality();
         this.wealth = response.wealth();
