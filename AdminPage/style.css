@@ -1,0 +1,298 @@
+/* ========================================================= */
+/* 기본 및 공통 스타일 */
+/* ========================================================= */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f9;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    /* 관리자 페이지용 너비 */
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2 {
+    color: #333;
+    text-align: center;
+    /* 제목 정렬 통일 */
+}
+
+/* 섹션, 헤더 공통 스타일 */
+.section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+/* ========================================================= */
+/* 폼 입력 요소 및 버튼 공통 스타일 */
+/* ========================================================= */
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* 패딩이 너비에 포함되도록 설정 */
+}
+
+/* 폼 내부의 라벨과 입력 요소 간격 조정 */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* 모든 버튼에 적용되는 기본 스타일 */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    background-color: #ccc !important;
+    color: #666;
+}
+
+/* ========================================================= */
+/* 로그인 페이지 스타일 */
+/* ========================================================= */
+.login-section input {
+    width: calc(100% - 20px);
+    max-width: 300px;
+    padding: 10px;
+    margin-right: 10px;
+    /* 기존 HTML의 input 스타일 반영 */
+}
+
+.login-section .button-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.login-btn {
+    background-color: #007BFF;
+}
+
+.signup-btn {
+    background-color: #6c757d;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+}
+
+/* ========================================================= */
+/* 회원가입 페이지 스타일 */
+/* ========================================================= */
+.signup-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.signup-container button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #007BFF;
+}
+
+.birth-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.birth-info div {
+    flex-grow: 1;
+}
+
+/* ========================================================= */
+/* 회원 목록 및 페이지네이션 스타일 */
+/* ========================================================= */
+#admin-content {
+    display: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    /* 추가: 세로 중앙 정렬 */
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination #page-info {
+    /* 페이지 정보 텍스트의 크기와 여백 조정 */
+    width: auto;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.pagination #pageSizeSelect {
+    /* 드롭다운 메뉴의 스타일 조정 */
+    width: 80px;
+    /* 너비 감소 */
+    padding: 6px;
+    /* 내부 여백 감소 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #f2f2f2;
+}
+
+.pagination-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* ========================================================= */
+/* 사용자 상세 정보 페이지 스타일 */
+/* ========================================================= */
+.user-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.user-info-item:last-child {
+    border-bottom: none;
+}
+
+.user-info-item .label {
+    font-weight: bold;
+    color: #555;
+    flex-basis: 35%;
+}
+
+.user-info-item .value {
+    color: #333;
+    text-align: right;
+    flex-basis: 60%;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    background-color: #ffebee;
+    border: 1px solid #fbcaca;
+    border-radius: 5px;
+}
+
+/* 상세 페이지 버튼 스타일 */
+.action-buttons {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    /* 버튼을 가로로 정렬 */
+    flex-wrap: wrap;
+    /* 창 크기 변경 시 줄 바꿈 */
+    gap: 10px;
+}
+
+.action-buttons h3 {
+    color: #333;
+    margin-bottom: 15px;
+    width: 100%;
+    /* 제목이 한 줄을 차지하도록 설정 */
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.expire-btn {
+    background-color: #f39c12;
+}
+
+.blacklist-btn {
+    background-color: #34495e;
+}
+
+.fortune-btn {
+    background-color: #2ecc71;
+}
+
+.add-fortune-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-fortune-section input {
+    width: 80px;
+    text-align: center;
+}

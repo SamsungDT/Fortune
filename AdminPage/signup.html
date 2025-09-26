@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 회원가입</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="signup-container">
+        <h1>관리자 회원가입</h1>
+        <form id="signup-form">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="sex">성별</label>
+            <select id="sex" name="sex" required>
+                <option value="">선택</option>
+                <option value="MALE">남성</option>
+                <option value="FEMALE">여성</option>
+            </select>
+
+            <label>출생 정보</label>
+            <div class="birth-info">
+                <div>
+                    <label for="birthYear">연도</label>
+                    <input type="number" id="birthYear" name="birthYear" placeholder="YYYY" required>
+                </div>
+                <div>
+                    <label for="birthMonth">월</label>
+                    <input type="number" id="birthMonth" name="birthMonth" placeholder="MM" required>
+                </div>
+                <div>
+                    <label for="birthDay">일</label>
+                    <input type="number" id="birthDay" name="birthDay" placeholder="DD" required>
+                </div>
+            </div>
+
+            <label for="birthTime">출생 시간대</label>
+            <select id="birthTime" name="birthTime" required>
+                <option value="">선택</option>
+                <option value="Missing">모름</option>
+                <option value="Ja">자시 (23:30 ~ 01:30)</option>
+                <option value="Chuk">축시 (01:30 ~ 03:30)</option>
+                <option value="In">인시 (03:30 ~ 05:30)</option>
+                <option value="Myo">묘시 (05:30 ~ 07:30)</option>
+                <option value="Jin">진시 (07:30 ~ 09:30)</option>
+                <option value="Sa">사시 (09:30 ~ 11:30)</option>
+                <option value="OH">오시 (11:30 ~ 13:30)</option>
+                <option value="Mi">미시 (13:30 ~ 15:30)</option>
+                <option value="Sin">신시 (15:30 ~ 17:30)</option>
+                <option value="Yu">유시 (17:30 ~ 19:30)</option>
+                <option value="Sul">술시 (19:30 ~ 21:30)</option>
+                <option value="Hae">해시 (21:30 ~ 23:30)</option>
+            </select>
+
+            <button type="submit">가입하기</button>
+        </form>
+    </div>
+
+    <script src="signup.js"></script>
+</body>
+
+</html>
