@@ -1,3 +1,4 @@
+// LoginScreen.tsx
 import React, { useState } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -6,6 +7,7 @@ import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 // import { ChevronLeft } from "lucide-react";
+import { Loader2 } from 'lucide-react'; // 로딩 아이콘 추가
 
 interface AppStats {
   totalUsers: number;
@@ -18,7 +20,7 @@ interface AppStats {
 
 interface LoginScreenProps {
   onLogin: (loginData: { name: string; email: string; provider: string }) => void;
-  appStats: AppStats;
+  appStats: AppStats | null; // appStats가 null일 수 있도록 타입 변경
   onGoToSignup: () => void;
 }
 
@@ -27,9 +29,9 @@ const API_BASE = 'http://localhost:8080';
 const LOGIN_URL = `${API_BASE}/api/security/email/login`;
 
 type APIResponse<T> = {
-  code: number;       // 예: 200
+  code: number;      // 예: 200
   message: string;    // 예: OK
-  data: T | null;     // 성공 시 데이터
+  data: T | null;      // 성공 시 데이터
 };
 
 type TokenResponse = {
@@ -211,40 +213,50 @@ export function LoginScreen({ onLogin, appStats, onGoToSignup }: LoginScreenProp
 
         {/* 앱 이용 통계 */}
         <div className="mt-6 space-y-3">
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-3">
-              지금까지 <span className="text-hanbok-gold-dark font-semibold">{appStats.totalUsers.toLocaleString()}명</span>이 Fortune K.I와 함께했어요
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
-              <div className="text-lg mb-1">👤</div>
-              <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.physiognomyCount.toLocaleString()}회</div>
-              <div className="text-xs text-muted-foreground">관상 분석</div>
+          {appStats ? ( // appStats가 유효할 때만 통계 섹션 렌더링
+            <>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-3">
+                  지금까지 <span className="text-hanbok-gold-dark font-semibold">{appStats.totalUsers.toLocaleString()}명</span>이 Fortune K.I와 함께했어요
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
+                  <div className="text-lg mb-1">👤</div>
+                  <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.physiognomyCount.toLocaleString()}회</div>
+                  <div className="text-xs text-muted-foreground">관상 분석</div>
+                </div>
+                <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
+                  <div className="text-lg mb-1">🌟</div>
+                  <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.lifeFortuneCount.toLocaleString()}회</div>
+                  <div className="text-xs text-muted-foreground">평생 운세</div>
+                </div>
+                <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
+                  <div className="text-lg mb-1">📅</div>
+                  <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.dailyFortuneCount.toLocaleString()}회</div>
+                  <div className="text-xs text-muted-foreground">오늘의 운세</div>
+                </div>
+                <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
+                  <div className="text-lg mb-1">💭</div>
+                  <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.dreamCount.toLocaleString()}회</div>
+                  <div className="text-xs text-muted-foreground">해몽</div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <Badge className="bg-dancheong-green/20 text-dancheong-green border border-dancheong-green/40 text-xs px-3 py-1">
+                  총 {appStats.totalReadings.toLocaleString()}개의 운세 결과 생성 ✨
+                </Badge>
+              </div>
+            </>
+          ) : (
+            // 로딩 중이거나 데이터가 없을 때 로딩 UI 표시
+            <div className="flex justify-center items-center h-40">
+                <Loader2 className="w-8 h-8 animate-spin text-hanbok-gold-dark" />
+                <p className="ml-3 text-muted-foreground">통계 데이터 불러오는 중...</p>
             </div>
-            <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
-              <div className="text-lg mb-1">🌟</div>
-              <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.lifeFortuneCount.toLocaleString()}회</div>
-              <div className="text-xs text-muted-foreground">평생 운세</div>
-            </div>
-            <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
-              <div className="text-lg mb-1">📅</div>
-              <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.dailyFortuneCount.toLocaleString()}회</div>
-              <div className="text-xs text-muted-foreground">오늘의 운세</div>
-            </div>
-            <div className="bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl p-3 text-center">
-              <div className="text-lg mb-1">💭</div>
-              <div className="text-xs text-hanbok-gold-dark font-bold">{appStats.dreamCount.toLocaleString()}회</div>
-              <div className="text-xs text-muted-foreground">해몽</div>
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <Badge className="bg-dancheong-green/20 text-dancheong-green border border-dancheong-green/40 text-xs px-3 py-1">
-              총 {appStats.totalReadings.toLocaleString()}개의 운세 결과 생성 ✨
-            </Badge>
-          </div>
+          )}
         </div>
 
         {/* 회원가입 링크 */}
