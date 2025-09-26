@@ -1,8 +1,9 @@
-package dsko.hier.fortune.todayfortune.domain;
+package dsko.hier.fortune.daily.domain;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import dsko.hier.fortune.todayfortune.dto.response.AIDailyFortuneResponse;
+import dsko.hier.fortune.daily.dto.response.AIDailyFortuneResponse;
+import dsko.hier.global.domain.BaseTimeEntity;
 import dsko.hier.security.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -13,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,15 +23,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "daily_fortune")
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class DailyFortune {
-    //TODO : BASE_TIME_ENTITY 상속으로 변경하기.
-
+public class DailyFortune extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column(name = "fortune_date")
-    private LocalDate fortuneDate;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -68,9 +63,8 @@ public class DailyFortune {
     private String tomorrowPreview;
 
     @Builder
-    public DailyFortune(User user, LocalDate fortuneDate, AIDailyFortuneResponse resp) {
+    public DailyFortune(User user, AIDailyFortuneResponse resp) {
         this.user = user;
-        this.fortuneDate = fortuneDate;
         this.overallRating = resp.overallRating();
         this.overallSummary = resp.overallSummary();
         this.fortuneWealth = resp.wealth();

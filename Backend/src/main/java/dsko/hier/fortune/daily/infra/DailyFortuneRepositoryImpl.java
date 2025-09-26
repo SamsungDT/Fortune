@@ -1,7 +1,7 @@
-package dsko.hier.fortune.todayfortune.infra;
+package dsko.hier.fortune.daily.infra;
 
-import dsko.hier.fortune.todayfortune.domain.DailyFortune;
-import dsko.hier.fortune.todayfortune.domain.DailyFortuneRepository;
+import dsko.hier.fortune.daily.domain.DailyFortune;
+import dsko.hier.fortune.daily.domain.DailyFortuneRepository;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

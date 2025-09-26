@@ -1,4 +1,4 @@
-package dsko.hier.fortune.todayfortune.domain;
+package dsko.hier.fortune.daily.domain;
 
 import java.time.LocalDate;
 import java.util.Optional;

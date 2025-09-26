@@ -4,7 +4,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.UUID;
 import static lombok.AccessLevel.PROTECTED;
 
-import dsko.hier.fortune.todayfortune.domain.DailyFortune;
+import dsko.hier.fortune.daily.domain.DailyFortune;
 import dsko.hier.global.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

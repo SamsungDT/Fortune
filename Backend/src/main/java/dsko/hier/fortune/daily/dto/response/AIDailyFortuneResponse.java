@@ -1,13 +1,13 @@
-package dsko.hier.fortune.todayfortune.dto.response;
+package dsko.hier.fortune.daily.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dsko.hier.fortune.todayfortune.domain.Advice;
-import dsko.hier.fortune.todayfortune.domain.Career;
-import dsko.hier.fortune.todayfortune.domain.Health;
-import dsko.hier.fortune.todayfortune.domain.Keywords;
-import dsko.hier.fortune.todayfortune.domain.Love;
-import dsko.hier.fortune.todayfortune.domain.Precautions;
-import dsko.hier.fortune.todayfortune.domain.Wealth;
+import dsko.hier.fortune.daily.domain.Advice;
+import dsko.hier.fortune.daily.domain.Career;
+import dsko.hier.fortune.daily.domain.Health;
+import dsko.hier.fortune.daily.domain.Keywords;
+import dsko.hier.fortune.daily.domain.Love;
+import dsko.hier.fortune.daily.domain.Precautions;
+import dsko.hier.fortune.daily.domain.Wealth;
 
 public record AIDailyFortuneResponse(
         @JsonProperty("overallRating") int overallRating,

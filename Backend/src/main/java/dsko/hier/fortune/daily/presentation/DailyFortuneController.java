@@ -1,7 +1,7 @@
-package dsko.hier.fortune.todayfortune.presentation;
+package dsko.hier.fortune.daily.presentation;
 
-import dsko.hier.fortune.todayfortune.application.DailyFortuneService;
-import dsko.hier.fortune.todayfortune.dto.response.DailyFortuneResponse;
+import dsko.hier.fortune.daily.application.DailyFortuneService;
+import dsko.hier.fortune.daily.dto.response.DailyFortuneResponse;
 import dsko.hier.global.response.APIResponse;
 import dsko.hier.security.application.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

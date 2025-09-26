@@ -1,6 +1,6 @@
-package dsko.hier.fortune.todayfortune.infra;
+package dsko.hier.fortune.daily.infra;
 
-import dsko.hier.fortune.todayfortune.domain.DailyFortune;
+import dsko.hier.fortune.daily.domain.DailyFortune;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

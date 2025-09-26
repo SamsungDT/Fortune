@@ -1,4 +1,4 @@
-package dsko.hier.fortune.todayfortune.domain;
+package dsko.hier.fortune.daily.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
