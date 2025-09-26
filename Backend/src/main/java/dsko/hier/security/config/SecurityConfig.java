@@ -43,8 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteListProperties.getPaths().toArray(new String[0])).permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "CEO")
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/logout"));
@@ -57,7 +56,6 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter(tokenProvider, redisTokenService, userDetailsService);
     }
 
-    // DaoAuthenticationProvider 빈을 정의합니다.
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailService);
@@ -65,7 +63,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // AuthenticationManager를 직접 구성하여 DaoAuthenticationProvider를 추가합니다.
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
@@ -83,10 +80,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:3001", "http://localhost:3011", "http://localhost:3000", "http://localhost:5500",
-                "http://localhost:8080",
+                "http://localhost:3001",
+                "http://localhost:3011",
+                "http://localhost:3000",
+                "http://localhost:5500",
                 "http://127.0.0.1:5500",
-                "http://43.201.95.54"
+                "http://localhost:8080"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Collections.singletonList("*"));

@@ -5,12 +5,15 @@ import static jakarta.persistence.GenerationType.UUID;
 import static lombok.AccessLevel.PROTECTED;
 
 import dsko.hier.global.domain.BaseTimeEntity;
+import dsko.hier.membership.domain.UserPlan;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -40,6 +43,12 @@ public class User extends BaseTimeEntity {
     @NotNull
     @Enumerated(STRING)
     private UserRole role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private EmailPasswordAccount account;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserPlan userPlan;
 
     @NotNull
     @Embedded // BirthInfo를 값 타입으로 포함

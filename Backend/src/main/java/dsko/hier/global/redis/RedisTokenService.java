@@ -38,8 +38,14 @@ public class RedisTokenService {
                 .set(BLACKLIST_PREFIX + tokenJti, "invalidated", expiration, TimeUnit.MILLISECONDS);
     }
 
+    // 토큰이 블랙리스트에 있는지 확인 - JTI(토큰 고유 식별자) 사용
     public boolean isTokenBlacklisted(String tokenJti) {
         return Boolean.TRUE.equals(redisStringTemplate.hasKey(BLACKLIST_PREFIX + tokenJti));
+    }
+
+    // 토큰이 블랙리스트에 있는지 확인 - 사용자 이메일 사용
+    public boolean isUserBlacklisted(String username) {
+        return Boolean.TRUE.equals(redisStringTemplate.hasKey(BLACKLIST_PREFIX + username));
     }
 
     public void clearAll() {

@@ -2,6 +2,7 @@ package dsko.hier.security.application;
 
 import dsko.hier.global.redis.RedisUserCountService;
 import dsko.hier.membership.application.UserPlanService;
+import dsko.hier.membership.domain.PlanType;
 import dsko.hier.security.domain.BirthInfo;
 import dsko.hier.security.domain.EmailPasswordAccount;
 import dsko.hier.security.domain.EmailPasswordAccountRepository;
@@ -57,7 +58,7 @@ public class SignUpService {
         ).getEmail_password_account_id();
 
         //3. UserPlan 생성 (FREE)
-        userPlanService.createUserPlan(savedSimpleUser);
+        userPlanService.createUserPlan(savedSimpleUser, PlanType.FREE);
 
         //4. 레디스에 사용자 수 1 증가
         log.info("레디스에 사용자 수 1 증가 시도");

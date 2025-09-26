@@ -60,4 +60,8 @@ public class UserPlan extends BaseTimeEntity {
 
         freeFortuneCount--;
     }
+
+    public void increaseFreeFortuneCount(int count) {
+        freeFortuneCount += count;
+    }
 }
