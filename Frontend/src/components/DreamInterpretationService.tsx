@@ -6,10 +6,9 @@ import { Label } from "./ui/label";
 import { Progress } from "./ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
-import { Alert, AlertDescription } from "./ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { FortuneResult } from "../App";
 import { Brain, Moon, Sparkles, AlertCircle, Heart, Calendar } from 'lucide-react';
-import { AdBanner } from './AdBanner';
 
 interface DreamInterpretationServiceProps {
   onResult: (result: FortuneResult) => void;
@@ -24,97 +23,148 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
   const [progress, setProgress] = useState(0);
   const [currentStatus, setCurrentStatus] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     if (!dreamContent.trim()) {
-      alert('꿈의 내용을 입력해주세요.');
+      setError('꿈의 내용을 입력해주세요.');
       return;
     }
 
     setStep('analyzing');
-    
-    // 진행률 시뮬레이션
-    const analysisSteps = [
-      { delay: 700, progress: 25, text: '🔍 꿈의 상징 분석 중...' },
-      { delay: 1400, progress: 50, text: '🧠 심리상태 해석 중...' },
-      { delay: 2100, progress: 75, text: '🔮 미래 전망 계산 중...' },
-      { delay: 2800, progress: 100, text: '✨ 해몽 완료!' }
-    ];
+    setError(null);
 
-    for (const step of analysisSteps) {
-      await new Promise(resolve => setTimeout(resolve, step.delay));
-      setProgress(step.progress);
-      setCurrentStatus(step.text);
-    }
-
-    // AI 분석 결과 생성 (목업)
-    const result: FortuneResult = {
-      id: Date.now().toString(),
-      type: 'dream',
-      title: '꿈 해몽 결과',
-      content: `🌙 **꿈 해몽 분석**
-
-📝 **꿈의 요약**
-당신이 꾼 꿈은 현재의 심리상태와 미래에 대한 잠재의식을 반영하고 있습니다. ${dreamMood ? `꿈의 분위기가 ${dreamMood}했다는 것은 ` : ''}현재 내면의 상태와 밀접한 관련이 있습니다.
-
-🔍 **주요 상징 해석**
-
-${dreamContent.includes('물') ? `💧 **물의 상징**
-꿈 속의 물은 감정과 정화를 의미합니다. 맑은 물이었다면 마음이 정화되고 새로운 시작을 알리며, 탁한 물이었다면 복잡한 감정 상태를 나타냅니다.
-
-` : ''}${dreamContent.includes('동물') || dreamContent.includes('개') || dreamContent.includes('고양이') || dreamContent.includes('새') ? `🐾 **동물의 상징**
-꿈 속의 동물은 본능과 직감을 상징합니다. 친근한 동물이었다면 좋은 인연을 만날 징조이고, 무서운 동물이었다면 현재 스트레스나 두려움을 나타냅니다.
-
-` : ''}${dreamContent.includes('비행') || dreamContent.includes('날다') || dreamContent.includes('하늘') ? `🕊️ **비행의 상징**
-하늘을 나는 꿈은 자유에 대한 갈망과 현실 극복 의지를 나타냅니다. 높이 날수록 목표 달성에 대한 강한 의지를 의미합니다.
-
-` : ''}${dreamContent.includes('돈') || dreamContent.includes('금') || dreamContent.includes('보석') ? `💎 **재물의 상징**
-돈이나 보석이 나오는 꿈은 재물운이 상승할 징조입니다. 특히 주워서 얻었다면 예상치 못한 수입이 생길 수 있습니다.
-
-` : ''}
-🎯 **심리상태 분석**
-• 현재 당신은 변화에 대한 준비가 되어 있는 상태입니다
-• 새로운 도전에 대한 두려움과 기대감이 공존하고 있습니다
-• 주변 관계에서 더 깊은 소통을 원하고 있습니다
-• 자아 발전에 대한 강한 욕구가 있습니다
-
-🔮 **운세 전망**
-
-**단기 전망 (1개월)**
-• 새로운 기회가 찾아올 것입니다
-• 인간관계에서 좋은 변화가 있을 것입니다
-• 창의적인 아이디어가 떠오를 수 있습니다
-
-**중기 전망 (3개월)**
-• 목표했던 일에서 진전이 있을 것입니다
-• 재정적인 면에서 안정감을 찾게 될 것입니다
-• 건강 상태도 좋아질 것입니다
-
-**장기 전망 (1년)**
-• 인생의 중요한 전환점을 맞게 될 것입니다
-• 오랫동안 바라던 일이 성취될 가능성이 높습니다
-• 새로운 환경에서의 성공을 예고합니다
-
-⚠️ **주의사항**
-• 성급한 결정보다는 신중한 판단이 필요합니다
-• 주변 사람들의 조언에 귀 기울이세요
-• 건강 관리에 소홀하지 마세요
-
-💡 **조언 및 개운법**
-• 꿈 일기를 써보시는 것을 추천합니다
-• 명상이나 요가로 마음의 평정을 찾으세요
-• 파란색이나 초록색 계열의 옷을 입으세요
-• 동쪽으로 산책하거나 여행을 계획해보세요
-• 새로운 취미나 학습을 시작하기 좋은 시기입니다
-
-🌟 **특별 메시지**
-이 꿈은 당신의 내면이 성장하고 있음을 보여줍니다. 현재의 어려움이나 고민도 곧 해결될 것이니 긍정적인 마음을 유지하세요. 꿈은 미래에 대한 희망적인 메시지를 담고 있습니다.`,
-      date: new Date().toLocaleDateString('ko-KR'),
-      paid: false
+    const keywordMapping: { [key: string]: string } = {
+      '동물': 'ANIMAL',
+      '비행': 'FLYING',
+      '물': 'WATER',
+      '불': 'FIRE',
+      '돈': 'MONEY',
+      '사람': 'PERSON',
+      '집': 'HOUSE',
+      '자동차': 'CAR',
+      '음식': 'FOOD',
+      '꽃': 'FLOWER',
+      '산': 'MOUNTAIN',
+      '바다': 'SEA',
+      '학교': 'SCHOOL',
+      '직장': 'WORK',
+      '가족': 'FAMILY',
+      '친구': 'FRIENDS',
     };
 
-    setStep('complete');
-    setTimeout(() => onResult(result), 500);
+    const keywords = selectedTags.map(tag => ({
+      name: tag,
+      type: keywordMapping[tag] || 'ETC',
+    }));
+
+    const requestBody = {
+      dreamDescription: dreamContent,
+      dreamAtmosphere: dreamMood || 'unknown', // 분위기 미선택 시 'unknown'으로 처리
+      keywords: keywords,
+    };
+
+    // ✨ 중요: localStorage에서 JWT 토큰을 가져옵니다.
+    // ✨ 실제 로그인 로직에서 이 토큰을 localStorage에 저장해야 합니다.
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+        setError('인증 실패: 로그인이 필요합니다.');
+        setStep('input');
+        return;
+    }
+
+    try {
+      setCurrentStatus('🔍 서버와 통신 중...');
+      setProgress(20);
+
+      const response = await fetch('http://localhost:8080/api/fortune/dream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      setProgress(50);
+      setCurrentStatus('🧠 응답 데이터 처리 중...');
+
+      if (response.status === 401) {
+        throw new Error('인증 실패: 로그인이 필요하거나 토큰이 만료되었습니다.');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`API 오류: ${errorData.message || response.statusText}`);
+      }
+
+      const apiResponse = await response.json();
+      const apiData = apiResponse.data;
+
+      if (!apiData) {
+        throw new Error('서버 응답 데이터가 비어있습니다.');
+      }
+
+      setProgress(80);
+      setCurrentStatus('✨ 해몽 결과 생성 중...');
+
+      // API 응답을 FortuneResult 형식에 맞게 변환
+      const result: FortuneResult = {
+        id: Date.now().toString(),
+        type: 'dream',
+        title: '꿈 해몽 결과',
+        content: `🌙 **꿈 해몽 분석**
+        
+📝 **꿈의 요약**
+${apiData.summary}
+
+🔍 **주요 상징 해석**
+${apiData.symbolInterpretation.symbolText}
+
+🎯 **심리상태 분석**
+• ${apiData.psychologicalAnalysis.tip1}
+• ${apiData.psychologicalAnalysis.tip2}
+• ${apiData.psychologicalAnalysis.tip3}
+• ${apiData.psychologicalAnalysis.tip4}
+
+🔮 **운세 전망**
+**단기 전망 (1개월)**
+• ${apiData.fortuneProspects.shortTermOutlook}
+
+**중기 전망 (3개월)**
+• ${apiData.fortuneProspects.mediumTermOutlook}
+
+**장기 전망 (1년)**
+• ${apiData.fortuneProspects.longTermOutlook}
+
+⚠️ **주의사항**
+• ${apiData.precautions.precaution1}
+• ${apiData.precautions.precaution2}
+• ${apiData.precautions.precaution3}
+
+💡 **조언 및 개운법**
+• ${apiData.adviceAndLuck.advice1}
+• ${apiData.adviceAndLuck.advice2}
+• ${apiData.adviceAndLuck.advice3}
+• ${apiData.adviceAndLuck.advice4}
+• ${apiData.adviceAndLuck.advice5}
+
+🌟 **특별 메시지**
+${apiData.specialMessage.messageText}`,
+        date: new Date().toLocaleDateString('ko-KR'),
+        paid: false,
+      };
+
+      setProgress(100);
+      setTimeout(() => onResult(result), 500);
+
+    } catch (error) {
+      setProgress(0);
+      setCurrentStatus('⚠️ 오류가 발생했습니다.');
+      setError(`서버와 통신 중 오류가 발생했습니다: ${error.message}`);
+      setStep('input');
+    }
   };
 
   const dreamTags = [
@@ -194,7 +244,6 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
             </AlertDescription>
           </Alert>
 
-          {/* <AdBanner type="card" className="mt-4" /> */}
 
           <Button 
             onClick={() => setStep('input')} 
@@ -279,7 +328,7 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
               </div>
 
               {/* 꿈을 꾼 시기 */}
-              {/* <div className="space-y-3">
+              <div className="space-y-3">
                 <Label className="text-ink-black dark:text-ink-gray flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
                   꿈을 꾼 시기
@@ -296,9 +345,19 @@ ${dreamContent.includes('물') ? `💧 **물의 상징**
                     <SelectItem value="lucid">💭 자각몽 (꿈인 줄 알았음)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
             </div>
           </Card>
+          
+          {error && (
+            <Alert variant="destructive" className="rounded-2xl">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>오류 발생</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
+            </Alert>
+          )}
 
           <Card className="border border-shadow-purple/30 bg-shadow-purple/5 p-5 rounded-2xl">
             <h3 className="text-ink-black dark:text-ink-gray mb-3 flex items-center">
