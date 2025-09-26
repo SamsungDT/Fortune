@@ -4,6 +4,7 @@ import dsko.hier.membership.domain.PlanType;
 import dsko.hier.membership.domain.UserPlan;
 import dsko.hier.membership.domain.UserPlanRepository;
 import dsko.hier.security.domain.User;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ public class UserPlanService {
     private final UserPlanRepository userPlanRepository;
 
     //UserPlan 을 회원가입 시 생성할 수 있도록 돕는 메서드
-    public void createUserPlan(User user) {
-        userPlanRepository.save(UserPlan.of(user, PlanType.FREE));
+    public void createUserPlan(User user, PlanType planType) {
+        userPlanRepository.save(UserPlan.of(user, planType));
     }
 
     public boolean checkUserHaveRightIfHaveThenReduceCount(String email) {
@@ -36,5 +37,21 @@ public class UserPlanService {
         }
 
         return false;
+    }
+
+    public Integer getRemainingFreeFortuneCount(String email) {
+        UserPlan userplan = userPlanRepository.findByUserEmail(email)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("해당 사용자의 멤버쉽 정보를 찾을 수 없습니다: " + email)
+                );
+        return userplan.getFreeFortuneCount();
+    }
+
+    public void addFreeFortuneCount(@NotNull String email, int count) {
+        UserPlan userplan = userPlanRepository.findByUserEmail(email)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("해당 사용자의 멤버쉽 정보를 찾을 수 없습니다: " + email)
+                );
+        userplan.increaseFreeFortuneCount(count);
     }
 }

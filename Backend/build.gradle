@@ -40,6 +40,9 @@ dependencies {
     //스프링 웹
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    //스프링 타임리프
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     //스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
     //Oatuh
