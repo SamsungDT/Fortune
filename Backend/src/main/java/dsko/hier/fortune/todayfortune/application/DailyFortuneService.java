@@ -1,5 +1,6 @@
 package dsko.hier.fortune.todayfortune.application;
 
+import dsko.hier.fortune.application.PromptSupplier;
 import dsko.hier.fortune.membership.application.UserPlanService;
 import dsko.hier.fortune.todayfortune.domain.DailyFortune;
 import dsko.hier.fortune.todayfortune.domain.DailyFortuneRepository;
@@ -71,7 +72,7 @@ public class DailyFortuneService {
                     "sex", user.getSex().toString()
             );
 
-            PromptTemplate promptTemplate = new PromptTemplate(dailyFortunePromptBuilder());
+            PromptTemplate promptTemplate = new PromptTemplate(PromptSupplier.daily());
             AIDailyFortuneResponse aiResponse = ChatClient.create(chatmodel)
                     .prompt()
                     .user(promptTemplate.create(params).getContents())
@@ -152,34 +153,5 @@ public class DailyFortuneService {
                 .advice(adviceResponseDto)
                 .tomorrowPreview(fortune.getTomorrowPreview())
                 .build();
-    }
-
-    // 오늘의 운세 프롬프트 템플릿을 문자열로 반환
-    private String dailyFortunePromptBuilder() {
-        return """
-                당신은 전문가 수준의 역술가입니다.
-                오늘의 운세를 사용자가 요청한 이름과 생년월일시를 바탕으로 상세하게 풀어주세요.
-                운세 내용은 긍정적이고 희망적인 어조로 작성하되, 실질적인 팁을 포함하여 사용자가 삶에 적용할 수 있도록 해주세요.
-                
-                **[요청 형식]**
-                이름 : {name}
-                생년 : {birthYear}
-                생월 : {birthMonth}
-                생일 : {birthDay}
-                생시 : {birthTime}
-                성별 : {sex}
-                
-                **[운세 항목]**
-                🌟 오늘의 전체운: 별점(1-5), 요약
-                ---
-                💰 재물운: 별점(1-5), 상세 설명, 복권 번호
-                💕 연애운: 별점(1-5), 싱글, 연인, 기혼으로 나누어 설명
-                🏆 직장/학업운: 별점(1-5), 상세 설명
-                🏥 건강운: 별점(1-5), 상세 설명
-                🎯 오늘의 키워드: 행운의 색, 숫자, 시간, 방향, 음식
-                ⚠️ 주의사항: 3가지 이상
-                💡 오늘의 조언: 한두 문장으로
-                🌙 내일 미리보기: 다음 날에 대한 간단한 힌트
-                """;
     }
 }
