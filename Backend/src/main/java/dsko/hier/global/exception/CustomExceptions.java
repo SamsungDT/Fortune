@@ -21,4 +21,10 @@ public class CustomExceptions {
             super(message);
         }
     }
+
+    public static class ImageException extends RuntimeException {
+        public ImageException(String message) {
+            super(message);
+        }
+    }
 }

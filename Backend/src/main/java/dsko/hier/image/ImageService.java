@@ -1,10 +1,13 @@
 package dsko.hier.image;
 
+import static dsko.hier.global.exception.CustomExcpMsgs.IMAGE_TYPE_INVALID;
+
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import dsko.hier.fortune.dto.ImageRequest;
 import dsko.hier.fortune.dto.MultiImageRequest;
+import dsko.hier.global.exception.CustomExceptions.ImageException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +30,7 @@ public class ImageService {
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private static final long URL_EXPIRATION_TIME_MILLIS = 1000 * 60 * 5; // 5분
+    private static final long URL_EXPIRATION_TIME_MILLIS = 1000 * 60 * 5L; // 5분
 
     public Map<String, String> getPresignedUrlForSimple(ImageRequest request) {
 
@@ -58,7 +61,6 @@ public class ImageService {
 
         for (String originalFileName : originalFileNames) {
             String fileExtension = getFileExtension(originalFileName);
-            String contentType = getContentType(fileExtension);
             String path = createPath(fileExtension);
 
             // Content-Type을 포함하여 PUT 요청 URL 생성
@@ -146,18 +148,12 @@ public class ImageService {
      * @return MIME 타입 문자열
      */
     private String getContentType(String extension) {
-        switch (extension) {
-            case "jpeg":
-            case "jpg":
-                return "image/jpeg";
-            case "png":
-                return "image/png";
-            case "gif":
-                return "image/gif";
-            case "webp":
-                return "image/webp";
-            default:
-                return "application/octet-stream"; // 기본값
+        if (extension.equals("jpg") || extension.equals("jpeg")) {
+            return "image/jpeg";
+        } else if (extension.equals("png")) {
+            return "image/png";
+        } else {
+            throw new ImageException(IMAGE_TYPE_INVALID.getMessage());
         }
     }
 
