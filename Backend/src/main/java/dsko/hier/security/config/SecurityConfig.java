@@ -1,5 +1,8 @@
 package dsko.hier.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dsko.hier.global.exception.discord.DiscordService;
+import dsko.hier.global.filter.LoggingFilter;
 import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.CustomUserDetailService;
 import dsko.hier.security.application.JwtTokenProvider;
@@ -32,6 +35,8 @@ public class SecurityConfig {
     private final JwtTokenProvider tokenProvider;
     private final RedisTokenService redisTokenService;
     private final CustomUserDetailService userDetailsService;
+    private final DiscordService discordService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,13 +52,19 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/logout"));
-        http.addFilterAt(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loggingFilter(), JwtAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenProvider, redisTokenService, userDetailsService);
+    }
+
+    @Bean
+    public LoggingFilter loggingFilter() {
+        return new LoggingFilter(discordService, objectMapper);
     }
 
     @Bean
@@ -85,6 +96,7 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:5500",
                 "http://127.0.0.1:5500",
+                "http://127.0.0.1:63342",
                 "http://localhost:8080"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
