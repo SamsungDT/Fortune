@@ -12,6 +12,7 @@ import dsko.hier.security.domain.User;
 import dsko.hier.security.domain.UserRole;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+@Slf4j
 @DataJpaTest
 @Import(EmailPasswordAccountRepositoryImpl.class)
 class EmailPasswordAccountRepositoryImplJpaTest {
@@ -50,6 +52,9 @@ class EmailPasswordAccountRepositoryImplJpaTest {
     @DisplayName("이메일로 이메일 비밀번호 계정 조회 시 쿼리 한 번만 실행되는지 확인")
     void findByUserEmail_singleQueryCheck() {
         // Given
+
+        log.info("시작 전 쿼리 횟수: {}", statistics.getPrepareStatementCount());
+
         BirthInfo birthInfo = BirthInfo.builder()
                 .birthYear(2001)
                 .birthMonth(8)
@@ -66,17 +71,27 @@ class EmailPasswordAccountRepositoryImplJpaTest {
                 .build();
         entityManager.persist(user);
 
+        log.info("User 엔티티 저장 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
+
         EmailPasswordAccount account = EmailPasswordAccount.builder()
                 .passwordHash("hashedPassword123")
                 .user(user)
                 .build();
         entityManager.persist(account);
+        log.info("EmailPasswordAccount 엔티티 저장 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
         entityManager.flush();
+        log.info("엔티티 매니저 플러시 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
         entityManager.clear();
+        log.info("엔티티 매니저 클리어 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
+
+        log.info("EmailPasswordAccount 엔티티 저장 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
 
         // When
         Optional<EmailPasswordAccount> foundAccount = emailPasswordAccountRepository.findByUserEmail(
                 "test@example.com");
+
+        log.info("이메일로 계정 조회 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
+
         //의도적으로 User 엔티티를 다시 조회하여 N+1 문제가 발생하는지 확인
         foundAccount.ifPresent(
                 acc -> {
@@ -85,6 +100,8 @@ class EmailPasswordAccountRepositoryImplJpaTest {
                     assertThat(associatedUser.getEmail()).isEqualTo("test@example.com");
                 }
         );
+
+        log.info("연관된 User 엔티티 접근 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
 
         // Then
         // 실행된 쿼리 수가 1인지 검증
