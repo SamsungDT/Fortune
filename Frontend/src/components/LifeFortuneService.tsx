@@ -50,9 +50,9 @@ type LifelongFortuneResponse = {
     recommendedExercise: string;
   };
   turningPoints: {
-    first: string;
-    second: string;
-    third: string;
+    ein: string;
+    zwei: string;
+    drei: string;
   };
   goodLuck: {
     luckyColors: string;
@@ -118,9 +118,9 @@ function buildFortuneMarkdown(displayName: string, f: LifelongFortuneResponse) {
 • 추천 운동: ${s(f.health?.recommendedExercise)}
 
 🌈 **인생의 전환점**
-• 1차: ${s(f.turningPoints?.first)}
-• 2차: ${s(f.turningPoints?.second)}
-• 3차: ${s(f.turningPoints?.third)}
+• 1차: ${s(f.turningPoints?.ein)}
+• 2차: ${s(f.turningPoints?.zwei)}
+• 3차: ${s(f.turningPoints?.drei)}
 
 💎 **개운 정보**
 • 행운의 색: ${s(f.goodLuck?.luckyColors)}
