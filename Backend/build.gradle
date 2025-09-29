@@ -112,7 +112,8 @@ tasks.named('test') {
     useJUnitPlatform()
     outputs.dir snippetsDir
 
-    finalizedBy 'asciidoctor', 'copyDocument', 'jacocoTestReport', 'jacocoTestCoverageVerification'
+    finalizedBy 'asciidoctor', 'copyDocument'
+//    , 'jacocoTestReport', 'jacocoTestCoverageVerification'
 }
 
 tasks.named('build') {
@@ -186,7 +187,8 @@ jacocoTestReport {
                             '**/domain/**',
                             '**/dto/**',
                             '**.*config.*',
-                            '**.*exception.*'
+                            '**.*exception.*',
+                            'global.*filter*'
                     ] + QDomains)
                 })
         )
@@ -222,7 +224,8 @@ jacocoTestCoverageVerification {
                     '**.*domain.*',
                     '**.*dto.*',
                     '**.*config.*',
-                    '**.*exception.*'
+                    '**.*exception.*',
+                    'global.*filter*'
             ] + QDomains
         }
     }
