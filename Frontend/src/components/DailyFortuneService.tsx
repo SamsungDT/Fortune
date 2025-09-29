@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import { Alert, AlertDescription } from "./ui/alert";
 import { FortuneResult } from "../App";
-import { Sparkles, Star, Clock } from 'lucide-react';
+import { Sparkles, Clock, Share2, Star } from 'lucide-react';
 
 // ================= 서버/타입 =================
 const API_BASE = 'http://localhost:8080';
@@ -14,7 +14,7 @@ type APIResponse<T> = { code: number; message: string; data: T | null };
 
 type DailyFortuneResponse = {
   id: string;
-  fortuneDate: string; // 'YYYY-MM-DD'
+  fortuneDate: string; // 'YYYY-MM-DD' (혹은 'YYYY.MM.DD'/'YYYY/MM/DD'도 들어올 수 있음)
   overallRating: number; // 1-5
   overallSummary: string;
   wealth: {
@@ -32,18 +32,49 @@ type DailyFortuneResponse = {
   tomorrowPreview: string;
 };
 
+// =============== 공용 유틸 ===============
 function getAccessToken() {
   return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 }
 const s = (v?: string | null) => (v && String(v).trim().length ? v : '-');
 function stars(n: number) { const c = Math.max(0, Math.min(5, Number(n) || 0)); return '★'.repeat(c) + '☆'.repeat(5 - c); }
-function formatDateKo(d: string) {
-  try { return new Date(`${d}T00:00:00`).toLocaleDateString('ko-KR'); } catch { return d; }
+
+/**
+ * 'YYYY-MM-DD' / 'YYYY.MM.DD' / 'YYYY/MM/DD' → {y, mo, d}
+ * 잘못된 입력이면 null
+ */
+function parseYMD(input?: string | null) {
+  if (!input) return null;
+  const m = String(input).trim().match(/^(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})$/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!y || !mo || !d) return null;
+  return { y, mo, d };
 }
 
+/**
+ * 날짜 문자열을 직접 포맷해서 "YYYY.MM.DD" 로 반환 (Date 객체 미사용 → Invalid Date 방지)
+ * 실패 시 오늘 날짜를 반환
+ */
+function formatDateLabel(input?: string | null) {
+  const ymd = parseYMD(input);
+  if (ymd) {
+    const mm = String(ymd.mo).padStart(2, '0');
+    const dd = String(ymd.d).padStart(2, '0');
+    return `${ymd.y}.${mm}.${dd}`;
+  }
+  const today = new Date();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  return `${today.getFullYear()}.${mm}.${dd}`;
+}
+
+// =============== 결과 마크다운 빌더 ===============
 function buildDailyMarkdown(f: DailyFortuneResponse) {
-  const dateKo = formatDateKo(f.fortuneDate);
-  return `📅 **${dateKo} 오늘의 운세**
+  const dateLabel = formatDateLabel(f.fortuneDate); // ✅ 안전 포맷
+  return `📅 **${dateLabel} 오늘의 운세**
 
 🌟 **전체운: ${stars(f.overallRating)}**
 ${s(f.overallSummary)}
@@ -92,6 +123,7 @@ ${s(f.tomorrowPreview)}
 `;
 }
 
+// =============== 컴포넌트 ===============
 interface DailyFortuneServiceProps {
   onResult: (result: FortuneResult) => void;
   onBack: () => void;
@@ -122,7 +154,7 @@ export function DailyFortuneService({ onResult, onBack }: DailyFortuneServicePro
       { delay: 700, progress: 100, text: '✨ 오늘의 운세 완성!' }
     ];
 
-    // API 호출 시작
+    // API 호출
     const apiPromise = (async () => {
       const res = await fetch(DAILY_URL, {
         method: 'GET',
@@ -137,7 +169,7 @@ export function DailyFortuneService({ onResult, onBack }: DailyFortuneServicePro
       return body.data;
     })();
 
-    // 진행률 표시
+    // 진행률 애니메이션
     for (const st of analysisSteps) {
       await new Promise(r => setTimeout(r, st.delay));
       setProgress(st.progress);
@@ -146,15 +178,19 @@ export function DailyFortuneService({ onResult, onBack }: DailyFortuneServicePro
 
     try {
       const data = await apiPromise;
+
+      const dateLabel = formatDateLabel(data.fortuneDate); // ✅ 여기서 안전 포맷
       const content = buildDailyMarkdown(data);
+
       const result: FortuneResult = {
         id: data.id || Date.now().toString(),
         type: 'dailyfortune',
-        title: `${formatDateKo(data.fortuneDate)} 오늘의 운세`,
+        title: `${dateLabel} 오늘의 운세`, // ✅ Invalid Date 방지
         content,
-        date: formatDateKo(data.fortuneDate),
+        date: dateLabel,                  // ✅ 저장도 동일 포맷
         paid: false,
       };
+
       setStep('complete');
       setTimeout(() => onResult(result), 300);
     } catch (e: any) {
@@ -167,7 +203,7 @@ export function DailyFortuneService({ onResult, onBack }: DailyFortuneServicePro
 
   return (
     <div className="p-6 space-y-6">
-      {/* 소개 화면 (여기서 바로 분석 시작) */}
+      {/* 소개 화면 */}
       {step === 'info' && (
         <div className="space-y-6">
           <Card className="hanji-texture border border-hanbok-gold/30 p-6 rounded-3xl ink-shadow">

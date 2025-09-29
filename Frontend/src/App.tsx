@@ -68,6 +68,8 @@ export interface User {
     loginProvider: string;
     birthDate?: string;
     birthTime?: string;
+    birthDate?: string;
+    birthTime?: string;
     isPremium?: boolean;
     premiumExpiry?: string;
     usageCount: {
@@ -102,6 +104,8 @@ function App() {
     const [user, setUser] = useState<User | null>(null);
     const [currentResult, setCurrentResult] = useState<FortuneResult | null>(null);
     const [pendingService, setPendingService] = useState<string>('');
+
+    // 통계 데이터 상태와 로딩 상태를 App 컴포넌트에서 중앙 관리
     const [appStats, setAppStats] = useState<AppStats | null>(null);
     const [appStatsLoading, setAppStatsLoading] = useState(true);
 
@@ -168,6 +172,18 @@ function App() {
 
     const handleLogin = async (loginData: any) => {
         const today = new Date().toDateString();
+
+        // 더미 결과 데이터 생성 (생략된 부분)
+        const dummyResults: FortuneResult[] = [
+            { id: '1', type: 'physiognomy', title: '관상 분석 결과', content: '...', date: '2024.12.20', paid: false },
+            { id: '2', type: 'dailyfortune', title: '2024.12.19 오늘의 운세', content: '...', date: '2024.12.19', paid: false },
+            { id: '3', type: 'lifefortune', title: '평생 운세 분석 결과', content: '...', date: '2024.12.18', paid: true },
+            { id: '4', type: 'dream', title: '꿈 해몽 결과', content: '...', date: '2024.12.17', paid: false },
+            { id: '5', type: 'dailyfortune', title: '2024.12.16 오늘의 운세', content: '...', date: '2024.12.16', paid: true },
+            { id: '6', type: 'physiognomy', title: '관상 분석 결과 #2', content: '...', date: '2024.12.15', paid: false },
+            { id: '7', type: 'dream', title: '꿈 해몽 결과 #2', content: '...', date: '2024.12.14', paid: true }
+        ];
+
         const newUser: User = {
             id: Date.now().toString(),
             name: loginData.name,
@@ -237,13 +253,17 @@ function App() {
         const today = new Date().toDateString();
         const updatedUser = { ...user };
 
+
         if (updatedUser.dailyFreeUsage.date !== today) {
             updatedUser.dailyFreeUsage = { date: today, physiognomy: false, lifefortune: false, dailyfortune: false, dream: false };
         }
 
+
         updatedUser.usageCount[serviceType as keyof typeof user.usageCount]++;
 
+
         const hasUsedFreeToday = updatedUser.dailyFreeUsage[serviceType as keyof typeof updatedUser.dailyFreeUsage];
+
 
         if (!hasUsedFreeToday) {
             updatedUser.dailyFreeUsage[serviceType as keyof typeof updatedUser.dailyFreeUsage] = true;
@@ -266,6 +286,7 @@ function App() {
     // ====================================================================
     const handlePaymentComplete = () => {
         if (!user || !currentResult) return;
+
         const updatedUser = { ...user };
         currentResult.paid = true;
         updatedUser.results = Array.isArray(updatedUser.results) ? [...updatedUser.results, currentResult] : [currentResult];

@@ -47,7 +47,8 @@ public class UserPlan extends BaseTimeEntity {
         UserPlan userPlan = new UserPlan();
         userPlan.user = user;
         userPlan.planType = planType;
-        userPlan.freeFortuneCount = planType == PlanType.FREE ? 3 : Integer.MAX_VALUE; // 무료 플랜은 3회, 유료 플랜은 무제한
+        userPlan.freeFortuneCount = planType == PlanType.FREE ? ((int) (Math.random() * 1000) % 4) + 1
+                : Integer.MAX_VALUE; // 무료 플랜은 1 ~ 4회 랜덤, 유료 플랜은 무제한
         userPlan.planStartDate = LocalDateTime.now();
         userPlan.planEndDate = LocalDateTime.now().plusYears(100); // 사실상 무제한 -> 차후 변경.
         return userPlan;
