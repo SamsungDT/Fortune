@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dsko.hier.global.exception.discord.DiscordService;
 import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.dto.request.EmailAndPassword;
 import dsko.hier.security.dto.response.TokenResponse;
@@ -34,6 +35,9 @@ class LoginServiceTest {
 
     @MockitoBean
     private RedisTokenService redisTokenService;
+
+    @MockitoBean
+    private DiscordService discordService;
 
     @MockitoBean
     private JwtTokenProvider tokenProvider;

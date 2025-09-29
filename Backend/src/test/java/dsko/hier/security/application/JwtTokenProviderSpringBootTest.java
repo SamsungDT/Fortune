@@ -2,16 +2,21 @@ package dsko.hier.security.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dsko.hier.global.exception.discord.DiscordService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 class JwtTokenProviderSpringBootTest {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private DiscordService discordService;
 
     @Test
     @DisplayName("액세스 토큰 생성 및 검증 테스트")

@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.6'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
     id 'jacoco'
 }
 
@@ -19,6 +21,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
@@ -34,7 +37,6 @@ repositories {
 springBoot {
     buildInfo()
 }
-
 
 dependencies {
     //스프링 웹
@@ -53,7 +55,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
     implementation 'com.nimbusds:nimbus-jose-jwt:9.37'
-
 
     //스프링 AOP
     implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -92,18 +93,30 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
     implementation "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
 
-    //Swagger
+    //Swagger + Restdocs
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
     // Actuator & Prometheus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 }
+
+ext {
+    snippetsDir = file("build/generated-snippets")
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+    outputs.dir snippetsDir
 
-    finalizedBy jacocoTestReport
-    finalizedBy jacocoTestCoverageVerification
+    finalizedBy 'asciidoctor', 'copyDocument', 'jacocoTestReport', 'jacocoTestCoverageVerification'
+}
+
+tasks.named('build') {
+    dependsOn copyDocument
 }
 
 //------------------ QueryDSL 설정 ------------------
@@ -122,14 +135,34 @@ clean.doLast {
     file(querydslDir).deleteDir()
 }
 
+//------------------ restdocs 설정 ------------------
+
+openapi3 {
+    setServer("http://localhost:8080")
+    title = "AI 운세 서비스 restdoc-swagger API 문서"
+    description = "AI 운세 서비스 API 명세서"
+    version = "v0.0.1"
+    format = "yaml"
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+}
+
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    from layout.buildDirectory.dir("docs/asciidoc")
+    into layout.projectDirectory.dir("src/main/resources/static/docs")
+}
+
 //-----------JaCoCo 설정 ----------------
 
 jacoco {
-    toolVersion = "0.8.13" // https://www.jacoco.org/jacoco/trunk/doc/changes.html
+    toolVersion = "0.8.13"
 }
 
 jacocoTestReport {
-    dependsOn test
     reports {
         html.required = true
     }
@@ -150,10 +183,10 @@ jacocoTestReport {
                             '**/*Response.class',
                             '**/*Interceptor.class',
                             '**/*Exception.class',
-                            '**/domain/**', // domain 디렉토리 하위의 모든 클래스 제외
-                            '**/dto/**', // dto 디렉토리 하위의 모든 클래스 제외
-                            '**.*config.*', // 모든 config 패키지 제외
-                            '**.*exception.*' // 모든 exception 패키지 제외
+                            '**/domain/**',
+                            '**/dto/**',
+                            '**.*config.*',
+                            '**.*exception.*'
                     ] + QDomains)
                 })
         )
@@ -186,10 +219,10 @@ jacocoTestCoverageVerification {
                     '**.*Response*',
                     '**.*Interceptor*',
                     '**.*Exception*',
-                    '**.*domain.*', // 모든 domain 패키지 제외
-                    '**.*dto.*', // 모든 dto 패키지 제외
-                    '**.*config.*', // 모든 config 패키지 제외
-                    '**.*exception.*' // 모든 exception 패키지 제외
+                    '**.*domain.*',
+                    '**.*dto.*',
+                    '**.*config.*',
+                    '**.*exception.*'
             ] + QDomains
         }
     }

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dsko.hier.fortune.dto.ImageRequest;
 import dsko.hier.fortune.dto.MultiImageRequest;
+import dsko.hier.global.exception.discord.DiscordService;
 import dsko.hier.global.redis.RedisTokenService;
 import dsko.hier.security.application.CustomUserDetailService;
 import dsko.hier.security.application.JwtTokenProvider;
@@ -45,6 +46,9 @@ class ImageControllerTest {
 
     @MockitoBean
     private CustomUserDetailService userDetailsService;
+
+    @MockitoBean
+    private DiscordService discordService;
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
