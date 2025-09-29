@@ -293,14 +293,14 @@ const content =
 - 주의:
   ${mapped.advice.caution.length ? mapped.advice.caution.map((c, i) => `${i + 1}. ${c}`).join('\n  ') : '-' }
 - 핵심 조언: ${mapped.advice.mainAdvice || '-'}
-- 요약: ${mapped.advice.summary || '-'}
 
-🖼️ **얼굴**
-<img src="displayUrl">
-
-🪣 버킷: ${bucketName || 'fortune-ki-bucket'}
-🔑 키: ${objectKey || '(확인 불가)'}
 `;
+// 🖼️ **얼굴**
+// <img src="displayUrl">
+
+// 🪣 버킷: ${bucketName || 'fortune-ki-bucket'}
+// 🔑 키: ${objectKey || '(확인 불가)'}
+
 
       setCurrentStatus('🎉 분석 완료!');
       setProgress(100);
