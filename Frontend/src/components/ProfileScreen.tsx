@@ -108,29 +108,6 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
           </div>
         </Card>
 
-        {/* 오늘의 이용 현황 */}
-        <Card className="border border-border p-5 rounded-2xl">
-          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">✨ 오늘의 이용 현황</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">무료 이용 가능</span>
-              <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40">
-                {availableFreeToday}회 남음
-              </Badge>
-            </div>
-            <div className="flex justify-between items-center">
-              {/* <span className="text-muted-foreground">오늘 이용한 서비스</span> */}
-              <span className="text-hanbok-gold-dark font-semibold">{todayFreeUsed}회</span>
-            </div>
-            {user.isPremium && (
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">후원 상태</span>
-                <span className="text-hanbok-gold-dark font-semibold text-sm">{user.premiumExpiry}</span>
-              </div>
-            )}
-          </div>
-        </Card>
-
         {/* 설정 섹션 */}
         <Card className="border border-border p-5 rounded-2xl">
           <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush flex items-center">
