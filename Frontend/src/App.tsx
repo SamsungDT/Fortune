@@ -220,7 +220,7 @@ const fetchAppStats = useCallback(async () => {
                 dailyfortune: false,
                 dream: false
             },
-            results: dummyResults
+            results: []
         };
         setUser(newUser);
         
