@@ -1,10 +1,12 @@
 package dsko.hier.security.presentation;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dsko.hier.global.exception.discord.DiscordService;
 import dsko.hier.security.domain.BirthTime;
 import dsko.hier.security.domain.Sex;
 import dsko.hier.security.dto.request.EmailAndPassword;
@@ -13,16 +15,24 @@ import dsko.hier.security.dto.request.EmailSignUpDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest // 전체 애플리케이션 컨텍스트를 로드합니다.
-@Transactional // 테스트 후 DB 롤백을 보장합니다.
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class EmailAccountControllerTest {
 
     private final String BASE_URL = "/api/security/email";
@@ -35,10 +45,14 @@ class EmailAccountControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private DiscordService discordService;
+
     @BeforeEach
-    void setup() {
+    void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
+                .webAppContextSetup(webApplicationContext)
+                .apply(documentationConfiguration(restDocumentation)) // 이 부분 수정
                 .build();
     }
 
