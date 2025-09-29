@@ -23,7 +23,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 // API 및 타입 정의 (설명서 기반)
 // ====================================================================
 const API_BASE = 'http://localhost:8080';
-const APP_STATS_URL = `${API_BASE}/api/fortune/statistics`; 
+const APP_STATS_URL = `${API_BASE}/api/fortune/statistics`;
 
 interface StatisticsResponseData {
     totalUsers: number;
@@ -67,8 +67,8 @@ export interface User {
     name: string;
     email: string;
     loginProvider: string;
-    birthDate?: string; 
-    birthTime?: string; 
+    birthDate?: string;
+    birthTime?: string;
     isPremium?: boolean;
     premiumExpiry?: string;
     usageCount: {
@@ -103,7 +103,7 @@ function App() {
     const [user, setUser] = useState<User | null>(null);
     const [currentResult, setCurrentResult] = useState<FortuneResult | null>(null);
     const [pendingService, setPendingService] = useState<string>('');
-    
+
     // 통계 데이터 상태와 로딩 상태를 App 컴포넌트에서 중앙 관리
     const [appStats, setAppStats] = useState<AppStats | null>(null);
     const [appStatsLoading, setAppStatsLoading] = useState(true);
@@ -111,54 +111,54 @@ function App() {
     // ====================================================================
     // 통계 데이터를 가져오는 비동기 함수 (인증 헤더 제거 및 오류 방어 보강)
     // ====================================================================
-const fetchAppStats = useCallback(async () => {
-    setAppStatsLoading(true);
-    try {
-        const res = await fetch(APP_STATS_URL); 
-        
-        if (!res.ok) {
-            console.error(`통계 API 호출 실패: HTTP ${res.status} ${res.statusText}. Mock 데이터 사용.`);
-            setAppStats(MOCK_APP_STATS); 
-            return;
-        }
+    const fetchAppStats = useCallback(async () => {
+        setAppStatsLoading(true);
+        try {
+            const res = await fetch(APP_STATS_URL);
 
-        const body: APIResponse<StatisticsResponseData> = await res.json();
-        
-        // ✨ 수정된 조건: body.code가 문자열 '200'이거나 숫자 200일 때, 그리고 data가 존재할 때 성공으로 간주
-        const isSuccess = (body.code === '200' || body.code === 200) && body.data;
+            if (!res.ok) {
+                console.error(`통계 API 호출 실패: HTTP ${res.status} ${res.statusText}. Mock 데이터 사용.`);
+                setAppStats(MOCK_APP_STATS);
+                return;
+            }
 
-        if (isSuccess) {
-            const data = body.data as StatisticsResponseData; // body.data가 null이 아님을 TypeScript에 명시
-            
-            const totalReadings = 
-                data.faceResultCount + 
-                data.lifeLongResultCount + 
-                data.dailyFortuneResultCount + 
-                data.dreamInterpretationResultCount;
-            
-            const mappedStats: AppStats = {
-                totalUsers: data.totalUsers,
-                totalReadings: totalReadings,
-                physiognomyCount: data.faceResultCount,
-                lifeFortuneCount: data.lifeLongResultCount, 
-                dailyFortuneCount: data.dailyFortuneResultCount,
-                dreamCount: data.dreamInterpretationResultCount, 
-            };
-            
-            console.log("App Stats successfully loaded:", mappedStats);
-            setAppStats(mappedStats);
-        } else {
-            console.error("Failed to fetch app stats (API Message Error):", body.message, "Full body:", body);
-            // 이 경우, 서버는 성공 메시지를 보냈지만 데이터가 유효하지 않으므로 Mock 데이터를 사용합니다.
-            setAppStats(MOCK_APP_STATS); 
+            const body: APIResponse<StatisticsResponseData> = await res.json();
+
+            // ✨ 수정된 조건: body.code가 문자열 '200'이거나 숫자 200일 때, 그리고 data가 존재할 때 성공으로 간주
+            const isSuccess = (body.code === '200' || body.code === 200) && body.data;
+
+            if (isSuccess) {
+                const data = body.data as StatisticsResponseData; // body.data가 null이 아님을 TypeScript에 명시
+
+                const totalReadings =
+                    data.faceResultCount +
+                    data.lifeLongResultCount +
+                    data.dailyFortuneResultCount +
+                    data.dreamInterpretationResultCount;
+
+                const mappedStats: AppStats = {
+                    totalUsers: data.totalUsers,
+                    totalReadings: totalReadings,
+                    physiognomyCount: data.faceResultCount,
+                    lifeFortuneCount: data.lifeLongResultCount,
+                    dailyFortuneCount: data.dailyFortuneResultCount,
+                    dreamCount: data.dreamInterpretationResultCount,
+                };
+
+                console.log("App Stats successfully loaded:", mappedStats);
+                setAppStats(mappedStats);
+            } else {
+                console.error("Failed to fetch app stats (API Message Error):", body.message, "Full body:", body);
+                // 이 경우, 서버는 성공 메시지를 보냈지만 데이터가 유효하지 않으므로 Mock 데이터를 사용합니다.
+                setAppStats(MOCK_APP_STATS);
+            }
+        } catch (error) {
+            console.error("Network or parsing error fetching app stats. Using mock data:", error);
+            setAppStats(MOCK_APP_STATS);
+        } finally {
+            setAppStatsLoading(false);
         }
-    } catch (error) {
-        console.error("Network or parsing error fetching app stats. Using mock data:", error);
-        setAppStats(MOCK_APP_STATS);
-    } finally {
-        setAppStatsLoading(false);
-    }
-}, []);
+    }, []);
 
     // 앱 마운트 시 통계 데이터 로드 시작
     useEffect(() => {
@@ -174,11 +174,11 @@ const fetchAppStats = useCallback(async () => {
 
     const handleUserInfoComplete = (userInfoData: any) => {
         if (!user) return;
-        
-        const updatedUser = { 
-            ...user, 
-            birthDate: userInfoData.birthDate, 
-            birthTime: userInfoData.birthTime 
+
+        const updatedUser = {
+            ...user,
+            birthDate: userInfoData.birthDate,
+            birthTime: userInfoData.birthTime
         };
         setUser(updatedUser);
         setCurrentScreen('dashboard');
@@ -186,7 +186,7 @@ const fetchAppStats = useCallback(async () => {
 
     const handleLogin = (loginData: any) => {
         const today = new Date().toDateString();
-        
+
         // 더미 결과 데이터 생성 (생략된 부분)
         const dummyResults: FortuneResult[] = [
             { id: '1', type: 'physiognomy', title: '관상 분석 결과', content: '...', date: '2024.12.20', paid: false },
@@ -223,7 +223,7 @@ const fetchAppStats = useCallback(async () => {
             results: []
         };
         setUser(newUser);
-        
+
         if (loginData.provider === 'email') {
             if (loginData.birthDate && loginData.birthTime) {
                 setCurrentScreen('dashboard');
@@ -246,7 +246,7 @@ const fetchAppStats = useCallback(async () => {
 
         const today = new Date().toDateString();
         const updatedUser = { ...user };
-        
+
         if (updatedUser.dailyFreeUsage.date !== today) {
             updatedUser.dailyFreeUsage = {
                 date: today,
@@ -256,11 +256,11 @@ const fetchAppStats = useCallback(async () => {
                 dream: false
             };
         }
-        
+
         updatedUser.usageCount[serviceType as keyof typeof user.usageCount]++;
-        
+
         const hasUsedFreeToday = updatedUser.dailyFreeUsage[serviceType as keyof typeof updatedUser.dailyFreeUsage];
-        
+
         if (!hasUsedFreeToday) {
             updatedUser.dailyFreeUsage[serviceType as keyof typeof updatedUser.dailyFreeUsage] = true;
             result.paid = false;
@@ -277,7 +277,7 @@ const fetchAppStats = useCallback(async () => {
 
     const handlePaymentComplete = () => {
         if (!user || !currentResult) return;
-        
+
         const updatedUser = { ...user };
         currentResult.paid = true;
         updatedUser.results.push(currentResult);
@@ -323,13 +323,13 @@ const fetchAppStats = useCallback(async () => {
 
     const handleSupportPurchase = (planType: 'monthly' | 'yearly') => {
         if (!user) return;
-        
+
         alert(`${planType === 'monthly' ? '월간' : '연간'} 후원을 시작합니다! 감사합니다 🙏`);
-        
+
         const updatedUser = { ...user };
         updatedUser.isPremium = true;
         updatedUser.premiumExpiry = '영구 프리미엄';
-        
+
         setUser(updatedUser);
     };
 
@@ -430,119 +430,123 @@ const fetchAppStats = useCallback(async () => {
                 {appBarProps && (
                     <TopAppBar {...appBarProps} />
                 )}
-                
+
                 {/* 메인 콘텐츠 */}
                 <div className={`flex-1 ${shouldShowBottomNav ? 'pb-16' : ''}`}>
-                {/* LoginScreen에 통계 데이터 전달 */}
-                {currentScreen === 'login' && (
-                    <LoginScreen 
-                        onLogin={handleLogin} 
-                        appStats={appStats}
-                        onGoToSignup={() => setCurrentScreen('signup')}
-                    />
-                )}
-                
-                {/* SignupScreen에 통계 데이터 전달 */}
-                {currentScreen === 'signup' && (
-                    <SignupScreen 
-                        onSignup={handleSignup} 
-                        appStats={appStats} 
-                        onGoToLogin={() => setCurrentScreen('login')}
-                    />
-                )}
-                
-                {currentScreen === 'userinfo' && user && (
-                    <UserInfoScreen 
-                        user={user}
-                        onComplete={handleUserInfoComplete}
-                    />
-                )}
-                
-                {/* MainDashboard에 통계 데이터 및 로딩 상태 전달 */}
-                {currentScreen === 'dashboard' && user && (
-                    <MainDashboard 
-                        user={user}
-                        appStats={appStats} 
-                        appStatsLoading={appStatsLoading} 
-                        onServiceSelect={handleServiceSelect}
-                        onViewMyResults={handleViewMyResults}
-                        onLogout={handleLogout}
-                    />
-                )}
-                
-                {currentScreen === 'physiognomy' && (
-                    <PhysiognomyService 
-                        onResult={(result) => handleServiceResult(result, 'physiognomy')}
-                        onBack={handleBackToDashboard}
-                    />
-                )}
-                
-                {currentScreen === 'lifefortune' && (
-                    <LifeFortuneService 
-                        onResult={(result) => handleServiceResult(result, 'lifefortune')}
-                        onBack={handleBackToDashboard}
-                    />
-                )}
-                
-                {currentScreen === 'dailyfortune' && (
-                    <DailyFortuneService 
-                        onResult={(result) => handleServiceResult(result, 'dailyfortune')}
-                        onBack={handleBackToDashboard}
-                    />
-                )}
-                
-                {currentScreen === 'dream' && (
-                    <DreamInterpretationService 
-                        onResult={(result) => handleServiceResult(result, 'dream')}
-                        onBack={handleBackToDashboard}
-                    />
-                )}
-                
-                {currentScreen === 'result' && currentResult && (
-                    <ResultScreen 
-                        result={currentResult}
-                        onBack={handleBackToDashboard}
-                        onShare={() => alert('카카오톡 공유 기능 (실제 앱에서는 카카오 SDK 연동)')}
-                    />
-                )}
-                
-                {currentScreen === 'payment' && (
-                    <PaymentScreen 
-                        serviceType={pendingService}
-                        onPaymentComplete={handlePaymentComplete}
-                        onCancel={handleBackToDashboard}
-                    />
-                )}
-                
-                {currentScreen === 'myresults' && user && (
-                    <MyResultsScreen 
-                        user={user}
-                        onBack={() => setCurrentScreen('dashboard')}
-                        onResultSelect={(result) => {
-                            setCurrentResult(result);
-                            setCurrentScreen('result');
-                        }}
-                    />
-                )}
-                
-                {currentScreen === 'profile' && user && (
-                    <ProfileScreen 
-                        user={user}
-                        onLogout={handleLogout}
-                    />
-                )}
-                
-                {currentScreen === 'support' && user && (
-                    <SupportScreen 
-                        user={user}
-                        onSupport={handleSupportPurchase}
-                    />
-                )}
+                    {/* LoginScreen에 통계 데이터 전달 */}
+                    {currentScreen === 'login' && (
+                        <LoginScreen
+                            onLogin={handleLogin}
+                            appStats={appStats}
+                            onGoToSignup={() => setCurrentScreen('signup')}
+                        />
+                    )}
+
+                    {/* SignupScreen에 통계 데이터 전달 */}
+                    {currentScreen === 'signup' && (
+                        <SignupScreen
+                            onSignup={handleSignup}
+                            appStats={appStats}
+                            onGoToLogin={() => setCurrentScreen('login')}
+                        />
+                    )}
+
+                    {currentScreen === 'userinfo' && user && (
+                        <UserInfoScreen
+                            user={user}
+                            onComplete={handleUserInfoComplete}
+                        />
+                    )}
+
+                    {/* MainDashboard에 통계 데이터 및 로딩 상태 전달 */}
+                    {currentScreen === 'dashboard' && user && (
+                        <MainDashboard
+                            user={user}
+                            appStats={appStats}
+                            appStatsLoading={appStatsLoading}
+                            onServiceSelect={handleServiceSelect}
+                            onViewMyResults={handleViewMyResults}
+                            onLogout={handleLogout}
+                        />
+                    )}
+
+                    {currentScreen === 'physiognomy' && (
+                        <PhysiognomyService
+                            onResult={(result) => handleServiceResult(result, 'physiognomy')}
+                            onBack={handleBackToDashboard}
+                        />
+                    )}
+
+                    {currentScreen === 'lifefortune' && (
+                        <LifeFortuneService
+                            onResult={(result) => handleServiceResult(result, 'lifefortune')}
+                            onBack={handleBackToDashboard}
+                        />
+                    )}
+
+                    {currentScreen === 'dailyfortune' && (
+                        <DailyFortuneService
+                            onResult={(result) => handleServiceResult(result, 'dailyfortune')}
+                            onBack={handleBackToDashboard}
+                        />
+                    )}
+
+                    {currentScreen === 'dream' && (
+                        <DreamInterpretationService
+                            onResult={(result) => handleServiceResult(result, 'dream')}
+                            onBack={handleBackToDashboard}
+                        />
+                    )}
+
+                    {currentScreen === 'result' && currentResult && (
+                        <ResultScreen
+                            result={currentResult}
+                            onBack={handleBackToDashboard}
+                            onShare={() => alert('카카오톡 공유 기능 (실제 앱에서는 카카오 SDK 연동)')}
+                            onRecommend={(service) => setCurrentScreen(service as Screen)} // ✅ 추가
+                        />
+                    )}
+
+
+                    {currentScreen === 'payment' && (
+                        <PaymentScreen
+                            serviceType={pendingService}
+                            onPaymentComplete={handlePaymentComplete}
+                            onCancel={handleBackToDashboard}
+                        />
+                    )}
+
+                    {currentScreen === 'myresults' && user && (
+                        <MyResultsScreen
+                            user={user}
+                            onBack={() => setCurrentScreen('dashboard')}
+                            onResultSelect={(result) => {
+                                setCurrentResult(result);
+                                setCurrentScreen('result');
+                            }}
+                        />
+                    )}
+
+
+
+                    {currentScreen === 'profile' && user && (
+                        <ProfileScreen
+                            user={user}
+                            onLogout={handleLogout}
+                        />
+                    )}
+
+                    {currentScreen === 'support' && user && (
+                        <SupportScreen
+                            user={user}
+                            onSupport={handleSupportPurchase}
+                        />
+                    )}
                 </div>
-                
+
                 {/* 하단 네비게이션 */}
                 {shouldShowBottomNav && (
-                    <BottomNavigation 
+                    <BottomNavigation
                         currentScreen={currentScreen}
                         onNavigate={handleBottomNavigation}
                         user={user}
