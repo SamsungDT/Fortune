@@ -53,10 +53,9 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
       '친구': 'FRIENDS',
     };
 
-    const keywords = selectedTags.map(tag => ({
-      name: tag,
-      type: keywordMapping[tag] || 'ETC',
-    }));
+    const keywords = selectedTags.map(tag => 
+     keywordMapping[tag] || 'ETC',
+    );
 
     const requestBody = {
       dreamDescription: dreamContent,
