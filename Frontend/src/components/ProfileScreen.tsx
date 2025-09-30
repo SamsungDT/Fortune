@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -7,13 +7,13 @@ import { Switch } from "./ui/switch";
 import { Alert, AlertDescription } from "./ui/alert";
 import { User } from "../App";
 import { useTheme } from "./ThemeProvider";
-import { 
-  Settings, 
-  Bell, 
-  Shield, 
-  HelpCircle, 
-  Star, 
-  Share2, 
+import {
+  Settings,
+  Bell,
+  Shield,
+  HelpCircle,
+  Star,
+  Share2,
   Download,
   Trash2,
   ChevronRight,
@@ -49,36 +49,128 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
     autoBackup: false,
     shareUsage: true
   });
+  const [userResults, setUserResults] = useState<FortuneResult[]>(user.results);
+  const [stats, setStats] = useState({
+    total: 0,
+    physiognomy: 0,
+    lifefortune: 0,
+    dailyfortune: 0,
+    dream: 0,
+    paid: 0,
+    free: 0,
+  });
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const handleSettingChange = (key: string, value: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  // ==================================================
+  // 나의 결과 조회 API
+  // ==================================================
+  const fetchMyResults = async () => {
+    try {
+      const at = getAccessToken();
+      if (!at) return;
+
+      const res = await fetch(`${API_BASE}/api/fortune/statistics/findAll`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body: APIResponse<{
+        total?: number;
+        physiognomy?: number;
+        lifefortune?: number;
+        dailyfortune?: number;
+        dream?: number;
+        paid?: number;
+        free?: number;
+        results?: FortuneResult[];
+      }> = await res.json();
+
+      if (body.code === 200 && body.data) {
+        if (body.data.results) setUserResults(body.data.results);
+
+        const resData = body.data.results ?? userResults;
+
+        setStats({
+          total: body.data.total ?? resData.length,
+          physiognomy: body.data.physiognomy ?? resData.filter(r => r.type === 'physiognomy').length,
+          lifefortune: body.data.lifefortune ?? resData.filter(r => r.type === 'lifefortune').length,
+          dailyfortune: body.data.dailyfortune ?? resData.filter(r => r.type === 'dailyfortune').length,
+          dream: body.data.dream ?? resData.filter(r => r.type === 'dream').length,
+          paid: body.data.paid ?? resData.filter(r => r.paid).length,
+          free: body.data.free ?? resData.filter(r => !r.paid).length,
+        });
+      }
+    } catch (err) {
+      console.error('나의 결과 조회 실패:', err);
+
+      // 실패 시 fallback
+      const resData = userResults;
+      setStats({
+        total: resData.length,
+        physiognomy: resData.filter(r => r.type === 'physiognomy').length,
+        lifefortune: resData.filter(r => r.type === 'lifefortune').length,
+        dailyfortune: resData.filter(r => r.type === 'dailyfortune').length,
+        dream: resData.filter(r => r.type === 'dream').length,
+        paid: resData.filter(r => r.paid).length,
+        free: resData.filter(r => !r.paid).length,
+      });
+    }
   };
 
-  const handleLogout = async () => {
+
+  useEffect(() => {
+    const results = user.results;
+
+    const newStats = {
+      total: results.length,
+      physiognomy: results.filter(r => r.type === 'physiognomy').length,
+      lifefortune: results.filter(r => r.type === 'lifefortune').length,
+      dailyfortune: results.filter(r => r.type === 'dailyfortune').length,
+      dream: results.filter(r => r.type === 'dream').length,
+      paid: results.filter(r => r.paid).length,
+      free: results.filter(r => !r.paid).length,
+    };
+    setStats(newStats);
+  }, [user.results]);
+
+  // ==================================================
+  // 로그아웃 처리
+  // ==================================================
+  const handleLogout = () => {
     if (loggingOut) return;
     setLoggingOut(true);
     try {
       const at = getAccessToken();
       if (at) {
-        await fetch(`${API_BASE}/api/security/common/logout`, {
+        fetch(`${API_BASE}/api/security/common/logout`, {
           method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${at}`, // 액세스 토큰로 로그아웃
-          },
-        }).catch(() => {}); // 네트워크 에러여도 토큰 정리는 진행
+          headers: { Authorization: `Bearer ${at}` }
+        }).catch(() => { });
       }
     } finally {
-      clearTokens(); // 200/401 상관없이 정리
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
       setLoggingOut(false);
-      onLogout?.();  // 라우팅/상태 초기화는 부모에서
+      onLogout();
     }
   };
+
+
+
+
+  const handleSettingChange = (key: string, value: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+
 
   const totalUsage = Object.values(user.usageCount).reduce((sum, count) => sum + count, 0);
   const todayFreeUsed = Object.values(user.dailyFreeUsage).filter(used => used).length - 1; // -1 for date field
   const availableFreeToday = 4 - todayFreeUsed;
+
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-black">
@@ -93,7 +185,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                 </div>
               )}
             </div>
-            
+
             <div>
               <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush font-semibold">{user.name}</h2>
               <p className="text-muted-foreground text-sm">{user.email}</p>
@@ -114,7 +206,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
             <Settings className="w-5 h-5 mr-2" />
             설정
           </h3>
-          
+
           <div className="space-y-4">
             {/* 테마 설정 */}
             <div className="flex items-center justify-between p-3 rounded-xl hover:bg-hanbok-gold/5 transition-colors">
@@ -125,8 +217,8 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                   <p className="text-xs text-muted-foreground">어두운 테마로 변경</p>
                 </div>
               </div>
-              <Switch 
-                checked={isDark} 
+              <Switch
+                checked={isDark}
                 onCheckedChange={toggleTheme}
                 className="data-[state=checked]:bg-hanbok-gold"
               />
@@ -140,31 +232,31 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
               <div className="text-2xl mb-2">👤</div>
-              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.physiognomy}</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{stats.physiognomy}</div>
               <div className="text-xs text-muted-foreground">관상</div>
             </div>
             <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
               <div className="text-2xl mb-2">🌟</div>
-              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.lifefortune}</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{stats.lifefortune}</div>
               <div className="text-xs text-muted-foreground">평생운세</div>
             </div>
             <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
               <div className="text-2xl mb-2">📅</div>
-              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.dailyfortune}</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{stats.dailyfortune}</div>
               <div className="text-xs text-muted-foreground">오늘운세</div>
             </div>
             <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
               <div className="text-2xl mb-2">💭</div>
-              <div className="text-xl text-hanbok-gold-dark font-bold">{user.usageCount.dream}</div>
+              <div className="text-xl text-hanbok-gold-dark font-bold">{stats.dream}</div>
               <div className="text-xs text-muted-foreground">해몽</div>
             </div>
           </div>
-          
+
           <Separator className="my-4" />
-          
+
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">총 이용 횟수</span>
-            <span className="text-2xl text-hanbok-gold-dark font-bold">{totalUsage}회</span>
+            <span className="text-2xl text-hanbok-gold-dark font-bold">{stats.total}회</span>
           </div>
         </Card>
 
@@ -177,9 +269,9 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
         {/* 데이터 관리 */}
         <Card className="border border-border p-5 rounded-2xl">
           <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">🗂️ 데이터 관리</h3>
-          <div className="space-y-3">            
-            <Button 
-              variant="outline" 
+          <div className="space-y-3">
+            <Button
+              variant="outline"
               className="w-full justify-start border-dancheong-red/30 text-dancheong-red hover:bg-dancheong-red/10"
             >
               <Trash2 className="w-4 h-4 mr-2" />
@@ -190,7 +282,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
 
         {/* 로그아웃 */}
         <div className="pt-4">
-          <Button 
+          <Button
             onClick={handleLogout}
             disabled={loggingOut}
             variant="outline"
