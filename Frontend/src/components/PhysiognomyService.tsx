@@ -27,23 +27,23 @@ function mapFaceResponse(data: any) {
       summary: data?.overallImpression?.overallImpression ?? '',
       fortune: data?.overallImpression?.overallFortune ?? ''
     },
-    eye:   { feature: data?.eye?.feature ?? '' },
-    nose:  { feature: data?.nose?.feature ?? '' },
+    eye: { feature: data?.eye?.feature ?? '' },
+    nose: { feature: data?.nose?.feature ?? '' },
     mouth: { feature: data?.mouth?.feature ?? '' },
     advice: {
-      keyword:    data?.advice?.keyword ?? '',
-      caution:    splitCaution(data?.advice?.caution),
+      keyword: data?.advice?.keyword ?? '',
+      caution: splitCaution(data?.advice?.caution),
       mainAdvice: data?.advice?.mainAdvice ?? '',
-      summary:    data?.advice?.summary ?? ''
+      summary: data?.advice?.summary ?? ''
     }
   };
 }
 
 // ================= 서버/엔드포인트/타입/헬퍼 =================
-const API_BASE = 'http://43.202.64.247'; // 필요 시 .env 로 치환
+const API_BASE = ''; // 필요 시 .env 로 치환
 const PRESIGN_URL = `${API_BASE}/api/fortune/face/picture`; // Presigned URL 발급(POST)
 const ANALYZE_URL = `${API_BASE}/api/fortune/face`;          // 관상 분석(POST)
-const LOGIN_URL   = `${API_BASE}/api/auth/login`;            // ⬅️ 예시: 로그인 엔드포인트(프로젝트에 맞게 수정)
+const LOGIN_URL = `${API_BASE}/api/auth/login`;            // ⬅️ 예시: 로그인 엔드포인트(프로젝트에 맞게 수정)
 
 // 공용 API 래퍼
 type APIResponse<T> = { code: number; message: string; data: T | null };
@@ -51,8 +51,8 @@ type APIResponse<T> = { code: number; message: string; data: T | null };
 // 분석 응답 스키마(문서 기준)
 type FaceAnalyzeResponse = {
   overallImpression: { totalRating: number; summary: string };
-  eye:   { rating: number; description: string };
-  nose:  { rating: number; description: string };
+  eye: { rating: number; description: string };
+  nose: { rating: number; description: string };
   mouth: { rating: number; description: string };
   advice: {
     keyword?: string;
@@ -138,9 +138,9 @@ function normalizeCaution(advice: FaceAnalyzeResponse['advice'] | any): string[]
   const l = advice.adviceList;
   const toArray = (v: any): string[] =>
     Array.isArray(v) ? v.filter(Boolean).map(String)
-    : typeof v === 'string' ? [v]
-    : [];
-  const out = [ ...toArray(c), ...toArray(l) ];
+      : typeof v === 'string' ? [v]
+        : [];
+  const out = [...toArray(c), ...toArray(l)];
   return Array.from(new Set(out));
 }
 
@@ -269,13 +269,13 @@ export function PhysiognomyService({ onResult }: PhysiognomyServiceProps) {
       const stars = (n: number) => {
         const v = Math.max(0, Math.min(5, Math.floor(Number(n) || 0)));
         return '★'.repeat(v) + '☆'.repeat(5 - v);
-        };
-// 서버 응답을 화면용으로 매핑
-const mapped = mapFaceResponse(analyzeBody.data);
+      };
+      // 서버 응답을 화면용으로 매핑
+      const mapped = mapFaceResponse(analyzeBody.data);
 
-// 결과 문자열
-const content =
-`🎯 **전체 인상**
+      // 결과 문자열
+      const content =
+        `🎯 **전체 인상**
 - 설명: ${mapped.overall.summary}
 - 운세: ${mapped.overall.fortune}
 
@@ -291,15 +291,15 @@ const content =
 💡 **조언**
 - 키워드: ${mapped.advice.keyword || '-'}
 - 주의:
-  ${mapped.advice.caution.length ? mapped.advice.caution.map((c, i) => `${i + 1}. ${c}`).join('\n  ') : '-' }
+  ${mapped.advice.caution.length ? mapped.advice.caution.map((c, i) => `${i + 1}. ${c}`).join('\n  ') : '-'}
 - 핵심 조언: ${mapped.advice.mainAdvice || '-'}
 
 `;
-// 🖼️ **얼굴**
-// <img src="displayUrl">
+      // 🖼️ **얼굴**
+      // <img src="displayUrl">
 
-// 🪣 버킷: ${bucketName || 'fortune-ki-bucket'}
-// 🔑 키: ${objectKey || '(확인 불가)'}
+      // 🪣 버킷: ${bucketName || 'fortune-ki-bucket'}
+      // 🔑 키: ${objectKey || '(확인 불가)'}
 
 
       setCurrentStatus('🎉 분석 완료!');
@@ -361,20 +361,20 @@ const content =
             </div>
           </Card>
 
-            <Alert className="border-hanbok-gold/30 bg-hanbok-gold/5 rounded-2xl">
-              <AlertCircle className="h-4 w-4 text-hanbok-gold-dark" />
-              <AlertDescription className="text-sm text-ink-black dark:text-ink-gray">
-                개인정보는 분석 후 즉시 삭제되며, 결과만 안전하게 저장됩니다.
-              </AlertDescription>
-            </Alert>
+          <Alert className="border-hanbok-gold/30 bg-hanbok-gold/5 rounded-2xl">
+            <AlertCircle className="h-4 w-4 text-hanbok-gold-dark" />
+            <AlertDescription className="text-sm text-ink-black dark:text-ink-gray">
+              개인정보는 분석 후 즉시 삭제되며, 결과만 안전하게 저장됩니다.
+            </AlertDescription>
+          </Alert>
 
-            <Button
-              onClick={() => setStep('input')}
-              className="w-full h-14 bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black rounded-3xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Sparkles className="w-5 h-5 mr-2" />
-              관상 분석 시작하기
-            </Button>
+          <Button
+            onClick={() => setStep('input')}
+            className="w-full h-14 bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black rounded-3xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            관상 분석 시작하기
+          </Button>
         </div>
       )}
 
@@ -393,11 +393,10 @@ const content =
                   <Input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" id="photo-upload" />
                   <label htmlFor="photo-upload" className="cursor-pointer block">
                     <div
-                      className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
-                        photoFile
+                      className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${photoFile
                           ? 'border-hanbok-gold bg-hanbok-gold/5'
                           : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
-                      }`}
+                        }`}
                     >
                       {photoPreview ? (
                         <div className="space-y-4">
