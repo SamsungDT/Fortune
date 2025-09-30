@@ -1,0 +1,137 @@
+# .github/workflows/ci-cd.yml
+
+name: Spring CI-CD with AWS
+
+on:
+    workflow_dispatch:
+    push:
+        branches: ["main"]
+        paths:
+            - "Backend/**"
+env:
+    AWS_REGION: ap-northeast-2
+    ECR_REPOSITORY: fortune-ar
+    CONTAINER_NAME: spring-server-container
+    PROJECT_PATH: ./Backend
+
+jobs:
+    # -------------------- CI (Build & Push to ECR) --------------------
+    ci:
+        name: Continuous Integration
+        runs-on: ubuntu-latest
+
+        outputs:
+            image_uri: ${{ steps.build-image.outputs.image }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: "21"
+                  distribution: "temurin"
+
+            - name: Grant execute permission for gradlew
+              run: chmod +x ${{ env.PROJECT_PATH }}/gradlew
+
+            - name: Add application-secret.yaml
+              env:
+                  SPRING_SECRET_YAML: ${{ secrets.SPRING_SECRET_YAML }}
+              run: |
+                  echo "$SPRING_SECRET_YAML" > ${{ env.PROJECT_PATH }}/src/main/resources/application-secret.yaml
+
+            - name: Build with Gradle (do tests internally)
+              run: ./gradlew clean build
+              working-directory: ${{ env.PROJECT_PATH }}
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Build, tag, and push image to Amazon ECR
+              id: build-image
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  IMAGE_TAG: ${{ github.sha }}
+              run: |
+                  set -euo pipefail
+                  docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" -f ${{ env.PROJECT_PATH }}/Dockerfile ${{ env.PROJECT_PATH }}
+                  docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+    # -------------------- CD (Deploy on EC2) --------------------
+    cd:
+        name: Continuous Deployment
+        needs: ci
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Get GitHub Action VM IP
+              id: ip
+              uses: haythem/public-ip@v1.3
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+            - name: Add GitHub Action VM IP to EC2 security group (SSH)
+              run: |
+                  aws ec2 authorize-security-group-ingress \
+                      --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+                      --protocol tcp \
+                      --port 22 \
+                      --cidr ${{ steps.ip.outputs.ipv4 }}/32
+            - name: Deploy to EC2 via SSH
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.EC2_HOST }}
+                  username: ${{ secrets.EC2_USERNAME }}
+                  key: ${{ secrets.EC2_SSH_KEY }}
+                  script: |
+                      set -euo pipefail
+                      IMAGE_URI='${{ needs.ci.outputs.image_uri }}'
+                      if [ -z "$IMAGE_URI" ]; then
+                          echo "ERROR: IMAGE_URI is empty. Check CI job outputs." >&2
+                          exit 1
+                      fi
+                      ECR_REGISTRY_URL="$(echo "$IMAGE_URI" | cut -d/ -f1)"
+
+                      echo "Downloading docker-compose.yml..."
+                      # GitHub 레포지토리에서 도커 컴포즈 파일 다운로드 (경로 수정)
+                      wget -O docker-compose.yml https://raw.githubusercontent.com/SamsungDT/Fortune/main/Backend/docker-compose.yml
+
+                      echo "Logging in to ECR..."
+                      aws ecr get-login-password --region '${{ env.AWS_REGION }}' \
+                          | docker login --username AWS --password-stdin "$ECR_REGISTRY_URL"
+
+                      echo "Pulling the latest image..."
+                      docker pull "$IMAGE_URI"
+
+                      # 도커 컴포즈 파일의 spring-server 이미지 태그를 최신 이미지로 변경
+                      echo "Updating docker-compose.yml with new image tag..."
+                      sed -i "s|spring-server:latest|$IMAGE_URI|g" docker-compose.yml
+
+                      echo "Running docker-compose up..."
+                      docker-compose -f docker-compose.yml up -d
+
+                      # 이전 이미지 삭제 (선택 사항)
+                      echo "Cleaning up old images..."
+                      docker image prune -f
+            - name: Remove GitHub Action VM IP from EC2 security group
+              if: always()
+              run: |
+                  aws ec2 revoke-security-group-ingress \
+                      --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+                      --protocol tcp \
+                      --port 22 \
+                      --cidr ${{ steps.ip.outputs.ipv4 }}/32
