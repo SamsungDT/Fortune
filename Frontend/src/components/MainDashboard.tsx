@@ -97,7 +97,7 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
   return (
     <div className="p-6 space-y-6">
       {/* 상단 광고 배너 */}
-{/* {showTopAd && (
+      {/* {showTopAd && (
           <AdBanner 
           type="banner" 
           size="medium" 
@@ -137,14 +137,14 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
                 LIVE
               </Badge>
             </div>
-            
+
             <div className="space-y-4">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">
                   현재 <span className="text-hanbok-gold-dark font-bold text-lg">{appStats.totalUsers.toLocaleString()}명</span>이 Fortune K.I와 함께하고 있어요
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-4 gap-3">
                 <div className="text-center p-3 bg-hanbok-gold/5 border border-hanbok-gold/20 rounded-xl">
                   <div className="text-lg mb-1">👤</div>
@@ -167,7 +167,7 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
                   <div className="text-xs text-muted-foreground">해몽</div>
                 </div>
               </div>
-              
+
               <div className="text-center pt-3 border-t border-border/50">
                 <Badge className="bg-dancheong-green/20 text-dancheong-green border border-dancheong-green/40 text-sm px-3 py-1">
                   총 {appStats.totalReadings.toLocaleString()}회 운세 결과 생성 ✨
@@ -184,9 +184,9 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
 
       {/* 빠른 액션 */}
       <div className="space-y-3">
-        <Button 
-          variant="outline" 
-          onClick={onViewMyResults} 
+        <Button
+          variant="outline"
+          onClick={onViewMyResults}
           className="w-full h-14 gold-accent border-hanbok-gold/40 text-ink-black dark:text-ink-gray hover:bg-hanbok-gold/10 transition-all duration-300 rounded-xl"
         >
           <span className="flex items-center justify-center space-x-2">
@@ -197,44 +197,44 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
       </div>
 
       {/* 서비스 카드 그리드 - 2x2 타일 배치 */}
-      <div className="space-y-4">
+      <div className="space-y-4 mb-10">
         <div className="flex items-center justify-between">
           <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">
             🔮 운세 서비스
           </h3>
-{/* {!user.isPremium && (
+          {/* {!user.isPremium && (
             <AdBanner type="native" size="small" className="flex-1 max-w-40 ml-4" />
           )} */}
         </div>
         <div className="grid grid-cols-2 gap-4">
           {services.map((service) => {
             const today = new Date().toDateString();
-            const isFreeTodayAvailable = user.dailyFreeUsage.date !== today || 
+            const isFreeTodayAvailable = user.dailyFreeUsage.date !== today ||
               !user.dailyFreeUsage[service.id as keyof typeof user.dailyFreeUsage];
-            
+
             return (
-              <Card 
-                key={service.id} 
+              <Card
+                key={service.id}
                 className="group overflow-hidden bg-white dark:bg-card border border-border hover:border-hanbok-gold/60 transition-all duration-500 cursor-pointer rounded-2xl ink-shadow hover:shadow-xl hover:scale-[1.02] aspect-square"
                 onClick={() => onServiceSelect(service.id)}
               >
                 <div className="relative h-1/3">
-                  <ImageWithFallback 
+                  <ImageWithFallback
                     src={service.image}
                     alt={service.title}
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-black/90 via-ink-black/30 to-transparent" />
-                  
+
                   {/* 한국 전통 문양 오버레이 */}
                   <div className="absolute inset-0 opacity-20">
                     <div className="w-full h-full bg-gradient-to-br from-transparent via-hanbok-gold/10 to-transparent"></div>
                   </div>
-                  
+
                   <div className="absolute top-3 right-3">
                     <div className="text-2xl drop-shadow-2xl filter brightness-110">{service.icon}</div>
                   </div>
-                  
+
                   {service.usageCount > 0 && (
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-hanbok-gold/90 text-ink-black border-0 font-medium px-2 py-0.5 text-xs">
@@ -242,13 +242,13 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
                       </Badge>
                     </div>
                   )}
-                  
+
                   {/* 전통 문양 라인 */}
                   <div className="absolute bottom-0 left-0 right-0 h-0.5">
                     <div className="h-full bg-gradient-to-r from-transparent via-hanbok-gold to-transparent opacity-80"></div>
                   </div>
                 </div>
-                
+
                 <div className="p-4 h-1/3 hanji-texture flex flex-col justify-between">
                   <div className="flex-1">
                     <h3 className="text-base mb-1 text-ink-black dark:text-ink-gray ink-brush font-semibold leading-tight">
@@ -258,7 +258,7 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
                       {service.description}
                     </p>
                   </div>
-                  
+
                   <div className="flex justify-between items-center mt-3 pt-2 border-t border-border/30">
                     {/* <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                       isFreeTodayAvailable 
@@ -268,9 +268,9 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
                       <span className="mr-1 text-xs">{isFreeTodayAvailable ? '✨' : '🪙'}</span>
                       <span className="text-xs">{isFreeTodayAvailable ? '무료' : '유료'}</span>
                     </span> */}
-                    
-                    <Button 
-                      size="sm" 
+
+                    <Button
+                      size="sm"
                       className="bg-ink-black dark:bg-ink-gray text-white dark:text-ink-black hover:bg-ink-gray dark:hover:bg-white transition-all duration-300 px-3 py-1 rounded-lg shadow-sm hover:shadow-md text-xs h-6"
                     >
                       시작
@@ -284,7 +284,7 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
       </div>
 
       {/* 이용 현황 통계 */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">
           📊 나의 운세 여정
         </h3>
@@ -314,7 +314,7 @@ export function MainDashboard({ user, appStats, appStatsLoading, onServiceSelect
             </p>
           </div>
         </Card>
-      </div>
+      </div> */}
 
       {/* 공지사항 섹션 */}
       {/* <div className="space-y-4">
