@@ -98,7 +98,7 @@ public class SecurityConfig {
                 "http://127.0.0.1:5500",
                 "http://127.0.0.1:63342",
                 "http://localhost:8080",
-                "http://www.fortuneki.site"
+                "https://www.fortuneki.site"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Collections.singletonList("*"));
