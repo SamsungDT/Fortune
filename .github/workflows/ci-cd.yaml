@@ -130,7 +130,7 @@ jobs:
                       sed -i "s|spring-server:latest|$IMAGE_URI|g" docker-compose.yml
 
                       echo "Running docker-compose up..."
-                      docker-compose -f docker-compose.yml up -d
+                      docker compose -f docker-compose.yml up -d
 
                       # 이전 이미지 삭제 (선택 사항)
                       echo "Cleaning up old images..."
