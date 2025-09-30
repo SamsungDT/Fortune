@@ -22,7 +22,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 // ====================================================================
 // API 및 타입 정의
 // ====================================================================
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://43.202.64.247';
 const APP_STATS_URL = `${API_BASE}/api/fortune/statistics`;
 const MY_RESULTS_URL = `${API_BASE}/api/fortune/statistics/findAll`; // TODO: 실제 엔드포인트 확인
 

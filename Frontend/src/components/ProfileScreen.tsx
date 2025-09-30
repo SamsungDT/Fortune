@@ -30,7 +30,7 @@ interface ProfileScreenProps {
 }
 
 /* ====== Logout API wiring ====== */
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://43.202.64.247';
 type APIResponse<T> = { code: number; message: string; data: T | null };
 
 function getAccessToken() {

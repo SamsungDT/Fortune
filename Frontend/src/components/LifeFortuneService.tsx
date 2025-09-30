@@ -12,7 +12,7 @@ interface LifeFortuneServiceProps {
 }
 
 // ================= 서버/타입 =================
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://43.202.64.247';
 const LIFELONG_URL = `${API_BASE}/api/fortune/lifelong`;
 
 type APIResponse<T> = { code: number; message: string; data: T | null };
