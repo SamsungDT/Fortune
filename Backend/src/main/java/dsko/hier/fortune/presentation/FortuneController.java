@@ -37,7 +37,7 @@ public class FortuneController {
         return APIResponse.success(response);
     }
 
-    @PostMapping
+    @PostMapping("/dream")
     public APIResponse<DreamResponse> interpretDream(
             @Validated @RequestBody DreamRequestDto req,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -83,7 +83,7 @@ public class FortuneController {
         return APIResponse.success(response);
     }
 
-    @GetMapping("/face/{resultId}")
+    @GetMapping("/total/{resultId}")
     public APIResponse<TotalFortuneResponse> getTotalResultById(
             @Validated @PathVariable UUID resultId
     ) {

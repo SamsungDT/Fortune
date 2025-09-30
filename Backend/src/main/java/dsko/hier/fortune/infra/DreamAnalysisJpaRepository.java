@@ -1,4 +1,4 @@
-package dsko.hier.fortune.dto.ai.dream.infra;
+package dsko.hier.fortune.infra;
 
 import dsko.hier.fortune.domain.dreamDomain.DreamAnalysis;
 import java.util.List;
