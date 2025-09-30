@@ -40,18 +40,26 @@ export function MainDashboard({
         : '사용자';
 
   const services = [
-    { id: 'physiognomy', title: '관상',       description: 'AI가 분석하는 얼굴 관상', icon: '👤',
+    {
+      id: 'physiognomy', title: '관상', description: 'AI가 분석하는 얼굴 관상', icon: '👤',
       image: 'https://images.unsplash.com/photo-1602015521560-54cae4574e07?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      usageCount: user.usageCount.physiognomy },
-    { id: 'lifefortune', title: '평생 운세',  description: '생년월일로 보는 인생 운세', icon: '🌟',
+      usageCount: user.usageCount.physiognomy
+    },
+    {
+      id: 'lifefortune', title: '평생 운세', description: '생년월일로 보는 인생 운세', icon: '🌟',
       image: 'https://images.unsplash.com/photo-1705751668509-b3ca0953582c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      usageCount: user.usageCount.lifefortune },
-    { id: 'dailyfortune', title: '오늘의 운세', description: '오늘 하루의 운세와 조언', icon: '📅',
+      usageCount: user.usageCount.lifefortune
+    },
+    {
+      id: 'dailyfortune', title: '오늘의 운세', description: '오늘 하루의 운세와 조언', icon: '📅',
       image: 'https://images.unsplash.com/photo-1740375699674-1b097b4cf7f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      usageCount: user.usageCount.dailyfortune },
-    { id: 'dream', title: '해몽',             description: '꿈의 의미를 AI가 해석', icon: '💭',
+      usageCount: user.usageCount.dailyfortune
+    },
+    {
+      id: 'dream', title: '해몽', description: '꿈의 의미를 AI가 해석', icon: '💭',
       image: 'https://images.unsplash.com/photo-1661430391787-6fd01434cea1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      usageCount: user.usageCount.dream }
+      usageCount: user.usageCount.dream
+    }
   ];
 
   return (
@@ -148,7 +156,7 @@ export function MainDashboard({
       </div>
 
       {/* 서비스 카드 그리드 */}
-      <div className="space-y-4">
+      <div className="space-y-4 mb-10">
         <div className="flex items-center justify-between">
           <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">🔮 운세 서비스</h3>
         </div>
@@ -196,7 +204,7 @@ export function MainDashboard({
       </div>
 
       {/* 이용 현황 */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h3 className="text-lg text-ink-black dark:text-ink-gray ink-brush">📊 나의 운세 여정</h3>
         <Card className="hanji-texture border border-hanbok-gold/20 p-6 rounded-2xl ink-shadow">
           <div className="grid grid-cols-2 gap-4">
@@ -222,7 +230,7 @@ export function MainDashboard({
             </p>
           </div>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

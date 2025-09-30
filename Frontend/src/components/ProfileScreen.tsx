@@ -228,7 +228,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
 
         {/* 전체 이용 통계 */}
         <Card className="border border-border p-5 rounded-2xl">
-          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">📊 전체 이용 통계</h3>
+          <h3 className="text-lg mb-4 text-ink-black dark:text-ink-gray ink-brush">📊 나의 운세 여정</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 border border-border rounded-xl hover:border-hanbok-gold/40 transition-colors">
               <div className="text-2xl mb-2">👤</div>
