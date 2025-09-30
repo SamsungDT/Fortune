@@ -213,7 +213,7 @@ export function MyResultsScreen({
         ) : (
           <div className="space-y-4">
             {filteredResults.map((result, index) => (
-              <div key={result.id}>
+              <div key={`${result.id}-${index}`}>
                 <Card
                   className="border border-border p-5 hover:border-hanbok-gold/60 hover:shadow-lg transition-all duration-300 cursor-pointer rounded-2xl group"
                   onClick={() => onResultSelect(result)}
