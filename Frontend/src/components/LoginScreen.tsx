@@ -25,7 +25,7 @@ interface LoginScreenProps {
 }
 
 // ================= 서버/타입 설정 =================
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://43.202.64.247';
 const LOGIN_URL = `${API_BASE}/api/security/email/login`;
 
 type APIResponse<T> = {

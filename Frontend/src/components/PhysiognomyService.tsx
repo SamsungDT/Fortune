@@ -40,7 +40,7 @@ function mapFaceResponse(data: any) {
 }
 
 // ================= 서버/엔드포인트/타입/헬퍼 =================
-const API_BASE = 'http://localhost:8080'; // 필요 시 .env 로 치환
+const API_BASE = 'http://43.202.64.247'; // 필요 시 .env 로 치환
 const PRESIGN_URL = `${API_BASE}/api/fortune/face/picture`; // Presigned URL 발급(POST)
 const ANALYZE_URL = `${API_BASE}/api/fortune/face`;          // 관상 분석(POST)
 const LOGIN_URL   = `${API_BASE}/api/auth/login`;            // ⬅️ 예시: 로그인 엔드포인트(프로젝트에 맞게 수정)

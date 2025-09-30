@@ -7,7 +7,7 @@ import { FortuneResult } from "../App";
 import { Sparkles, Clock, Share2, Star } from 'lucide-react';
 
 // ================= 서버/타입 =================
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://43.202.64.247';
 const DAILY_URL = `${API_BASE}/api/fortune/daily`;
 
 type APIResponse<T> = { code: number; message: string; data: T | null };

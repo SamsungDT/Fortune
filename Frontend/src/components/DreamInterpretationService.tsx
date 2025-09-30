@@ -77,7 +77,7 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
       setCurrentStatus('🔍 서버와 통신 중...');
       setProgress(20);
 
-      const response = await fetch('http://localhost:8080/api/fortune/dream', {
+      const response = await fetch('http://43.202.64.247/api/fortune/dream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
