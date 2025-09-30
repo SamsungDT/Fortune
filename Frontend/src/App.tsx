@@ -1,7 +1,5 @@
 // App.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card } from "./components/ui/card";
-import { Button } from "./components/ui/button";
 import { LoginScreen } from "./components/LoginScreen";
 import { SignupScreen } from "./components/SignupScreen";
 import { UserInfoScreen } from "./components/UserInfoScreen";
@@ -19,13 +17,16 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { SupportScreen } from "./components/SupportScreen";
 import { ThemeProvider } from "./components/ThemeProvider";
 
-// ====================================================================
-// API 및 타입 정의
-// ====================================================================
+// ==============================
+// API
+// ==============================
 const API_BASE = 'http://43.202.64.247';
 const APP_STATS_URL = `${API_BASE}/api/fortune/statistics`;
-const MY_RESULTS_URL = `${API_BASE}/api/fortune/statistics/findAll`; // TODO: 실제 엔드포인트 확인
+const MY_RESULTS_URL = `${API_BASE}/api/fortune/statistics/findAll`;
 
+// ==============================
+// Types
+// ==============================
 interface StatisticsResponseData {
   totalUsers: number;
   faceResultCount: number;
@@ -35,7 +36,7 @@ interface StatisticsResponseData {
 }
 
 type APIResponse<T> = {
-  code: string | number;          // ✅ 문자열/숫자 둘 다 허용
+  code: string | number;
   message: string;
   data: T | null;
 };
@@ -58,12 +59,9 @@ const MOCK_APP_STATS: AppStats = {
   dreamCount: 10393
 };
 
-// ====================================================================
-// User 및 Result 타입
-// ====================================================================
 export interface User {
   id: string;
-  name: string;
+  name: string;     // 진짜 이름 (이메일X)
   email: string;
   loginProvider: string;
   birthDate?: string;
@@ -100,38 +98,46 @@ type Screen =
   | 'physiognomy' | 'lifefortune' | 'dailyfortune' | 'dream'
   | 'result' | 'payment' | 'myresults' | 'profile' | 'support';
 
+// ==============================
+// Name helpers (이메일 로컬 파트는 버림)
+// ==============================
+const emailLocal = (email?: string) => (email || '').split('@')[0]?.trim() || '';
+const pickDisplayName = (u?: User | null) => {
+  const saved = (localStorage.getItem('userName') || '').trim();
+  const uName = (u?.name || '').trim();
+  const eLocal = emailLocal(u?.email);
+
+  // 이메일 모양/이메일 로컬과 동일한 값은 제외
+  const cands = [uName, saved].filter(Boolean);
+  for (const c of cands) {
+    if (!c.includes('@') && c.toLowerCase() !== eLocal.toLowerCase()) return c;
+  }
+  return '';
+};
+
+// ==============================
+// App
+// ==============================
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('login');
   const [user, setUser] = useState<User | null>(null);
   const [currentResult, setCurrentResult] = useState<FortuneResult | null>(null);
   const [pendingService, setPendingService] = useState<string>('');
 
-  // 통계 데이터 상태
+  // 통계
   const [appStats, setAppStats] = useState<AppStats | null>(null);
   const [appStatsLoading, setAppStatsLoading] = useState(true);
 
-  // ====================================================================
-  // 통계 데이터 로드 (명세에 맞춘 버전)
-  // ====================================================================
+  // 통계 조회
   const fetchAppStats = useCallback(async () => {
     setAppStatsLoading(true);
     try {
-      const res = await fetch(APP_STATS_URL, {
-        method: 'GET',
-        headers: { Accept: 'application/json' }, // 인증 불필요
-      });
-
+      const res = await fetch(APP_STATS_URL, { headers: { Accept: 'application/json' } });
       let body: APIResponse<StatisticsResponseData> | null = null;
-      try { body = await res.json(); } catch (e) {
-        console.error('[stats] JSON parse error:', e);
-      }
+      try { body = await res.json(); } catch {}
 
       const ok = res.ok && body && (body.code === '200' || body.code === 200) && body.data;
-      if (!ok || !body?.data) {
-        console.warn('[stats] Bad response -> using mock', res.status, body);
-        setAppStats(MOCK_APP_STATS);
-        return;
-      }
+      if (!ok || !body?.data) { setAppStats(MOCK_APP_STATS); return; }
 
       const d = body.data;
       const face = Number(d.faceResultCount ?? 0);
@@ -139,19 +145,15 @@ function App() {
       const daily = Number(d.dailyFortuneResultCount ?? 0);
       const dream = Number(d.dreamInterpretationResultCount ?? 0);
 
-      const mapped: AppStats = {
+      setAppStats({
         totalUsers: Number(d.totalUsers ?? 0),
         totalReadings: face + life + daily + dream,
         physiognomyCount: face,
         lifeFortuneCount: life,
         dailyFortuneCount: daily,
         dreamCount: dream,
-      };
-
-      console.log('[stats] mapped', mapped);
-      setAppStats(mapped);
-    } catch (error) {
-      console.error('[stats] network error -> using mock', error);
+      });
+    } catch {
       setAppStats(MOCK_APP_STATS);
     } finally {
       setAppStatsLoading(false);
@@ -159,30 +161,54 @@ function App() {
   }, []);
 
   useEffect(() => {
-  if (currentScreen === 'dashboard' || currentScreen === 'login') {
-    fetchAppStats();            // ✅ 대시보드 진입 시마다 통계 새로고침
-  }
-}, [currentScreen, fetchAppStats]);
+    if (currentScreen === 'dashboard' || currentScreen === 'login') {
+      fetchAppStats(); // 대시보드 들어올 때마다 새로고침
+    }
+  }, [currentScreen, fetchAppStats]);
 
-
-  // ====================================================================
-  // 핸들러
-  // ====================================================================
+  // 회원가입 → 로그인 재사용
   const handleSignup = (signupData: any) => handleLogin(signupData);
 
+  // 유저정보 완료(현재 화면 폼은 이름 미포함이므로 기존 이름 유지)
   const handleUserInfoComplete = (userInfoData: any) => {
     if (!user) return;
-    const updatedUser = { ...user, birthDate: userInfoData.birthDate, birthTime: userInfoData.birthTime };
+    const updatedUser = {
+      ...user,
+      // 이름은 유지 (혹시 name을 보내주면 반영)
+      name: (userInfoData?.name || user.name),
+      birthDate: userInfoData.birthDate,
+      birthTime: userInfoData.birthTime
+    };
     setUser(updatedUser);
+    // 전달된 이름이 있으면 저장
+    if (userInfoData?.name && !userInfoData.name.includes('@')) {
+      localStorage.setItem('userName', userInfoData.name);
+    }
     setCurrentScreen('dashboard');
   };
 
+  // 로그인
   const handleLogin = async (loginData: any) => {
     const today = new Date().toDateString();
 
+    // 이름 결정: providerName(이메일 모양X) → 저장된 이름 → 없으면 빈 문자열
+    const storedNameRaw = (localStorage.getItem('userName') || '').trim();
+    const eLocal = emailLocal(loginData?.email);
+    const validStoredName =
+      storedNameRaw && !storedNameRaw.includes('@') && storedNameRaw.toLowerCase() !== eLocal.toLowerCase()
+        ? storedNameRaw : '';
+
+    const rawProviderName = (loginData?.name ?? loginData?.realName ?? loginData?.profile?.name ?? '').toString().trim();
+    const providerName =
+      rawProviderName && !rawProviderName.includes('@') && rawProviderName.toLowerCase() !== eLocal.toLowerCase()
+        ? rawProviderName : '';
+
+    const finalName = providerName || validStoredName || '사용자';
+    if (finalName !== '사용자') localStorage.setItem('userName', finalName);
+
     const newUser: User = {
       id: Date.now().toString(),
-      name: loginData.name,
+      name: finalName,
       email: loginData.email,
       loginProvider: loginData.provider,
       birthDate: loginData.birthDate || undefined,
@@ -195,10 +221,10 @@ function App() {
     };
     setUser(newUser);
 
-    // (선택) "나의 결과" 불러오기 — 응답 스키마가 확정되면 조정
+    // (선택) 내 결과 불러오기
     try {
       const accessToken = localStorage.getItem('accessToken');
-      if (!accessToken) throw new Error('토큰 없음');
+      if (!accessToken) throw new Error('no token');
       const res = await fetch(MY_RESULTS_URL, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${accessToken}`, 'Accept': 'application/json' }
@@ -211,7 +237,7 @@ function App() {
             r.resultType === 'LIFE_LONG' ? 'lifefortune' :
             r.resultType === 'DAILY' ? 'dailyfortune' :
             r.resultType === 'DREAM' ? 'dream' : 'dailyfortune';
-          const date = (r.createdAt?.split?.('T')?.[0] ?? r.date ?? '').replace(/-/g, '.');
+        const date = (r.createdAt?.split?.('T')?.[0] ?? r.date ?? '').replace(/-/g, '.');
           const title =
             type === 'physiognomy' ? '관상 분석 결과' :
             type === 'lifefortune' ? '평생 운세 분석 결과' :
@@ -219,8 +245,7 @@ function App() {
             '꿈 해몽 결과';
           return {
             id: String(r.resultId ?? r.id ?? Date.now()),
-            type,
-            title,
+            type, title,
             content: r.content ?? '...',
             date: date || ' ',
             paid: !!r.paid
@@ -229,14 +254,13 @@ function App() {
         newUser.results = mappedResults;
         setUser({ ...newUser });
       }
-    } catch (err) {
-      console.warn('[my-results] load skipped or failed:', err);
-    }
+    } catch {}
 
-    if (loginData.provider === 'email') setCurrentScreen('dashboard');
-    else setCurrentScreen('userinfo');
+    // 이름이 ‘사용자’면 추가정보(이름 입력하도록 화면 구성 시)로 보낼 수 있음
+    setCurrentScreen(loginData.provider === 'email' ? 'dashboard' : 'userinfo');
   };
 
+  // 서비스 핸들러들
   const handleServiceSelect = (service: string) => setCurrentScreen(service as Screen);
 
   const handleServiceResult = (result: FortuneResult, serviceType: string) => {
@@ -249,7 +273,6 @@ function App() {
     }
 
     updatedUser.usageCount[serviceType as keyof typeof user.usageCount]++;
-
     const hasUsedFreeToday = updatedUser.dailyFreeUsage[serviceType as keyof typeof updatedUser.dailyFreeUsage];
 
     if (!hasUsedFreeToday) {
@@ -286,6 +309,7 @@ function App() {
     setUser(updatedUser);
   };
 
+  // 앱바
   const getAppBarProps = () => {
     switch (currentScreen) {
       case 'login':
@@ -293,34 +317,31 @@ function App() {
       case 'userinfo':
         return null;
       case 'dashboard':
-        return { title: 'Fortune K.I', subtitle: 'AI가 알려주는 나만의 운세', userName: user?.name, showProfileButton: true, onProfileClick: () => setCurrentScreen('profile') };
-      case 'physiognomy':
-        return { title: '👤 관상 분석', subtitle: 'AI가 얼굴을 분석해 운세를 알려드립니다', showBackButton: true, onBack: handleBackToDashboard };
-      case 'lifefortune':
-        return { title: '🌟 평생 운세', subtitle: '생년월일로 알아보는 평생의 운세', showBackButton: true, onBack: handleBackToDashboard };
-      case 'dailyfortune':
-        return { title: '📅 오늘의 운세', subtitle: '오늘 하루의 운세를 확인해보세요', showBackButton: true, onBack: handleBackToDashboard };
-      case 'dream':
-        return { title: '💭 해몽', subtitle: '꿈의 의미를 AI가 해석해드립니다', showBackButton: true, onBack: handleBackToDashboard };
+        return {
+          title: 'Fortune K.I',
+          subtitle: 'AI가 알려주는 나만의 운세',
+          userName: pickDisplayName(user) || '사용자',
+          showProfileButton: true,
+          onProfileClick: () => setCurrentScreen('profile')
+        };
+      case 'physiognomy': return { title: '👤 관상 분석', subtitle: 'AI가 얼굴을 분석해 운세를 알려드립니다', showBackButton: true, onBack: handleBackToDashboard };
+      case 'lifefortune': return { title: '🌟 평생 운세', subtitle: '생년월일로 알아보는 평생의 운세', showBackButton: true, onBack: handleBackToDashboard };
+      case 'dailyfortune': return { title: '📅 오늘의 운세', subtitle: '오늘 하루의 운세를 확인해보세요', showBackButton: true, onBack: handleBackToDashboard };
+      case 'dream': return { title: '💭 해몽', subtitle: '꿈의 의미를 AI가 해석해드립니다', showBackButton: true, onBack: handleBackToDashboard };
       case 'result': {
         const isDaily = currentResult?.type === 'dailyfortune';
         return {
-          title: isDaily ? '오늘의 운세' : (currentResult?.title || '결과'), // ✅ 상단은 '오늘의 운세' 고정
-          subtitle: currentResult?.date,                                      // ✅ 날짜는 부제목
+          title: isDaily ? '오늘의 운세' : (currentResult?.title || '결과'),
+          subtitle: currentResult?.date,
           showBackButton: true,
           onBack: handleBackToDashboard
         };
       }
-      case 'payment':
-        return { title: '💳 결제', subtitle: '운세 서비스 이용권을 구매해주세요', showBackButton: true, onBack: handleBackToDashboard };
-      case 'myresults':
-        return { title: '📜 내 결과', subtitle: '지금까지의 운세 결과를 모아봤어요', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
-      case 'profile':
-        return { title: '👤 프로필', subtitle: '내 정보 및 이용 현황', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
-      case 'support':
-        return { title: '💝 개발자 후원', subtitle: user?.isPremium ? '후원해주셔서 감사합니다' : '개발자를 응원해주세요', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
-      default:
-        return { title: 'Fortune K.I', showBackButton: true, onBack: handleBackToDashboard };
+      case 'payment': return { title: '💳 결제', subtitle: '운세 서비스 이용권을 구매해주세요', showBackButton: true, onBack: handleBackToDashboard };
+      case 'myresults': return { title: '📜 내 결과', subtitle: '지금까지의 운세 결과를 모아봤어요', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
+      case 'profile': return { title: '👤 프로필', subtitle: '내 정보 및 이용 현황', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
+      case 'support': return { title: '💝 개발자 후원', subtitle: user?.isPremium ? '후원해주셔서 감사합니다' : '개발자를 응원해주세요', showBackButton: true, onBack: () => setCurrentScreen('dashboard') };
+      default: return { title: 'Fortune K.I', showBackButton: true, onBack: handleBackToDashboard };
     }
   };
 
@@ -400,7 +421,7 @@ function App() {
               result={currentResult}
               onBack={handleBackToDashboard}
               onShare={() => alert('카카오톡 공유 기능')}
-              onRecommend={(service) => setCurrentScreen(service as Screen)} // ✅ 추천 서비스 이동
+              onRecommend={(service) => setCurrentScreen(service as Screen)}
             />
           )}
 
