@@ -1,8 +1,10 @@
-package dsko.hier.fortune.dto.ai.dream.infra;
+package dsko.hier.fortune.infra;
 
 import dsko.hier.fortune.domain.dreamDomain.DreamAnalysis;
 import dsko.hier.fortune.domain.dreamDomain.DreamAnalysisRepository;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,5 +22,10 @@ public class DreamAnalysisRepositoryImpl implements DreamAnalysisRepository {
     @Override
     public List<DreamAnalysis> findAllByUserEmail(String username) {
         return repository.findAllByUserEmail(username);
+    }
+
+    @Override
+    public Optional<DreamAnalysis> findById(UUID resultId) {
+        return repository.findById(resultId);
     }
 }

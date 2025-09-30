@@ -9,11 +9,13 @@ import dsko.hier.fortune.dto.FaceAnalyzeResponse;
 import dsko.hier.fortune.dto.TotalFortuneResponse;
 import dsko.hier.global.response.APIResponse;
 import dsko.hier.security.application.CustomUserDetails;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +37,7 @@ public class FortuneController {
         return APIResponse.success(response);
     }
 
-    @PostMapping
+    @PostMapping("/dream")
     public APIResponse<DreamResponse> interpretDream(
             @Validated @RequestBody DreamRequestDto req,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -55,5 +57,37 @@ public class FortuneController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         TotalFortuneResponse lieLongFortuneFromAI = service.getTotalFortuneOfUser(userDetails.getUsername());
         return APIResponse.success(lieLongFortuneFromAI);
+    }
+
+    @GetMapping("/face/{resultId}")
+    public APIResponse<FaceAnalyzeResponse> getFaceResultById(
+            @Validated @PathVariable UUID resultId
+    ) {
+        FaceAnalyzeResponse response = service.getFaceResultById(resultId);
+        return APIResponse.success(response);
+    }
+
+    @GetMapping("/dream/{resultId}")
+    public APIResponse<DreamResponse> getDreamResultById(
+            @Validated @PathVariable UUID resultId
+    ) {
+        DreamResponse response = service.getDreamResultById(resultId);
+        return APIResponse.success(response);
+    }
+
+    @GetMapping("/daily/{resultId}")
+    public APIResponse<DailyFortuneResponse> getDailyResultById(
+            @Validated @PathVariable UUID resultId
+    ) {
+        DailyFortuneResponse response = service.getDailyResultById(resultId);
+        return APIResponse.success(response);
+    }
+
+    @GetMapping("/total/{resultId}")
+    public APIResponse<TotalFortuneResponse> getTotalResultById(
+            @Validated @PathVariable UUID resultId
+    ) {
+        TotalFortuneResponse response = service.getTotalResultById(resultId);
+        return APIResponse.success(response);
     }
 }
