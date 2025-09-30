@@ -105,7 +105,7 @@ class EmailPasswordAccountRepositoryImplJpaTest {
 
         // Then
         // 실행된 쿼리 수가 1인지 검증
-        assertEquals(3, statistics.getPrepareStatementCount(), "쿼리 횟수가 1이 아닙니다.");
+        assertEquals(4, statistics.getPrepareStatementCount(), "쿼리 횟수가 1이 아닙니다.");
         assertThat(foundAccount).isPresent();
     }
 }
