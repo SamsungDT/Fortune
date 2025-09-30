@@ -53,8 +53,8 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
       '친구': 'FRIENDS',
     };
 
-    const keywords = selectedTags.map(tag => 
-     keywordMapping[tag] || 'ETC',
+    const keywords = selectedTags.map(tag =>
+      keywordMapping[tag] || 'ETC',
     );
 
     const requestBody = {
@@ -68,16 +68,16 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
-        setError('인증 실패: 로그인이 필요합니다.');
-        setStep('input');
-        return;
+      setError('인증 실패: 로그인이 필요합니다.');
+      setStep('input');
+      return;
     }
 
     try {
       setCurrentStatus('🔍 서버와 통신 중...');
       setProgress(20);
 
-      const response = await fetch('http://43.202.64.247/api/fortune/dream', {
+      const response = await fetch('/api/fortune/dream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,8 +186,8 @@ ${apiData.specialMessage.messageText}`,
   ];
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+    setSelectedTags(prev =>
+      prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
@@ -203,7 +203,7 @@ ${apiData.specialMessage.messageText}`,
               <div className="w-20 h-20 bg-hanbok-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">💭</span>
               </div>
-              
+
               <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush">
                 AI 꿈 해몽
               </h2>
@@ -244,8 +244,8 @@ ${apiData.specialMessage.messageText}`,
           </Alert>
 
 
-          <Button 
-            onClick={() => setStep('input')} 
+          <Button
+            onClick={() => setStep('input')}
             className="w-full h-14 bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black rounded-3xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Sparkles className="w-5 h-5 mr-2" />
@@ -264,7 +264,7 @@ ${apiData.specialMessage.messageText}`,
                   <Moon className="w-4 h-4 mr-2" />
                   꿈의 내용
                 </Label>
-                <Textarea 
+                <Textarea
                   placeholder="꿈에서 본 내용을 자세히 적어주세요. 누가 나왔는지, 어떤 일이 일어났는지, 어떤 감정을 느꼈는지 등을 포함해주세요."
                   value={dreamContent}
                   onChange={(e) => setDreamContent(e.target.value)}
@@ -307,11 +307,10 @@ ${apiData.specialMessage.messageText}`,
                     <Badge
                       key={tag.text}
                       variant={selectedTags.includes(tag.text) ? "default" : "outline"}
-                      className={`cursor-pointer p-3 rounded-2xl text-center justify-center hover:scale-105 transition-all duration-200 ${
-                        selectedTags.includes(tag.text) 
-                          ? 'bg-hanbok-gold text-ink-black border-hanbok-gold shadow-lg' 
+                      className={`cursor-pointer p-3 rounded-2xl text-center justify-center hover:scale-105 transition-all duration-200 ${selectedTags.includes(tag.text)
+                          ? 'bg-hanbok-gold text-ink-black border-hanbok-gold shadow-lg'
                           : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
-                      }`}
+                        }`}
                       onClick={() => toggleTag(tag.text)}
                     >
                       <div className="flex flex-col items-center space-y-1">
@@ -347,7 +346,7 @@ ${apiData.specialMessage.messageText}`,
               </div>
             </div>
           </Card>
-          
+
           {error && (
             <Alert variant="destructive" className="rounded-2xl">
               <AlertCircle className="h-4 w-4" />
@@ -371,15 +370,15 @@ ${apiData.specialMessage.messageText}`,
           </Card>
 
           <div className="flex gap-3">
-            <Button 
+            <Button
               variant="outline"
-              onClick={() => setStep('info')} 
+              onClick={() => setStep('info')}
               className="flex-1 h-12 border-border rounded-2xl hover:bg-muted"
             >
               이전
             </Button>
-            <Button 
-              onClick={handleAnalyze} 
+            <Button
+              onClick={handleAnalyze}
               disabled={!dreamContent.trim()}
               className="flex-2 h-12 bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -399,22 +398,22 @@ ${apiData.specialMessage.messageText}`,
               </div>
               <div className="absolute inset-0 rounded-full border-2 border-hanbok-gold/30 animate-ping"></div>
             </div>
-            
+
             <div className="space-y-3">
               <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush">
                 꿈을 해석하고 있습니다
               </h2>
               <p className="text-muted-foreground">{currentStatus}</p>
             </div>
-            
+
             <div className="space-y-3">
-              <Progress 
-                value={progress} 
+              <Progress
+                value={progress}
                 className="w-full h-3 rounded-full"
               />
               <p className="text-hanbok-gold-dark font-medium">{progress}% 완료</p>
             </div>
-            
+
             <div className="bg-hanbok-gold/10 rounded-2xl p-4">
               <p className="text-sm text-muted-foreground">
                 ✨ 꿈의 상징과 심리학적 의미를 종합하여 정확한 해몽을 진행하고 있습니다

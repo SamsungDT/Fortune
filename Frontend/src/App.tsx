@@ -20,7 +20,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 // ==============================
 // API
 // ==============================
-const API_BASE = 'http://43.202.64.247';
+const API_BASE = '';
 const APP_STATS_URL = `${API_BASE}/api/fortune/statistics`;
 const MY_RESULTS_URL = `${API_BASE}/api/fortune/statistics/findAll`;
 
@@ -134,7 +134,7 @@ function App() {
     try {
       const res = await fetch(APP_STATS_URL, { headers: { Accept: 'application/json' } });
       let body: APIResponse<StatisticsResponseData> | null = null;
-      try { body = await res.json(); } catch {}
+      try { body = await res.json(); } catch { }
 
       const ok = res.ok && body && (body.code === '200' || body.code === 200) && body.data;
       if (!ok || !body?.data) { setAppStats(MOCK_APP_STATS); return; }
@@ -234,15 +234,15 @@ function App() {
         const mappedResults: FortuneResult[] = body.data.results.map((r: any) => {
           const type: FortuneResult['type'] =
             r.resultType === 'FACE' ? 'physiognomy' :
-            r.resultType === 'LIFE_LONG' ? 'lifefortune' :
-            r.resultType === 'DAILY' ? 'dailyfortune' :
-            r.resultType === 'DREAM' ? 'dream' : 'dailyfortune';
-        const date = (r.createdAt?.split?.('T')?.[0] ?? r.date ?? '').replace(/-/g, '.');
+              r.resultType === 'LIFE_LONG' ? 'lifefortune' :
+                r.resultType === 'DAILY' ? 'dailyfortune' :
+                  r.resultType === 'DREAM' ? 'dream' : 'dailyfortune';
+          const date = (r.createdAt?.split?.('T')?.[0] ?? r.date ?? '').replace(/-/g, '.');
           const title =
             type === 'physiognomy' ? '관상 분석 결과' :
-            type === 'lifefortune' ? '평생 운세 분석 결과' :
-            type === 'dailyfortune' ? `${date} 오늘의 운세` :
-            '꿈 해몽 결과';
+              type === 'lifefortune' ? '평생 운세 분석 결과' :
+                type === 'dailyfortune' ? `${date} 오늘의 운세` :
+                  '꿈 해몽 결과';
           return {
             id: String(r.resultId ?? r.id ?? Date.now()),
             type, title,
@@ -254,7 +254,7 @@ function App() {
         newUser.results = mappedResults;
         setUser({ ...newUser });
       }
-    } catch {}
+    } catch { }
 
     // 이름이 ‘사용자’면 추가정보(이름 입력하도록 화면 구성 시)로 보낼 수 있음
     setCurrentScreen(loginData.provider === 'email' ? 'dashboard' : 'userinfo');
