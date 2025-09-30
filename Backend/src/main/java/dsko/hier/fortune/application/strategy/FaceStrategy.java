@@ -50,6 +50,6 @@ public class FaceStrategy extends AbstractFortuneStrategy<FaceAnalyzeResponse> {
 
     @Override
     public String getRedisType() {
-        return RedisHashService.DAILY_FORTUNE_TYPE;
+        return RedisHashService.FACE_TYPE;
     }
 }
