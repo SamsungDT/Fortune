@@ -118,6 +118,10 @@ jobs:
                       # GitHub 레포지토리에서 도커 컴포즈 파일 다운로드 (경로 수정)
                       wget -O docker-compose.yml https://raw.githubusercontent.com/SamsungDT/Fortune/main/Backend/docker-compose.yml
 
+                      # Prometheus 설정 파일 다운로드 (추가)
+                      echo "Downloading prometheus.yml..."
+                      wget -O prometheus.yml https://raw.githubusercontent.com/SamsungDT/Fortune/main/Backend/prometheus.yml
+
                       echo "Logging in to ECR..."
                       aws ecr get-login-password --region '${{ env.AWS_REGION }}' \
                           | docker login --username AWS --password-stdin "$ECR_REGISTRY_URL"
