@@ -7,7 +7,7 @@ import { FortuneResult } from "../App";
 import { Sparkles, Clock, Share2, Star } from 'lucide-react';
 
 // ================= 서버/타입 =================
-const API_BASE = 'http://43.202.64.247';
+const API_BASE = '';
 const DAILY_URL = `${API_BASE}/api/fortune/daily`;
 
 type APIResponse<T> = { code: number; message: string; data: T | null };
@@ -161,7 +161,7 @@ export function DailyFortuneService({ onResult, onBack }: DailyFortuneServicePro
         headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
       });
       let body: APIResponse<DailyFortuneResponse> | null = null;
-      try { body = await res.json(); } catch {}
+      try { body = await res.json(); } catch { }
       if (!res.ok || !body || body.code !== 200 || !body.data) {
         const msg = body?.message || `오늘의 운세 호출 실패 (HTTP ${res.status})`;
         throw new Error(msg);

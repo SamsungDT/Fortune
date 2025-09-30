@@ -12,7 +12,7 @@ interface LifeFortuneServiceProps {
 }
 
 // ================= 서버/타입 =================
-const API_BASE = 'http://43.202.64.247';
+const API_BASE = '';
 const LIFELONG_URL = `${API_BASE}/api/fortune/lifelong`;
 
 type APIResponse<T> = { code: number; message: string; data: T | null };
@@ -78,7 +78,7 @@ function getDisplayName() {
       const o = JSON.parse(u);
       if (o?.name) return o.name as string;
     }
-  } catch {}
+  } catch { }
   return '회원';
 }
 const s = (v?: string | null) => (v && String(v).trim().length ? v : '-');
@@ -167,7 +167,7 @@ export function LifeFortuneService({ onResult, onBack }: LifeFortuneServiceProps
       });
 
       let body: APIResponse<LifelongFortuneResponse> | null = null;
-      try { body = await res.json(); } catch {}
+      try { body = await res.json(); } catch { }
 
       if (!res.ok || !body || body.code !== 200 || !body.data) {
         const msg = body?.message || `평생 운세 호출 실패 (HTTP ${res.status})`;

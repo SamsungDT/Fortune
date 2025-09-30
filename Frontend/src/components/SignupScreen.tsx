@@ -25,7 +25,7 @@ interface SignupScreenProps {
 }
 
 // -------------------- 서버 연결 설정 --------------------
-const API_BASE = 'http://43.202.64.247';
+const API_BASE = '';
 const SIGNUP_URL = `${API_BASE}/api/security/email/signup`;
 const CHECK_EMAIL_URL = `${API_BASE}/api/security/email/check-email`;
 
@@ -76,7 +76,7 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
 
   // 신규: 이메일을 상태로 관리(중복 확인을 위해)
   const [email, setEmail] = useState('');
-  const [emailStatus, setEmailStatus] = useState<'idle'|'checking'|'available'|'taken'|'error'>('idle');
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'error'>('idle');
   const [emailMsg, setEmailMsg] = useState<string | null>(null);
 
   const [birthDate, setBirthDate] = useState('');
@@ -513,8 +513,8 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
                     variant={gender === 'male' ? 'default' : 'outline'}
                     onClick={() => setGender('male')}
                     className={`h-12 rounded-2xl font-medium transition-all duration-300 ${gender === 'male'
-                        ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold'
-                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                      ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold'
+                      : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
                       }`}
                     disabled={submitting}
                   >
@@ -525,8 +525,8 @@ export function SignupScreen({ onSignup, appStats, onGoToLogin }: SignupScreenPr
                     variant={gender === 'female' ? 'default' : 'outline'}
                     onClick={() => setGender('female')}
                     className={`h-12 rounded-2xl font-medium transition-all duration-300 ${gender === 'female'
-                        ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold'
-                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                      ? 'bg-hanbok-gold hover:bg-hanbok-gold-dark text-ink-black border-hanbok-gold'
+                      : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
                       }`}
                     disabled={submitting}
                   >
