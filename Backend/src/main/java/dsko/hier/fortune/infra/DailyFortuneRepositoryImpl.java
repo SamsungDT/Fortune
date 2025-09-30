@@ -5,6 +5,7 @@ import dsko.hier.fortune.domain.dailyDomain.DailyFortuneRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +29,10 @@ public class DailyFortuneRepositoryImpl implements DailyFortuneRepository {
     @Override
     public List<DailyFortune> findAllByUserEmail(String username) {
         return repository.findAllByUserEmail(username);
+    }
+
+    @Override
+    public Optional<DailyFortune> findById(UUID resultId) {
+        return repository.findById(resultId);
     }
 }
