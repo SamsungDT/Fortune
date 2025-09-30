@@ -129,9 +129,9 @@ jobs:
                       echo "Pulling the latest image..."
                       docker pull "$IMAGE_URI"
 
-                      # 도커 컴포즈 파일의 spring-server 이미지 태그를 최신 이미지로 변경
+                      # 도커 컴포즈 파일의 fortune-ar 이미지 태그를 최신 이미지로 변경
                       echo "Updating docker-compose.yml with new image tag..."
-                      sed -i "s|spring-server:latest|$IMAGE_URI|g" docker-compose.yml
+                      sed -i "s|fortune-ar:latest|$IMAGE_URI|g" docker-compose.yml
 
                       echo "Running docker-compose up..."
                       docker compose -f docker-compose.yml up -d
