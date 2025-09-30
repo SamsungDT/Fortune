@@ -1,6 +1,6 @@
 // signup.js
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://43.202.64.247';
 const signupForm = document.getElementById('signup-form');
 
 signupForm.addEventListener('submit', async (event) => {
