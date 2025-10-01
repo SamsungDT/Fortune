@@ -51,11 +51,11 @@ export function TopAppBar({
               <h1 className="text-xl text-ink-black dark:text-ink-gray ink-brush truncate font-semibold">
                 {title}
               </h1>
-              {userName && (
+              {/* {userName && (
                 <Badge className="bg-hanbok-gold/20 text-hanbok-gold-dark border border-hanbok-gold/40 rounded-full px-3 py-1 text-xs font-medium">
                   {userName}
                 </Badge>
-              )}
+              )} */}
             </div>
             {subtitle && (
               <p className="text-sm text-muted-foreground truncate leading-relaxed">

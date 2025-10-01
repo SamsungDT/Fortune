@@ -1,5 +1,5 @@
 // MainDashboard.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -39,6 +39,34 @@ export function MainDashboard({
         ? saved
         : '사용자';
 
+  // 🔹 추가: /api/info/me 로부터 실제 이름 받아오기 (기존 UI엔 영향 없음)
+  const [meName, setMeName] = useState<string | null>(null);
+  useEffect(() => {
+    const token =
+      localStorage.getItem('accessToken') ||
+      sessionStorage.getItem('accessToken');
+    if (!token) return;
+
+    let ignore = false;
+    fetch('https://fortuneki.site/api/info/me', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((json) => {
+        if (!ignore && json && typeof json.data === 'string') {
+          const name = json.data.trim();
+          if (name) setMeName(name);
+        }
+      })
+      .catch(() => { /* 실패 시 조용히 무시 (기존 displayName 사용) */ });
+
+    return () => { ignore = true; };
+  }, []);
+
+  // 🔹 최종 출력용 이름: 서버 이름 우선, 없으면 기존 로직
+  const finalDisplayName = (meName && meName.trim()) || displayName;
+
   const services = [
     {
       id: 'physiognomy', title: '관상', description: 'AI가 분석하는 얼굴 관상', icon: '👤',
@@ -70,10 +98,13 @@ export function MainDashboard({
         <div className="text-center space-y-3">
           <div className="text-2xl">🌟</div>
           <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush">
-            안녕하세요, {displayName}님
+            안녕하세요, {finalDisplayName}님
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            오늘도 좋은 기운이 함께하길 바랍니다
+            오늘도 좋은 기운이 함께하길 바랍니다 !
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            무료 사용 횟수는 1 ~ 4회 중 랜덤으로 부여됩니다 ^_^ 
           </p>
         </div>
       </div>

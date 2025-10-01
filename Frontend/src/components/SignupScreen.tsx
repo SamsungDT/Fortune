@@ -25,7 +25,7 @@ interface SignupScreenProps {
 }
 
 // -------------------- 서버 연결 설정 --------------------
-const API_BASE = '';
+const API_BASE = 'https://fortuneki.site';
 const SIGNUP_URL = `${API_BASE}/api/security/email/signup`;
 const CHECK_EMAIL_URL = `${API_BASE}/api/security/email/check-email`;
 

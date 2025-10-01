@@ -16,7 +16,7 @@ import { Search, Filter, TrendingUp, ChevronRight } from "lucide-react";
 /** ============================
  *  🔐 Auth / Common
  * ============================ */
-const API_BASE = "";
+const API_BASE = "https://fortuneki.site";
 
 const getToken = () => {
   try {
