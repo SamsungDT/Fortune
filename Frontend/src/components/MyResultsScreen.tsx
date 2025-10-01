@@ -16,7 +16,7 @@ import { Search, Filter, TrendingUp, ChevronRight } from "lucide-react";
 /** ============================
  *  🔐 Auth / Common
  * ============================ */
-const API_BASE = "https://fortuneki.site";
+const API_BASE = "";
 
 const getToken = () => {
   try {
@@ -210,7 +210,7 @@ function buildFaceText(d: FaceAnalyzeResponse) {
   // 전체 인상
   out.push("🧾 전체 인상");
   if (oi.overallImpression) out.push(`- 설명: ${oi.overallImpression}`);
-  if (oi.overallFortune)    out.push(`- 운세: ${oi.overallFortune}`);
+  if (oi.overallFortune) out.push(`- 운세: ${oi.overallFortune}`);
   out.push(""); // 빈 줄
 
   // 눈
@@ -232,12 +232,12 @@ function buildFaceText(d: FaceAnalyzeResponse) {
   out.push("💡 조언");
   if (adv.keyword) out.push(`- 키워드: ${adv.keyword}`);
 
-if (cautions.length) {
-  out.push(`- 주의:\n`);
-  cautions.forEach((c) => {
-    out.push(`  ${c}\n`);   // 번호 안 붙임
-  });
-}
+  if (cautions.length) {
+    out.push(`- 주의:\n`);
+    cautions.forEach((c) => {
+      out.push(`  ${c}\n`);   // 번호 안 붙임
+    });
+  }
   const main = adv.summary || adv.mainAdvice;
   if (main) out.push(`- 핵심 조언: ${main}`);
   if (adv.tomorrowHint) out.push(`- 내일 힌트: ${adv.tomorrowHint}`);
@@ -789,7 +789,7 @@ export function MyResultsScreen({
               try {
                 const json = await fetchFaceById(item.id);
                 item.content = buildFaceText(json.data);
-              } catch {}
+              } catch { }
             })
           ),
           Promise.all(
@@ -797,7 +797,7 @@ export function MyResultsScreen({
               try {
                 const json = await fetchDreamById(item.id);
                 item.content = buildDreamText(json.data);
-              } catch {}
+              } catch { }
             })
           ),
           Promise.all(
@@ -805,7 +805,7 @@ export function MyResultsScreen({
               try {
                 const json = await fetchDailyById(item.id);
                 item.content = buildDailyText(json.data);
-              } catch {}
+              } catch { }
             })
           ),
           Promise.all(
@@ -813,7 +813,7 @@ export function MyResultsScreen({
               try {
                 const json = await fetchLifeLongById(item.id);
                 item.content = buildLifeLongText(json.data);
-              } catch {}
+              } catch { }
             })
           ),
         ]);

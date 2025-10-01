@@ -1,7 +1,7 @@
 // user-detail.js
 
 // JWT 토큰 관련 함수와 fetchWithAuth 함수를 재사용하기 위해 포함
-const API_BASE_URL = 'http://43.202.64.247';
+const API_BASE_URL = '';
 const TOKEN_KEY = 'jwtToken';
 
 function getJwtToken() {

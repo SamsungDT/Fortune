@@ -25,7 +25,7 @@ interface LoginScreenProps {
 }
 
 // ================= 서버/타입 설정 =================
-const API_BASE = 'https://fortuneki.site';
+const API_BASE = '';
 const LOGIN_URL = `${API_BASE}/api/security/email/login`;
 
 type APIResponse<T> = {

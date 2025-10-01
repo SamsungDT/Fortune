@@ -20,7 +20,7 @@ interface ProfileScreenProps {
 }
 
 /* ====== Logout & API wiring ====== */
-const API_BASE = 'https://fortuneki.site';
+const API_BASE = '';
 type APIResponse<T> = { code: number; message: string; data: T | null };
 
 function getAccessToken() {
@@ -62,7 +62,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
       .then(json => {
         if (!ignore && json && typeof json.data === 'string') {
           setMeName(json.data.trim());
-          try { localStorage.setItem('displayName', json.data.trim()); } catch {}
+          try { localStorage.setItem('displayName', json.data.trim()); } catch { }
         }
       })
       .catch(() => { /* 실패 시 조용히 무시 (폴백 사용) */ });

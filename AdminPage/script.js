@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://43.202.64.247';
+const API_BASE_URL = '';
 const TOKEN_KEY = 'jwtToken';
 
 const loginSection = document.getElementById('login-section');

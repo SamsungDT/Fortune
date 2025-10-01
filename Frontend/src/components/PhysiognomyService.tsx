@@ -40,7 +40,7 @@ function mapFaceResponse(data: any) {
 }
 
 // ================= 서버/엔드포인트/타입/헬퍼 =================
-const API_BASE = 'https://fortuneki.site'; // 필요 시 .env 로 치환
+const API_BASE = ''; // 필요 시 .env 로 치환
 const PRESIGN_URL = `${API_BASE}/api/fortune/face/picture`; // Presigned URL 발급(POST)
 const ANALYZE_URL = `${API_BASE}/api/fortune/face`;          // 관상 분석(POST)
 const LOGIN_URL = `${API_BASE}/api/auth/login`;            // ⬅️ 예시: 로그인 엔드포인트(프로젝트에 맞게 수정)
@@ -394,8 +394,8 @@ export function PhysiognomyService({ onResult }: PhysiognomyServiceProps) {
                   <label htmlFor="photo-upload" className="cursor-pointer block">
                     <div
                       className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${photoFile
-                          ? 'border-hanbok-gold bg-hanbok-gold/5'
-                          : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                        ? 'border-hanbok-gold bg-hanbok-gold/5'
+                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
                         }`}
                     >
                       {photoPreview ? (

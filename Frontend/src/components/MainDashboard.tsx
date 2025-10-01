@@ -48,7 +48,7 @@ export function MainDashboard({
     if (!token) return;
 
     let ignore = false;
-    fetch('https://fortuneki.site/api/info/me', {
+    fetch('/api/info/me', {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -104,7 +104,7 @@ export function MainDashboard({
             오늘도 좋은 기운이 함께하길 바랍니다 !
           </p>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            무료 사용 횟수는 1 ~ 4회 중 랜덤으로 부여됩니다 ^_^ 
+            무료 사용 횟수는 1 ~ 4회 중 랜덤으로 부여됩니다 ^_^
           </p>
         </div>
       </div>

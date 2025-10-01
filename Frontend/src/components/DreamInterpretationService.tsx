@@ -15,7 +15,7 @@ interface DreamInterpretationServiceProps {
   onBack: () => void;
 }
 
-const API_BASE = 'https://fortuneki.site';
+const API_BASE = '';
 
 export function DreamInterpretationService({ onResult, onBack }: DreamInterpretationServiceProps) {
   const [step, setStep] = useState<'info' | 'input' | 'analyzing' | 'complete'>('info');
@@ -310,8 +310,8 @@ ${apiData.specialMessage.messageText}`,
                       key={tag.text}
                       variant={selectedTags.includes(tag.text) ? "default" : "outline"}
                       className={`cursor-pointer p-3 rounded-2xl text-center justify-center hover:scale-105 transition-all duration-200 ${selectedTags.includes(tag.text)
-                          ? 'bg-hanbok-gold text-ink-black border-hanbok-gold shadow-lg'
-                          : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
+                        ? 'bg-hanbok-gold text-ink-black border-hanbok-gold shadow-lg'
+                        : 'border-border hover:border-hanbok-gold/50 hover:bg-hanbok-gold/5'
                         }`}
                       onClick={() => toggleTag(tag.text)}
                     >
