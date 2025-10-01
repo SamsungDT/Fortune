@@ -1,3 +1,4 @@
+// ProfileScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -6,22 +7,11 @@ import { Separator } from "./ui/separator";
 import { Switch } from "./ui/switch";
 import { Alert, AlertDescription } from "./ui/alert";
 import { User } from "../App";
+import type { FortuneResult } from "../App"; // ← 타입만 가져오기
 import { useTheme } from "./ThemeProvider";
 import {
-  Settings,
-  Bell,
-  Shield,
-  HelpCircle,
-  Star,
-  Share2,
-  Download,
-  Trash2,
-  ChevronRight,
-  Moon,
-  Sun,
-  Smartphone,
-  Volume2,
-  VolumeX
+  Settings, Bell, Shield, HelpCircle, Star, Share2, Download, Trash2,
+  ChevronRight, Moon, Sun, Smartphone, Volume2, VolumeX
 } from 'lucide-react';
 
 interface ProfileScreenProps {
@@ -29,8 +19,8 @@ interface ProfileScreenProps {
   onLogout: () => void;
 }
 
-/* ====== Logout API wiring ====== */
-const API_BASE = '';
+/* ====== Logout & API wiring ====== */
+const API_BASE = 'https://fortuneki.site';
 type APIResponse<T> = { code: number; message: string; data: T | null };
 
 function getAccessToken() {
@@ -45,21 +35,51 @@ function clearTokens() {
 
 export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
   const { isDark, toggleTheme } = useTheme();
-  const [settings, setSettings] = useState({
-    autoBackup: false,
-    shareUsage: true
-  });
+
+  // 🔹 API에서 받은 이름 (우선 사용)
+  const [meName, setMeName] = useState<string>('');
+
+  const [settings, setSettings] = useState({ autoBackup: false, shareUsage: true });
   const [userResults, setUserResults] = useState<FortuneResult[]>(user.results);
   const [stats, setStats] = useState({
-    total: 0,
-    physiognomy: 0,
-    lifefortune: 0,
-    dailyfortune: 0,
-    dream: 0,
-    paid: 0,
-    free: 0,
+    total: 0, physiognomy: 0, lifefortune: 0, dailyfortune: 0, dream: 0, paid: 0, free: 0,
   });
   const [loggingOut, setLoggingOut] = useState(false);
+
+  // 🔹 이름 가져오기 (한 번만)
+  useEffect(() => {
+    const token =
+      localStorage.getItem('accessToken') ||
+      sessionStorage.getItem('accessToken');
+    if (!token) return;
+
+    let ignore = false;
+    fetch(`${API_BASE}/api/info/me`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(json => {
+        if (!ignore && json && typeof json.data === 'string') {
+          setMeName(json.data.trim());
+          try { localStorage.setItem('displayName', json.data.trim()); } catch {}
+        }
+      })
+      .catch(() => { /* 실패 시 조용히 무시 (폴백 사용) */ });
+
+    return () => { ignore = true; };
+  }, []);
+
+  // 🔹 최종 표시 이름: API 이름 > user.name / 저장값 > '사용자'
+  const saved = (localStorage.getItem('userName') || '').trim();
+  const emailLocal = (user.email || '').split('@')[0]?.trim() || '';
+  const fallback =
+    (user.name && !user.name.includes('@') && user.name.toLowerCase() !== emailLocal.toLowerCase())
+      ? user.name
+      : (saved && !saved.includes('@') && saved.toLowerCase() !== emailLocal.toLowerCase())
+        ? saved
+        : '사용자';
+  const finalName = (meName && meName.trim()) || fallback;
 
   // ==================================================
   // 나의 결과 조회 API
@@ -76,19 +96,12 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const body: APIResponse<{
-        total?: number;
-        physiognomy?: number;
-        lifefortune?: number;
-        dailyfortune?: number;
-        dream?: number;
-        paid?: number;
-        free?: number;
-        results?: FortuneResult[];
+        total?: number; physiognomy?: number; lifefortune?: number; dailyfortune?: number; dream?: number;
+        paid?: number; free?: number; results?: FortuneResult[];
       }> = await res.json();
 
       if (body.code === 200 && body.data) {
         if (body.data.results) setUserResults(body.data.results);
-
         const resData = body.data.results ?? userResults;
 
         setStats({
@@ -103,8 +116,6 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
       }
     } catch (err) {
       console.error('나의 결과 조회 실패:', err);
-
-      // 실패 시 fallback
       const resData = userResults;
       setStats({
         total: resData.length,
@@ -118,10 +129,8 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
     }
   };
 
-
   useEffect(() => {
     const results = user.results;
-
     const newStats = {
       total: results.length,
       physiognomy: results.filter(r => r.type === 'physiognomy').length,
@@ -149,28 +158,19 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
         }).catch(() => { });
       }
     } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('refreshToken');
+      clearTokens();
       setLoggingOut(false);
       onLogout();
     }
   };
 
-
-
-
   const handleSettingChange = (key: string, value: boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-
-
   const totalUsage = Object.values(user.usageCount).reduce((sum, count) => sum + count, 0);
   const todayFreeUsed = Object.values(user.dailyFreeUsage).filter(used => used).length - 1; // -1 for date field
   const availableFreeToday = 4 - todayFreeUsed;
-
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-black">
@@ -187,7 +187,8 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
             </div>
 
             <div>
-              <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush font-semibold">{user.name}</h2>
+              {/* 🔹 여기만 교체: user.name → finalName */}
+              <h2 className="text-xl text-ink-black dark:text-ink-gray ink-brush font-semibold">{finalName}</h2>
               <p className="text-muted-foreground text-sm">{user.email}</p>
               <div className="flex items-center justify-center gap-2 mt-3">
                 {user.isPremium && (
@@ -217,11 +218,7 @@ export function ProfileScreen({ user, onLogout }: ProfileScreenProps) {
                   <p className="text-xs text-muted-foreground">어두운 테마로 변경</p>
                 </div>
               </div>
-              <Switch
-                checked={isDark}
-                onCheckedChange={toggleTheme}
-                className="data-[state=checked]:bg-hanbok-gold"
-              />
+              <Switch checked={isDark} onCheckedChange={toggleTheme} className="data-[state=checked]:bg-hanbok-gold" />
             </div>
           </div>
         </Card>

@@ -12,7 +12,7 @@ interface LifeFortuneServiceProps {
 }
 
 // ================= 서버/타입 =================
-const API_BASE = '';
+const API_BASE = 'https://fortuneki.site';
 const LIFELONG_URL = `${API_BASE}/api/fortune/lifelong`;
 
 type APIResponse<T> = { code: number; message: string; data: T | null };
