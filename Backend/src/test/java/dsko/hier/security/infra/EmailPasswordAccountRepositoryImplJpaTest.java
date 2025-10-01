@@ -22,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 @Slf4j
 @DataJpaTest
+@ActiveProfiles("test")
 @Import(EmailPasswordAccountRepositoryImpl.class)
 class EmailPasswordAccountRepositoryImplJpaTest {
 
@@ -79,7 +81,6 @@ class EmailPasswordAccountRepositoryImplJpaTest {
                 .build();
         entityManager.persist(account);
         log.info("EmailPasswordAccount 엔티티 저장 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
-        entityManager.flush();
         log.info("엔티티 매니저 플러시 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
         entityManager.clear();
         log.info("엔티티 매니저 클리어 후 쿼리 횟수: {}", statistics.getPrepareStatementCount());
