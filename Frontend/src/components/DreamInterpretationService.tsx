@@ -15,6 +15,8 @@ interface DreamInterpretationServiceProps {
   onBack: () => void;
 }
 
+const API_BASE = 'https://fortuneki.site';
+
 export function DreamInterpretationService({ onResult, onBack }: DreamInterpretationServiceProps) {
   const [step, setStep] = useState<'info' | 'input' | 'analyzing' | 'complete'>('info');
   const [dreamContent, setDreamContent] = useState('');
@@ -77,7 +79,7 @@ export function DreamInterpretationService({ onResult, onBack }: DreamInterpreta
       setCurrentStatus('🔍 서버와 통신 중...');
       setProgress(20);
 
-      const response = await fetch('/api/fortune/dream', {
+      const response = await fetch(`${API_BASE}/api/fortune/dream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

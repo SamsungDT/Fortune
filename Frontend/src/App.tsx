@@ -300,7 +300,16 @@ function App() {
 
   const handleBackToDashboard = () => { setCurrentScreen('dashboard'); setCurrentResult(null); setPendingService(''); };
   const handleViewMyResults = () => setCurrentScreen('myresults');
-  const handleLogout = () => { setUser(null); setCurrentScreen('login'); setCurrentResult(null); setPendingService(''); };
+  const handleLogout = () => { 
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    // 혹시 fortune:token 쓴 흔적이 남아있다면 이것도 지워주면 안전
+    localStorage.removeItem('fortune:token');
+    setUser(null); 
+    setCurrentScreen('login');
+    setCurrentResult(null); 
+    setPendingService('');
+   };
   const handleBottomNavigation = (screen: string) => { setCurrentScreen(screen as Screen); setCurrentResult(null); setPendingService(''); };
   const handleSupportPurchase = (planType: 'monthly' | 'yearly') => {
     if (!user) return;
