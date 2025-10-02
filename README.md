@@ -32,7 +32,7 @@
 | 고동수 | 김나연 | 김지예 | 박선민 | 박재규 |
 |:----:|:----:|:----:|:----:|:----:|
 |[<img src="https://github.com/kdongsu5509.png" width="100px">](https://github.com/kdongsu5509) | [<img src="https://github.com/kimnaiyeon.png" width="100px">](https://github.com/kimnaiyeon) |[<img src="https://github.com/6715sunmin.png" width="100px">](https://github.com/6715sunmin)  | [<img src="https://github.com/Mariajiye.png" width="100px">](https://github.com/Mariajiye) | [<img src="https://github.com/bb0479.png" width="100px">](https://github.com/bb0479) |
-| 백엔드 | 프론트엔드 | 프론트엔드 | 프론트엔드, PM | | 프론트엔드 |
+| 백엔드 | 프론트엔드 | 프론트엔드 | 프론트엔드, PM |  프론트엔드 |
 
 
 ## 4. 기술 스택 및 개발 환경
